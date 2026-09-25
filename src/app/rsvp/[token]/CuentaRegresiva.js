@@ -7,25 +7,22 @@ export default function CuentaRegresiva({
   colorAcento,
   colorTexto,
 }) {
-  const [tiempo, setTiempo] = useState(null);
+  const [ahora, setAhora] = useState(null);
 
   useEffect(() => {
-    function calcular() {
-      const diff = new Date(fechaHora) - new Date();
-      if (diff <= 0) return { dias: 0, horas: 0, min: 0, seg: 0 };
-      return {
-        dias: Math.floor(diff / 86400000),
-        horas: Math.floor((diff / 3600000) % 24),
-        min: Math.floor((diff / 60000) % 60),
-        seg: Math.floor((diff / 1000) % 60),
-      };
-    }
-    setTiempo(calcular());
-    const interval = setInterval(() => setTiempo(calcular()), 1000);
+    const interval = setInterval(() => setAhora(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [fechaHora]);
+  }, []);
 
-  if (!tiempo) return null;
+  if (!fechaHora || ahora === null) return null;
+  const diff = Math.max(0, new Date(fechaHora).getTime() - ahora);
+  if (!Number.isFinite(diff)) return null;
+  const tiempo = {
+    dias: Math.floor(diff / 86400000),
+    horas: Math.floor((diff / 3600000) % 24),
+    min: Math.floor((diff / 60000) % 60),
+    seg: Math.floor((diff / 1000) % 60),
+  };
 
   return (
     <div className="flex justify-center gap-8 py-16">

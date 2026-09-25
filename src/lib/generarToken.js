@@ -7,7 +7,7 @@ export function generarToken(nombre) {
     .trim()
     .replace(/\s+/g, "-"); // espacios -> guiones
 
-  const sufijo = Math.random().toString(36).substring(2, 8); // 6 caracteres al azar
+  const sufijo = crypto.randomUUID();
 
   return `${base}-${sufijo}`;
 }

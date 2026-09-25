@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function CheckinScanner({ eventoId }) {
   const [resultado, setResultado] = useState(null);
-  const [escaneando, setEscaneando] = useState(false);
+  const [errorCamara, setErrorCamara] = useState("");
   const scannerRef = useRef(null);
   const supabase = createClient();
 
@@ -14,6 +14,20 @@ export default function CheckinScanner({ eventoId }) {
     const scanner = new Html5Qrcode("lector-qr");
     scannerRef.current = scanner;
     let isMounted = true;
+    async function onScanSuccess(token) {
+      scanner.pause();
+      const { data, error } = await supabase
+        .rpc("hacer_checkin", { token_input: token, evento_id_input: eventoId })
+        .single();
+      if (!isMounted) return;
+      if (error || !data) {
+        setResultado({ tipo: "error", mensaje: "QR no válido para este evento" });
+      } else if (data.ya_registrado) {
+        setResultado({ tipo: "advertencia", mensaje: `${data.nombre} ya hizo check-in anteriormente` });
+      } else {
+        setResultado({ tipo: "exito", nombre: data.nombre, mesa: data.mesa_nombre || "Sin mesa asignada", acompanantes: data.acompanantes });
+      }
+    }
 
     scanner
       .start(
@@ -22,9 +36,11 @@ export default function CheckinScanner({ eventoId }) {
         onScanSuccess,
       )
       .then(() => {
-        if (isMounted) setEscaneando(true);
+        if (!isMounted) scanner.stop().catch(() => {});
       })
-      .catch((err) => console.error("Error iniciando cámara:", err));
+      .catch(() => {
+        if (isMounted) setErrorCamara("No se pudo abrir la cámara. Revisa el permiso e intenta recargar la página.");
+      });
 
     return () => {
       isMounted = false;
@@ -33,35 +49,7 @@ export default function CheckinScanner({ eventoId }) {
         s.stop().catch(() => {});
       }
     };
-  }, []);
-
-  async function onScanSuccess(token) {
-    scannerRef.current.pause();
-
-    const { data, error } = await supabase
-      .rpc("hacer_checkin", { token_input: token, evento_id_input: eventoId })
-      .single();
-
-    if (error || !data) {
-      setResultado({ tipo: "error", mensaje: "QR no válido para este evento" });
-      return;
-    }
-
-    if (data.ya_registrado) {
-      setResultado({
-        tipo: "advertencia",
-        mensaje: `${data.nombre} ya hizo check-in anteriormente`,
-      });
-      return;
-    }
-
-    setResultado({
-      tipo: "exito",
-      nombre: data.nombre,
-      mesa: data.mesa_nombre || "Sin mesa asignada",
-      acompanantes: data.acompanantes,
-    });
-  }
+  }, [eventoId, supabase]);
 
   function continuarEscaneando() {
     setResultado(null);
@@ -74,6 +62,7 @@ export default function CheckinScanner({ eventoId }) {
         id="lector-qr"
         className="rounded-lg overflow-hidden"
       ></div>
+      {errorCamara && <p role="alert" className="mt-4 text-red-600">{errorCamara}</p>}
 
       {resultado && (
         <div

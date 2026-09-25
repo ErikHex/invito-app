@@ -12,6 +12,7 @@ import QrCode from "./QrCode";
 
 export default function Invitacion({ datos }) {
   const [abierta, setAbierta] = useState(false);
+  const [estado, setEstado] = useState(datos.estado);
   const cfg = datos.configuracion || {};
   const tema = cfg.tema || {};
   const colorFondo = tema.colorFondo || "#1F2E24";
@@ -69,8 +70,8 @@ export default function Invitacion({ datos }) {
             <p className="text-center mb-6">
               Boletos disponibles: {Number(datos.acompanantes) + 1}
             </p>
-            <RsvpForm invitado={datos} />
-            {datos.estado === "confirmado" && <QrCode token={datos.token} />}
+            <RsvpForm invitado={datos} estado={estado} onEstadoChange={setEstado} />
+            {estado === "confirmado" && <QrCode token={datos.token} />}
           </div>
         </>
       )}
