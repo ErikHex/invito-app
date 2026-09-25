@@ -9,6 +9,15 @@ export default function LoginPage() {
   const [cargando, setCargando] = useState(false);
   const supabase = createClient();
 
+  async function handleGoogleLogin() {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  }
+
   async function handleLogin(e) {
     e.preventDefault();
     setCargando(true);
@@ -36,6 +45,13 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50">
+      <button
+        onClick={handleGoogleLogin}
+        className="w-full border border-gray-300 py-2 rounded-lg font-semibold mb-4"
+      >
+        Continuar con Google
+      </button>
+
       <form
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-lg shadow w-80"
