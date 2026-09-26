@@ -3,20 +3,22 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export default function RsvpForm({ invitado }) {
-  const [estado, setEstado] = useState(invitado.estado);
+export default function RsvpForm({ invitado, estado, onEstadoChange }) {
   const [cargando, setCargando] = useState(false);
+  const [errorMensaje, setErrorMensaje] = useState("");
   const supabase = createClient();
 
   async function actualizarEstado(nuevoEstado) {
     setCargando(true);
+    setErrorMensaje("");
 
     const { error } = await supabase.rpc("actualizar_estado_invitado", {
       token_input: invitado.token,
       nuevo_estado: nuevoEstado,
     });
 
-    if (!error) setEstado(nuevoEstado);
+    if (!error) onEstadoChange(nuevoEstado);
+    else setErrorMensaje("No se pudo guardar tu respuesta. Intenta de nuevo.");
     setCargando(false);
   }
 
@@ -41,6 +43,7 @@ export default function RsvpForm({ invitado }) {
           No podré asistir
         </button>
       </div>
+      {errorMensaje && <p role="alert" className="mt-3 text-center text-red-600">{errorMensaje}</p>}
     </div>
   );
 }

@@ -1,36 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Invito
 
-## Getting Started
+Aplicación Next.js para invitaciones digitales, confirmación de asistencia, asignación de mesas y registro con QR. Usa Supabase para autenticación, datos y almacenamiento.
 
-First, run the development server:
+## Desarrollo local
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Requiere Node.js compatible con Next.js 16 y un proyecto Supabase configurado.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Ejecuta `npm ci`.
+2. Crea `.env.local` con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` de tu proyecto Supabase. No incluyas la clave `service_role` en variables públicas.
+3. Ejecuta `npm run dev` y abre `http://localhost:3000`.
+4. Ejecuta `npm run lint` y `npm run build` antes de publicar.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Configuración pendiente para usarlo con datos reales
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El repositorio aún no incluye migraciones ni políticas RLS. La aplicación espera las tablas `eventos`, `invitados` y `mesas`, el bucket `fotos_eventos` y las funciones RPC `get_invitacion`, `actualizar_estado_invitado`, `hacer_checkin` y `agregar_foto_galeria`. Antes de abrir el servicio al público, incorpora las migraciones y comprueba que cada consulta y función respete los permisos del propietario del evento y del invitado.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Configura Google OAuth y el enlace por correo en Supabase, con `/auth/callback` entre las URL permitidas. Sustituye los valores de ejemplo de precio, WhatsApp y correo en `src/app/page.js` por los datos comerciales correctos antes de publicar la página.
