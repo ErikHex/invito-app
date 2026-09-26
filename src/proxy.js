@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
-export async function middleware(request) {
+export async function proxy(request) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -32,5 +32,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/dashboard/:path*", "/checkin/:path*", "/auth/:path*", "/login"],
 };

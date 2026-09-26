@@ -2,7 +2,7 @@ export default function Itinerario({ items, colorAcento, colorTexto }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="py-16 px-6 max-w-md mx-auto">
+    <div className="inv-glass-section py-16 px-6 max-w-md mx-auto my-8">
       <h2
         className="text-2xl text-center mb-10"
         style={{ fontFamily: "var(--font-display)", color: colorTexto }}
@@ -13,7 +13,7 @@ export default function Itinerario({ items, colorAcento, colorTexto }) {
         {items.map((item, i) => (
           <div
             key={i}
-            className="flex gap-4 items-start border-l-2 pl-4"
+            className="flex gap-4 items-start border-l-2 ml-3 pl-5"
             style={{ borderColor: colorAcento }}
           >
             <div

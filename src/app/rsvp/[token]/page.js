@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/client";
-import Invitacion from "./Invitacion";
+import { createClient } from "@/lib/supabase/server";
+import Invitacion from "@/components/invitaciones/Invitacion";
 
 export default async function RsvpPage({ params }) {
   const { token } = await params;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .rpc("get_invitacion", { token_input: token })

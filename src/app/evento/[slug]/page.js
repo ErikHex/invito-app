@@ -1,7 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function EventoPage({ params }) {
   const { slug } = await params;
+  const supabase = await createClient();
 
   const { data: evento, error } = await supabase
     .from("eventos")

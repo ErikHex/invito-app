@@ -19,7 +19,7 @@ export async function createClient() {
             );
           } catch {
             // Esto puede fallar si se llama desde un Server Component puro.
-            // Está bien ignorarlo si tienes el middleware del Paso 33.
+            // El proxy refresca la sesión y escribe las cookies en la respuesta.
           }
         },
       },

@@ -18,7 +18,7 @@ export default function AgregarInvitado({ eventoId, onAgregado }) {
     setGuardando(true);
     setError("");
 
-    const token = generarToken(nombre);
+    const token = generarToken();
 
     const { data, error } = await supabase
       .from("invitados")
@@ -48,10 +48,10 @@ export default function AgregarInvitado({ eventoId, onAgregado }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-4 rounded-lg shadow mb-6 flex gap-3 items-end"
+      className="bg-white p-4 rounded-lg shadow mb-6 flex flex-col sm:flex-row gap-3 sm:items-end"
     >
       <div className="flex-1">
-        <label className="block text-sm text-gray-500 mb-1">
+        <label className="block text-sm text-gray-700 mb-1">
           Nombre del invitado
         </label>
         <input
@@ -60,17 +60,17 @@ export default function AgregarInvitado({ eventoId, onAgregado }) {
           onChange={(e) => setNombre(e.target.value)}
           placeholder="Ej: Carlos Pérez"
           required
-          className="w-full border rounded px-3 py-2"
+          className="w-full border border-gray-300 rounded bg-white px-3 py-2 text-gray-900 placeholder:text-gray-400 focus:border-gray-700 focus:outline-none"
         />
       </div>
       <div className="w-32">
-        <label className="block text-sm text-gray-500 mb-1">Acompañantes</label>
+        <label className="block text-sm text-gray-700 mb-1">Acompañantes</label>
         <input
           type="number"
           min="0"
           value={acompanantes}
           onChange={(e) => setAcompanantes(e.target.value)}
-          className="w-full border rounded px-3 py-2"
+          className="w-full border border-gray-300 rounded bg-white px-3 py-2 text-gray-900 placeholder:text-gray-400 focus:border-gray-700 focus:outline-none"
         />
       </div>
       <button
@@ -80,7 +80,7 @@ export default function AgregarInvitado({ eventoId, onAgregado }) {
       >
         {guardando ? "Agregando..." : "Agregar"}
       </button>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-600 text-sm">{error}</p>}
     </form>
   );
 }

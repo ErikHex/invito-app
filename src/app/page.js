@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -23,7 +23,7 @@ export default function HomePage() {
           Bodas, XV años, cumpleaños y más. Diseño innovador, interactivo y sin
           una sola hoja de papel — 100% ecológico, 100% divertido.
         </p>
-        
+
         <a
           href="#contacto"
           className="inline-block bg-purple-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
@@ -36,24 +36,30 @@ export default function HomePage() {
       <section className="bg-white py-16 px-6">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-gray-800 mb-2">🎨 Diseño a tu medida</h3>
+            <h3 className="font-bold text-gray-800 mb-2">
+              🎨 Diseño a tu medida
+            </h3>
             <p className="text-gray-600 text-sm">
-              Portada, cuenta regresiva, galería, ubicación — activa solo lo
-              que tu evento necesita.
+              Portada, cuenta regresiva, galería, ubicación — activa solo lo que
+              tu evento necesita.
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-gray-800 mb-2">📋 RSVP en tiempo real</h3>
+            <h3 className="font-bold text-gray-800 mb-2">
+              📋 Confirmaciones actualizadas
+            </h3>
             <p className="text-gray-600 text-sm">
               Ve quién confirmó, quién falta y organiza tus mesas desde un
               dashboard hecho para ti.
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-gray-800 mb-2">🎟️ Boleto QR personalizado</h3>
+            <h3 className="font-bold text-gray-800 mb-2">
+              🎟️ Boleto QR personalizado
+            </h3>
             <p className="text-gray-600 text-sm">
-              Cada invitado recibe su propio código QR con su mesa —
-              check-in rápido el día del evento.
+              Cada invitado recibe su propio código QR con su mesa — check-in
+              rápido el día del evento.
             </p>
           </div>
           <div>
@@ -71,7 +77,9 @@ export default function HomePage() {
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-gray-800 mb-2">✨ Innovador de verdad</h3>
+            <h3 className="font-bold text-gray-800 mb-2">
+              ✨ Innovador de verdad
+            </h3>
             <p className="text-gray-600 text-sm">
               Nada de plantillas genéricas — construimos algo pensado para tu
               evento, no para cualquiera.
@@ -82,7 +90,9 @@ export default function HomePage() {
 
       {/* Precio */}
       <section className="py-16 px-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8">Un solo paquete, todo incluido</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-8">
+          Un solo paquete, todo incluido
+        </h2>
         <div className="max-w-sm mx-auto bg-white rounded-xl shadow-lg p-8">
           <p className="text-4xl font-bold text-purple-600 mb-2">$XXX</p>
           <p className="text-gray-500 mb-6">precio único por evento</p>
@@ -91,9 +101,9 @@ export default function HomePage() {
             <li>✓ RSVP y gestión de invitados</li>
             <li>✓ Organización de mesas</li>
             <li>✓ Boleto QR + check-in el día del evento</li>
-            <li>✓ Dashboard con métricas en vivo</li>
+            <li>✓ Dashboard con actualización automática</li>
           </ul>
-          
+
           <a
             href="#contacto"
             className="block bg-purple-500 text-white py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
@@ -104,13 +114,15 @@ export default function HomePage() {
       </section>
 
       {/* Contacto */}
-      <section id="contacto" className="bg-purple-500 text-white py-16 px-6 text-center">
+      <section
+        id="contacto"
+        className="bg-purple-500 text-white py-16 px-6 text-center"
+      >
         <h2 className="text-2xl font-bold mb-4">¿Listo para tu evento?</h2>
         <p className="mb-8 opacity-90">
           Escríbenos y armamos tu invitación juntos.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          
           <a
             href="https://wa.me/52XXXXXXXXXX"
             target="_blank"
@@ -119,7 +131,7 @@ export default function HomePage() {
           >
             WhatsApp
           </a>
-          
+
           <a
             href="mailto:hola@invito.com"
             className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
