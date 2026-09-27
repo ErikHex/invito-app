@@ -1,148 +1,151 @@
 import Link from "next/link";
+import styles from "./page.module.css";
+
+const features = [
+  ["✳", "Lista para tu celebración", "Personalizamos el diseño disponible con tus fotos, textos y detalles. Recibes tu invitación publicada y lista para compartir."],
+  ["↗", "Actualiza tus datos", "Cambia la información de tu evento desde tu cuenta. Tus invitados pueden consultar los cambios en el mismo enlace."],
+  ["✓", "Confirmaciones al día", "Consulta quién confirmó y quién falta, con una lista de invitados que se actualiza automáticamente."],
+  ["◇", "Cada quien en su lugar", "Administra acompañantes y asigna mesas desde tu cuenta para organizar a tus invitados."],
+  ["✧", "Pases para dar la bienvenida", "Al confirmar, tus invitados pueden consultar su pase QR y la mesa asignada. Usa el lector para registrar su acceso."],
+  ["❧", "Todos los detalles, sin papel", "Comparte ubicaciones, itinerario, galería y más en una invitación pensada para disfrutarse desde el celular."],
+];
+
+const steps = [
+  ["Cuéntanos tu celebración", "Nos compartes tus fotos, textos y los datos del evento."],
+  ["Le damos forma", "Personalizamos tu invitación sobre el diseño disponible."],
+  ["Revisa cada detalle", "Incluimos dos rondas de ajustes antes de la entrega."],
+  ["Comparte y organiza", "Recibes tu enlace y acceso a tu cuenta para actualizar datos y gestionar invitados."],
+];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-      {/* Nav */}
-      <nav className="flex justify-between items-center px-6 py-4 max-w-6xl mx-auto">
-        <span className="text-2xl font-bold text-purple-600">Invito</span>
-        <Link
-          href="/login"
-          className="border border-purple-500 text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition"
-        >
-          Iniciar sesión
-        </Link>
-      </nav>
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <Link href="/" className={styles.brand} aria-label="Invito, inicio">invito<span aria-hidden="true">✳</span></Link>
+        <nav className={styles.nav} aria-label="Navegación principal">
+          <a href="#detalles" className={styles.navLink}>Los detalles</a>
+          <a href="#paquete" className={styles.navLink}>Tu invitación</a>
+          <Link href="/login" className={styles.secondary}>Iniciar sesión <span aria-hidden="true">↗</span></Link>
+        </nav>
+      </header>
 
-      {/* Hero */}
-      <section className="text-center px-6 py-20 max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-          Invitaciones digitales que sí emocionan
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Bodas, XV años, cumpleaños y más. Diseño innovador, interactivo y sin
-          una sola hoja de papel — 100% ecológico, 100% divertido.
-        </p>
-
-        <a
-          href="#contacto"
-          className="inline-block bg-purple-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
-        >
-          Cotiza tu invitación
-        </a>
-      </section>
-
-      {/* Features */}
-      <section className="bg-white py-16 px-6">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">
-              🎨 Diseño a tu medida
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Portada, cuenta regresiva, galería, ubicación — activa solo lo que
-              tu evento necesita.
-            </p>
+      <section className={styles.hero} aria-labelledby="hero-title">
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>EL COMIENZO DE ALGO ESPECIAL</p>
+          <h1 id="hero-title">Grandes momentos.<br /><em>Bonitos comienzos.</em></h1>
+          <p className={styles.description}>Creamos tu invitación digital y te la entregamos lista para compartir. Después, puedes actualizar los datos de tu evento, consultar confirmaciones y organizar tus mesas desde tu cuenta.</p>
+          <div className={styles.actions}>
+            <a href="#contacto" className={styles.primary}>Quiero mi invitación <span aria-hidden="true">↗</span></a>
+            <Link href="/demo" className={styles.textLink}>Ver invitación de ejemplo <span aria-hidden="true">↗</span></Link>
           </div>
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">
-              📋 Confirmaciones actualizadas
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Ve quién confirmó, quién falta y organiza tus mesas desde un
-              dashboard hecho para ti.
-            </p>
+          <p className={styles.heroNote}>Bodas · XV años · Cumpleaños · Y todo lo que merece celebrarse</p>
+        </div>
+        <div className={styles.heroArt} role="img" aria-label="Ilustración de una invitación digital en un celular junto a un panel de confirmaciones y organización de mesas.">
+          <div className={styles.productScene} aria-hidden="true">
+            <div className={styles.orbit} />
+            <span className={styles.spark}>✳</span>
+            <div className={styles.panelPreview}>
+              <div className={styles.previewBar}><span>invito✳</span><span>Tu evento</span></div>
+              <p className={styles.previewTitle}>Todo en su lugar.</p>
+              <div className={styles.previewStats}>
+                <div><span>✓</span>Confirmaciones</div>
+                <div><span>◇</span>Mesas</div>
+              </div>
+              <div className={styles.guestRow}><i /><span /><b>Confirmado</b></div>
+              <div className={styles.guestRow}><i /><span /><b>Confirmado</b></div>
+              <div className={styles.tablePreview}><span>01</span><span>02</span><span>03</span></div>
+            </div>
+            <div className={styles.phonePreview}>
+              <div className={styles.phoneSpeaker} />
+              <span className={styles.phoneEyebrow}>UNA OCASIÓN ESPECIAL</span>
+              <div className={styles.phoneFlower}>✳</div>
+              <p>Tenemos algo<br /><em>que celebrar.</em></p>
+              <div className={styles.phoneRule} />
+              <span className={styles.phoneNote}>Y queremos compartirlo contigo.</span>
+              <div className={styles.phoneDetails}><span>Fecha</span><span>Lugar</span><span>Detalles</span></div>
+              <span className={styles.phoneConfirm}>Confirmar asistencia ↗</span>
+            </div>
+            <div className={styles.readyBadge}><span>✓</span> Lista para compartir</div>
           </div>
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">
-              🎟️ Boleto QR personalizado
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Cada invitado recibe su propio código QR con su mesa — check-in
-              rápido el día del evento.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">📱 100% responsive</h3>
-            <p className="text-gray-600 text-sm">
-              Se ve perfecto desde el celular, que es donde tus invitados de
-              verdad la van a abrir.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">🌱 Ecológico</h3>
-            <p className="text-gray-600 text-sm">
-              Cero papel, cero impresiones, cero desperdicio. Tan bonito como
-              una invitación física, sin el impacto ambiental.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-800 mb-2">
-              ✨ Innovador de verdad
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Nada de plantillas genéricas — construimos algo pensado para tu
-              evento, no para cualquiera.
-            </p>
-          </div>
+          <p className={styles.artCaption}>TU INVITACIÓN Y TUS INVITADOS, CONECTADOS.</p>
         </div>
       </section>
 
-      {/* Precio */}
-      <section className="py-16 px-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8">
-          Un solo paquete, todo incluido
-        </h2>
-        <div className="max-w-sm mx-auto bg-white rounded-xl shadow-lg p-8">
-          <p className="text-4xl font-bold text-purple-600 mb-2">$XXX</p>
-          <p className="text-gray-500 mb-6">precio único por evento</p>
-          <ul className="text-left text-gray-600 text-sm space-y-2 mb-8">
-            <li>✓ Invitación web personalizada</li>
-            <li>✓ RSVP y gestión de invitados</li>
-            <li>✓ Organización de mesas</li>
-            <li>✓ Boleto QR + check-in el día del evento</li>
-            <li>✓ Dashboard con actualización automática</li>
+      <div className={styles.ribbon}><span aria-hidden="true">✳</span> Tu evento, tu estilo, todos tus invitados.<span aria-hidden="true">✳</span></div>
+
+      <section id="detalles" className={styles.details} aria-labelledby="details-title">
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>BONITA POR FUERA. PRÁCTICA EN CADA DETALLE.</p>
+          <h2 id="details-title">Tú celebra.<br /><em>Cada detalle, en tus manos.</em></h2>
+          <p>Nosotros preparamos tu invitación. Tú tienes las herramientas para mantener todo al día.</p>
+        </div>
+        <div className={styles.features}>
+          {features.map(([icon, title, description]) => (
+            <article key={title} className={styles.feature}>
+              <span className={styles.iconBadge} aria-hidden="true">{icon}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.process} aria-labelledby="process-title">
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>DE TU IDEA A SU PANTALLA</p>
+          <h2 id="process-title">Así empieza <em>tu invitación.</em></h2>
+        </div>
+        <ol className={styles.steps}>
+          {steps.map(([title, description], index) => (
+            <li key={title}>
+              <span className={styles.stepNumber}>0{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="paquete" className={styles.package} aria-labelledby="package-title">
+        <div className={styles.packageIntro}>
+          <p className={styles.eyebrow}>PREPARADA POR NOSOTROS. EN TUS MANOS.</p>
+          <h2 id="package-title">Una invitación.<br /><em>Todo un comienzo.</em></h2>
+          <p>La personalizamos con tus fotos, textos y detalles. Te entregamos el enlace y acceso a tu cuenta para actualizar información y organizar a tus invitados.</p>
+          <span className={styles.packageFlower} aria-hidden="true">✳</span>
+        </div>
+        <div className={styles.packageCard}>
+          <p className={styles.eyebrow}>PRECIO DE LANZAMIENTO</p>
+          <h3>Tu invitación, lista<br />para compartir.</h3>
+          <p className={styles.price}>$1,490 <span>MXN</span></p>
+          <p className={styles.priceNote}>Pago único por evento.</p>
+          <ul>
+            <li>Personalización del diseño disponible</li>
+            <li>Dos rondas de ajustes antes de la entrega</li>
+            <li>Acceso para actualizar la información del evento</li>
+            <li>Confirmaciones, acompañantes y mesas</li>
+            <li>Pases QR y herramienta de registro de acceso</li>
+            <li>Guía breve para utilizar tu cuenta</li>
           </ul>
-
-          <a
-            href="#contacto"
-            className="block bg-purple-500 text-white py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
-          >
-            Quiero mi invitación
-          </a>
+          <a href="#contacto" className={styles.primary}>Quiero mi invitación <span aria-hidden="true">↗</span></a>
+          <p className={styles.scopeNote}>Tú cargas y envías las invitaciones y operas el registro de acceso. Si necesitas que lo hagamos por ti o buscas un diseño desde cero, lo cotizamos aparte. La vigencia y el periodo de soporte se acuerdan antes de contratar.</p>
         </div>
       </section>
 
-      {/* Contacto */}
-      <section
-        id="contacto"
-        className="bg-purple-500 text-white py-16 px-6 text-center"
-      >
-        <h2 className="text-2xl font-bold mb-4">¿Listo para tu evento?</h2>
-        <p className="mb-8 opacity-90">
-          Escríbenos y armamos tu invitación juntos.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="https://wa.me/52XXXXXXXXXX"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-          >
-            WhatsApp
-          </a>
-
-          <a
-            href="mailto:hola@invito.com"
-            className="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition"
-          >
-            Enviar correo
-          </a>
+      <section id="contacto" className={styles.contact} aria-labelledby="contact-title">
+        <span className={styles.contactFlower} aria-hidden="true">✳</span>
+        <p className={styles.eyebrow}>LAS BUENAS HISTORIAS EMPIEZAN CON UN HOLA</p>
+        <h2 id="contact-title">Hagamos algo <em>para recordar.</em></h2>
+        <p>Cuéntanos qué celebras. Armamos tu invitación juntos.</p>
+        <div className={styles.actions}>
+          <a href="https://wa.me/52XXXXXXXXXX" target="_blank" rel="noopener noreferrer" className={styles.primary}>Escríbenos por WhatsApp <span aria-hidden="true">↗</span></a>
+          <a href="mailto:hola@invito.com" className={styles.secondary}>Enviar correo <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
-      <footer className="text-center py-6 text-sm text-gray-400">
-        © {new Date().getFullYear()} Invito — Invitaciones digitales
+      <footer className={styles.footer}>
+        <Link href="/" className={styles.brand} aria-label="Invito, inicio">invito<span aria-hidden="true">✳</span></Link>
+        <p>Hecho para celebrar lo que importa.</p>
+        <span>© {new Date().getFullYear()} Invito</span>
       </footer>
     </main>
   );

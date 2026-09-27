@@ -1,7 +1,12 @@
 "use client";
+// Photos may come from customer-provided hosts and public Storage.
+/* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+
+import GaleriaManager from "./GaleriaManager";
+import { pinterestUrl, validClabe } from "@/lib/invitation-utils";
 
 const inputClass =
   "mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-800";
@@ -32,7 +37,7 @@ function SelectorFoto({ label, value, fotos, onChange }) {
             >
               <img
                 src={foto}
-                alt=""
+                alt={`Seleccionar foto para ${label.toLowerCase()}`}
                 className="h-full w-full object-cover"
               />
             </button>
@@ -106,6 +111,7 @@ function ItinerarioEditor({ items, onChange }) {
             onChange={(valor) => actualizarItem(index, "lugar", valor)}
             placeholder="Parroquia"
           />
+          <button type="button" onClick={() => onChange(items.filter((_, i) => i !== index))} className="text-sm underline">Eliminar actividad</button>
           <Campo
             label="Maps"
             value={item.mapsUrl}
@@ -158,6 +164,7 @@ function RegalosEditor({ enlaces, onChange }) {
             onChange={(valor) => actualizarEnlace(index, "url", valor)}
             placeholder="https://..."
           />
+          <button type="button" onClick={() => onChange(enlaces.filter((_, i) => i !== index))} className="text-sm underline">Eliminar enlace</button>
           <Campo
             label="Código"
             value={enlace.codigo}
@@ -198,9 +205,24 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
   );
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [subiendo, setSubiendo] = useState(false);
+  const [base, setBase] = useState(eventoInicial.configuracion || {});
+  const [guardado, setGuardado] = useState(JSON.stringify([eventoInicial.nombre_evento || "", eventoInicial.fecha || "", eventoInicial.configuracion || {}, (eventoInicial.configuracion?.nombres || []).join(", ")]));
+  const actual = JSON.stringify([nombreEvento, fecha, configuracion, nombres]);
+  const pendiente = actual !== guardado;
+  useEffect(() => {
+    function avisar(event) { if (pendiente || subiendo) { event.preventDefault(); event.returnValue = ""; } }
+    function navegar(event) {
+      const link = event.target.closest('a[href]');
+      if (link && !link.target && !link.getAttribute('href').startsWith('#') && (pendiente || subiendo) && !window.confirm('Tienes cambios sin guardar. ¿Salir del editor?')) { event.preventDefault(); event.stopPropagation(); }
+    }
+    window.addEventListener('beforeunload', avisar);
+    document.addEventListener('click', navegar, true);
+    return () => { window.removeEventListener('beforeunload', avisar); document.removeEventListener('click', navegar, true); };
+  }, [pendiente, subiendo]);
   const supabase = createClient();
-  const fotos = Array.isArray(configuracion.galeria)
-    ? configuracion.galeria
+  const fotos = Array.isArray(configuracion.bibliotecaFotos || configuracion.galeria)
+    ? (configuracion.bibliotecaFotos || configuracion.galeria)
     : [];
   const ceremonia = configuracion.ceremonia || {};
   const recepcion = configuracion.recepcion || {};
@@ -222,6 +244,10 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
   }
 
   async function guardar() {
+    if (configuracion.vestimenta?.pinterestUrl && !pinterestUrl(configuracion.vestimenta.pinterestUrl)) { setMensaje('Usa un enlace HTTPS válido de Pinterest o pin.it.'); return; }
+    const transferencia = configuracion.regalos?.transferencia;
+    if (transferencia?.activa && (!transferencia.titular?.trim() || !transferencia.banco?.trim() || !validClabe(transferencia.clabe || ''))) { setMensaje('Completa titular, banco y una CLABE válida de 18 dígitos.'); return; }
+    if (!nombreEvento.trim()) { setMensaje('Escribe el nombre del evento.'); return; }
     setGuardando(true);
     setMensaje("");
 
@@ -238,32 +264,19 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
       fechaHora: fecha ? `${fecha}${hora}` : configuracion.fechaHora,
     };
 
-    let { error } = await supabase.rpc("actualizar_configuracion_evento", {
-      evento_id_input: eventoId,
-      nombre_evento_input: nombreEvento,
-      fecha_input: fecha || null,
-      configuracion_input: nuevaConfiguracion,
-    });
-
-    if (error?.code === "PGRST202") {
-      const response = await supabase
-        .from("eventos")
-        .update({
-          nombre_evento: nombreEvento,
-          fecha: fecha || null,
-          configuracion: nuevaConfiguracion,
-        })
-        .eq("id", eventoId);
-      error = response.error;
-    }
-
-    setConfiguracion(nuevaConfiguracion);
-    setGuardando(false);
-    setMensaje(
-      error
-        ? `No se pudo guardar la configuración: ${error.message}`
-        : "Datos guardados. Recarga la invitación para verlos.",
-    );
+    try {
+      const { error } = await supabase.rpc("guardar_editor_evento", {
+        evento_id_input: eventoId, nombre_input: nombreEvento,
+        fecha_input: fecha || null, configuracion_input: nuevaConfiguracion,
+        configuracion_anterior: base,
+      });
+      if (error) throw error;
+      setConfiguracion(nuevaConfiguracion);
+      setBase(nuevaConfiguracion);
+      setGuardado(JSON.stringify([nombreEvento, fecha, nuevaConfiguracion, nombres]));
+      setMensaje("Cambios publicados en tu invitación.");
+    } catch (error) { setMensaje(error.message || "No pudimos guardar. Revisa tu conexión."); }
+    finally { setGuardando(false); }
   }
 
   return (
@@ -274,20 +287,20 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
             Datos de la invitación
           </h2>
           <p className="text-sm text-gray-500">
-            Estos datos se sincronizan con la invitación pública.
+            {pendiente ? "Tienes cambios sin guardar." : "Tu invitación, a tu manera."}
           </p>
         </div>
         <button
           type="button"
           onClick={guardar}
-          disabled={guardando}
+          disabled={guardando || subiendo}
           className="rounded bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 disabled:opacity-50"
         >
           {guardando ? "Guardando..." : "Guardar cambios"}
         </button>
       </div>
 
-      <div className="space-y-3">
+      <fieldset disabled={guardando || subiendo} className="space-y-3">
         <details
           open
           className="rounded border border-gray-200 p-4"
@@ -333,6 +346,13 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
             2. Fotos
           </summary>
           <div className="mt-4 space-y-6">
+            <GaleriaManager eventoId={eventoId} configuracion={configuracion} onChange={setConfiguracion} onBusy={setSubiendo} />
+            <label className="block text-sm">Encuadre de portada
+              <select value={configuracion.encuadrePortada || "center"} onChange={e=>actualizarCampo("encuadrePortada",e.target.value)} className={inputClass}>
+                <option value="center">Centrado</option><option value="center top">Arriba</option><option value="center bottom">Abajo</option><option value="left center">Izquierda</option><option value="right center">Derecha</option>
+              </select>
+            </label>
+            {configuracion.fotoPortada && <img src={configuracion.fotoPortada} alt="Vista previa del encuadre de portada" className="h-64 w-44 rounded-xl object-cover" style={{objectPosition: configuracion.encuadrePortada || "center"}} />}
             <SelectorFoto
               label="Foto de portada"
               value={configuracion.fotoPortada || null}
@@ -477,8 +497,10 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
               }
               placeholder="Sugerencias para tus invitados..."
             />
+            <Campo label="Tablero de Pinterest (opcional)" value={vestimenta.pinterestUrl} onChange={valor=>actualizarSeccion("vestimenta", "pinterestUrl", valor)} placeholder="https://www.pinterest.com/..." />
+            <p className="helper md:col-span-2">Usa un tablero público para que tus invitados puedan consultar la inspiración.</p>
             <Textarea
-              label="Mensaje de mesas de regalos"
+              label="Mensaje de regalos"
               value={regalos.mensaje}
               onChange={(valor) =>
                 actualizarSeccion("regalos", "mensaje", valor)
@@ -491,9 +513,18 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
                 actualizarSeccion("regalos", "enlaces", enlaces)
               }
             />
+            <div className="md:col-span-2 gift-editor">
+              <h3>Regalos por transferencia</h3>
+              <label><input type="checkbox" checked={!!regalos.transferencia?.activa} onChange={e=>actualizarSeccion("regalos","transferencia",{...regalos.transferencia,activa:e.target.checked})} /> Mostrar datos bancarios en la invitación</label>
+              <p className="helper">Estos datos serán visibles para quienes puedan acceder a tu invitación. Invito no procesa ni confirma transferencias.</p>
+              {regalos.transferencia?.activa && <div className="grid gap-4 md:grid-cols-2">
+                {[['titular','Titular'],['banco','Banco'],['clabe','CLABE de 18 dígitos']].map(([key,label])=><Campo key={key} label={label} value={regalos.transferencia?.[key]} onChange={v=>actualizarSeccion("regalos","transferencia",{...regalos.transferencia,[key]:key==='clabe'?v.replace(/\s/g,''):v})} />)}
+              </div>}
+              <label><input type="checkbox" checked={!!regalos.sobres} onChange={e=>actualizarSeccion("regalos","sobres",e.target.checked)} /> Ofrecer lluvia de sobres el día del evento</label>
+            </div>
           </div>
         </details>
-      </div>
+      </fieldset>
 
       {mensaje && (
         <p

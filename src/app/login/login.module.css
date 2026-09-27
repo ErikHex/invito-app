@@ -1,0 +1,53 @@
+.page { min-height: 100svh; display: grid; grid-template-columns: 1fr 1fr; background: #fdfcf9; color: #302a39; color-scheme: light; }
+.story { position: relative; display: flex; flex-direction: column; padding: 36px 8%; overflow: hidden; background: #ede8f1; }
+.brand { display: inline-flex; align-items: center; align-self: flex-start; gap: 5px; font-family: var(--font-display), Georgia, serif; font-size: 38px; font-weight: 600; letter-spacing: -2px; }
+.brand span { color: #826393; font-size: 27px; margin-top: -12px; }
+.storyContent { margin: auto 0; padding-top: 42px; }
+.eyebrow { color: #796386; font-size: 10px; font-weight: 600; letter-spacing: 2px; line-height: 1.7; }
+.story h2 { margin: 18px 0; font-family: var(--font-display), Georgia, serif; font-size: clamp(32px, 3.5vw, 54px); line-height: 1.15; font-weight: 400; letter-spacing: -1.8px; }
+.story h2 em { color: #826393; font-weight: 400; }
+.storyDescription { color: #746b7c; font-size: 14px; line-height: 1.8; }
+.art { position: relative; height: 355px; margin: 26px auto 10px; max-width: 420px; width: 100%; }
+.orbit { position: absolute; width: 310px; height: 310px; border: 1px solid #d4c9dc; border-radius: 50%; top: 0; left: 50%; transform: translateX(-50%); }
+.envelope { position: absolute; left: 50%; top: 124px; width: 278px; height: 170px; transform: translateX(-50%) rotate(-12deg); border-radius: 5px; background: linear-gradient(150deg, #cbbbd7 50%, #bcabc9 50%); box-shadow: 0 18px 35px #5a416a18; }
+.invitation { position: absolute; left: 50%; top: 12px; width: 215px; height: 265px; padding: 28px 14px; display: flex; align-items: center; flex-direction: column; transform: translateX(-43%) rotate(8deg); background: #fffcf5; border: 1px solid #fff; outline: 1px solid #ddd1bf; outline-offset: -10px; box-shadow: 0 15px 35px #4d35541a; }
+.cardEyebrow, .cardDate { font-size: 7px; letter-spacing: 2px; color: #867464; }
+.flower { color: #9a7caa; font-size: 42px; line-height: 1; margin: 20px 0 12px; }
+.names { font-family: var(--font-display), Georgia, serif; font-size: 24px; color: #5a4266; }
+.names i { font-family: var(--font-script), cursive; }
+.cardRule { margin: 16px 0; width: 32px; height: 1px; background: #cdbb9e; }
+.cardNote { margin-top: 13px; font-family: var(--font-script), cursive; font-size: 17px; color: #867464; }
+.seal { position: absolute; top: 235px; left: calc(50% - 30px); width: 48px; height: 48px; border-radius: 50%; border: 4px double #ae8fbc; background: #8d6b9e; color: #f2e4f8; display: grid; place-items: center; font-family: var(--font-display), serif; font-style: italic; font-size: 26px; box-shadow: 0 4px 10px #4d35542b; }
+.spark { position: absolute; top: 38px; right: 6%; font-size: 32px; color: #9a7caa; }
+.artCaption { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; font-size: 8px; letter-spacing: 1.4px; color: #74617f; }
+.storyFooter { font-size: 11px; color: #796e80; margin-top: 24px; }
+.access { display: flex; flex-direction: column; padding: 42px 9% 28px; }
+.back { font-size: 12px; color: #7b7380; align-self: flex-start; display: inline-flex; gap: 10px; align-items: center; }
+.back:hover { color: #68467d; }
+.formArea { width: 100%; max-width: 380px; margin: auto; padding: 56px 0; }
+.iconBadge { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #e7dfeb; border-radius: 15px; color: #88679b; background: #f5f0f7; font-size: 29px; margin-bottom: 25px; }
+.formArea h1 { font-family: var(--font-display), Georgia, serif; font-size: clamp(32px, 3vw, 43px); line-height: 1.2; font-weight: 400; letter-spacing: -1.6px; margin: 12px 0 14px; }
+.description { font-size: 14px; line-height: 1.8; color: #7b7380; margin-bottom: 30px; }
+.google, .secondary, .primary { display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; min-height: 51px; padding: 12px 18px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 160ms, box-shadow 160ms; }
+.google, .secondary { border: 1px solid #ded8e1; background: #fff; color: #463c4c; }
+.google:hover, .secondary:hover { background: #f5f0f7; }
+.divider { display: flex; align-items: center; gap: 16px; margin: 25px 0; color: #8a818f; font-size: 11px; }
+.divider::before, .divider::after { content: ''; height: 1px; background: #e9e3eb; flex: 1; }
+.form label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 9px; }
+.form input { width: 100%; min-height: 51px; border: 1px solid #ded8e1; border-radius: 9px; padding: 12px 15px; font-size: 14px; background: #fff; color: #302a39; }
+.form input::placeholder { color: #a099a5; }
+.page :is(a, button, input):focus-visible { outline: 3px solid #a587b5; outline-offset: 4px; }
+.inputHint { color: #817887; font-size: 11px; line-height: 1.6; margin-top: 9px; }
+.primary { background: #79528d; color: white; margin-top: 23px; box-shadow: 0 5px 12px #79528d18; }
+.primary span { font-size: 19px; margin-left: auto; }
+.primary:hover { background: #67437a; box-shadow: 0 5px 18px #79528d30; }
+.page button:disabled { opacity: .6; cursor: wait; }
+.note { text-align: center; color: #8a818f; font-size: 10px; margin-top: 25px; line-height: 1.7; }
+.note span { color: #89619e; padding-right: 4px; }
+.footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; color: #8a818f; font-size: 10px; }
+.error { padding: 12px 14px; margin-bottom: 20px; border: 1px solid #f0cdd0; border-radius: 8px; background: #fff0f1; color: #9a3243; font-size: 12px; line-height: 1.6; }
+.success strong { color: #68467d; overflow-wrap: anywhere; }
+.hint { font-size: 12px; line-height: 1.8; color: #817887; margin-bottom: 24px; }
+@media (min-width: 1500px) { .story { padding-left: 14%; } }
+@media (max-width: 900px) { .story { padding: 30px 7%; } .access { padding: 36px 8% 24px; } .art { transform: scale(.88); margin-left: -5%; width: 110%; } .story h2 { font-size: 35px; } }
+@media (max-width: 680px) { .page { grid-template-columns: 1fr; } .story { padding: 22px 26px 26px; } .brand { font-size: 31px; } .brand span { font-size: 23px; } .storyContent { padding-top: 20px; } .storyContent > .eyebrow { font-size: 8px; } .story h2 { font-size: 32px; margin: 10px 0 0; letter-spacing: -1px; } .storyDescription, .art, .storyFooter { display: none; } .access { padding: 24px 26px; } .formArea { padding: 30px 0 42px; max-width: 420px; } .iconBadge { display: none; } .formArea h1 { font-size: 36px; } .footer { font-size: 9px; } }

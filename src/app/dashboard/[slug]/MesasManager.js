@@ -140,7 +140,7 @@ export default function MesasManager({
       mesas.filter((mesa) => {
         const asignados = invitados.filter(
           (invitado) => invitado.mesa_id === mesa.id,
-        ).length;
+        ).reduce((total, invitado) => total + lugaresDe(invitado), 0);
         const llena =
           Number(mesa.capacidad) > 0 && asignados >= Number(mesa.capacidad);
         const coincideBusqueda = mesa.nombre

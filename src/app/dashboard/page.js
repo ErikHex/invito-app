@@ -16,8 +16,10 @@ export default async function DashboardHomePage() {
     .eq("user_id", user.id);
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Tus eventos</h1>
+    <main className="min-h-screen bg-gray-50 p-8 mx-auto">
+      <Link href="/" className="dash-brand" aria-label="Invito, inicio">invito<span>✳</span></Link>
+      <p className="dash-eyebrow mt-10">TUS PRÓXIMOS GRANDES MOMENTOS</p>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Tus celebraciones</h1>
 
       {(!eventos || eventos.length === 0) && (
         <p className="text-gray-500">Todavía no tienes eventos creados.</p>

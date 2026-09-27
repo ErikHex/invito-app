@@ -1,7 +1,9 @@
+import { pinterestUrl } from "@/lib/invitation-utils";
 import styles from "./editorial.module.css";
 
 export default function Vestimenta({ vestimenta }) {
-  if (!vestimenta?.codigo && !vestimenta?.descripcion) return null;
+  const inspiracion = pinterestUrl(vestimenta?.pinterestUrl);
+  if (!vestimenta?.codigo && !vestimenta?.descripcion && !inspiracion) return null;
 
   return (
     <section
@@ -18,6 +20,7 @@ export default function Vestimenta({ vestimenta }) {
       {vestimenta.descripcion && (
         <p className={styles.venueDetails}>{vestimenta.descripcion}</p>
       )}
+      {inspiracion && <a href={inspiracion} className={styles.mapLink} target="_blank" rel="noopener noreferrer">Ver inspiración en Pinterest ↗</a>}
     </section>
   );
 }

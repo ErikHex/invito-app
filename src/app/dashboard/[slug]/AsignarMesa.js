@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-export default function AsignarMesa({ invitado, mesas, invitados }) {
-  const [mesaId, setMesaId] = useState(invitado.mesa_id || "");
+export default function AsignarMesa({ invitado, mesas, invitados, onChange }) {
   const [guardando, setGuardando] = useState(false);
   const [mensajeError, setMensajeError] = useState("");
   const supabase = createClient();
@@ -25,14 +24,14 @@ export default function AsignarMesa({ invitado, mesas, invitados }) {
           throw new Error("La mesa no tiene lugares suficientes para este invitado.");
         }
       }
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("invitados")
         .update({ mesa_id: nuevaMesaId || null })
         .eq("id", invitado.id)
-        .select("id")
+        .select("*")
         .single();
       if (error) throw error;
-      setMesaId(nuevaMesaId);
+      onChange?.(data);
     } catch (error) {
       setMensajeError(error.message || "No se pudo asignar la mesa. Intenta de nuevo.");
     } finally {
@@ -44,7 +43,7 @@ export default function AsignarMesa({ invitado, mesas, invitados }) {
     <div>
       <select
         aria-label={`Mesa de ${invitado.nombre}`}
-        value={mesaId}
+        value={invitado.mesa_id || ""}
         onChange={handleChange}
         disabled={guardando}
         className="border border-gray-300 rounded bg-white px-2 py-1 text-sm text-gray-900 focus:border-gray-700 focus:outline-none"

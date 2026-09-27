@@ -1,5 +1,4 @@
 import { getDashboardData } from "../dashboard-data";
-import GaleriaManager from "../GaleriaManager";
 import ConfiguracionManager from "../ConfiguracionManager";
 
 export default async function DisenoPage({ params }) {
@@ -10,7 +9,6 @@ export default async function DisenoPage({ params }) {
   return (
     <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
       <div className="mb-6"><h1 className="text-2xl font-bold text-gray-900">Diseño de invitación</h1><p className="mt-1 text-gray-600">Gestiona las fotos y el contenido de tu evento.</p></div>
-      <GaleriaManager eventoId={data.evento.id} fotosIniciales={data.evento.configuracion?.galeria || []} />
       <ConfiguracionManager eventoId={data.evento.id} eventoInicial={data.evento} />
     </main>
   );
