@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { guestMatches, normalizePhone, validPhone } from "@/lib/invitation-utils";
 import AgregarInvitado from "./AgregarInvitado";
 import AsignarMesa from "./AsignarMesa";
+import DescargarInvitados from "./DescargarInvitados";
 
 const estados = { pendiente:'Pendiente de enviar', por_verificar:'Envío por verificar', enviada:'Marcada como enviada' };
 const acciones = { abrir:'WhatsApp abierto · por verificar', enviar:'Envío registrado por el anfitrión', recordatorio:'Recordatorio registrado', restablecer:'Restablecida a pendiente' };
@@ -89,6 +90,7 @@ export default function ListaInvitados({ eventoId, eventoNombre, invitadosInicia
   const enviados=invitados.filter(i=>i.envio_estado==='enviada').length;
   const visibles=invitados.filter(i=>i.nombre.toLowerCase().includes(busqueda.toLowerCase()) && guestMatches(i,filtro));
   return <>
+    <DescargarInvitados eventoId={eventoId} eventoNombre={eventoNombre} />
     <div className="dash-stats">{[['Invitaciones',invitados.length],['Marcadas como enviadas',enviados],['Pendientes de envío',invitados.length-enviados],['Lugares contemplados',invitados.reduce((n,i)=>n+1+Number(i.acompanantes||0),0)]].map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
     <AgregarInvitado eventoId={eventoId} onAgregado={nuevo=>{revision.current++;setInvitados(prev=>[...prev,nuevo]);}} />
     <div className="guest-filters"><label>Buscar invitado<input value={busqueda} onChange={e=>setBusqueda(e.target.value)} placeholder="Nombre o familia" /></label><label>Mostrar<select value={filtro} onChange={e=>setFiltro(e.target.value)}><option value="todos">Todas las invitaciones</option><option value="pendientes">Pendientes de envío</option><option value="verificar">Envíos por verificar</option><option value="sin_respuesta">Enviadas sin respuesta</option><option value="sin_telefono">Sin teléfono</option></select></label></div>

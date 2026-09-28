@@ -1,0 +1,147 @@
+.aura {
+  --paper: #faf9f6;
+  --ink: #27232f;
+  --muted: #68616e;
+  --accent: #6c538b;
+  --lilac: #e6dfee;
+  --line: #ded9e3;
+  color: var(--ink);
+  background: var(--paper);
+  color-scheme: light;
+  overflow: clip;
+  overflow-wrap: anywhere;
+  font-family: var(--font-text), sans-serif;
+}
+.aura a, .aura button { -webkit-tap-highlight-color: transparent; }
+.aura a:focus-visible, .aura button:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+.hero { max-width: 1440px; margin: auto; padding: 28px 6vw 0; }
+.topline, .heroBottom { display: flex; justify-content: space-between; align-items: center; gap: 20px; font-size: 10px; text-transform: uppercase; letter-spacing: .16em; }
+.topline { border-bottom: 1px solid var(--line); padding-bottom: 22px; }
+.topline > span:last-child { display: flex; align-items: center; gap: 18px; }
+.topline svg { width: 18px; color: var(--accent); }
+.heroGrid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 4vw; align-items: center; padding: 65px 0 55px; }
+.eyebrow { color: var(--accent); font-size: 10px; font-weight: 500; letter-spacing: .2em; line-height: 1.8; text-transform: uppercase; }
+.hero h1 { margin: 28px 0; font-size: clamp(64px, 7.8vw, 124px); line-height: .98; letter-spacing: -.065em; font-weight: 400; font-family: var(--font-display), Georgia, serif; }
+.hero h1 span { display: block; color: var(--accent); font-size: .55em; font-style: italic; font-weight: 300; letter-spacing: -.045em; margin-top: 14px; }
+.heroNote { color: var(--muted); font-size: 14px; line-height: 1.9; }
+.heroDate { margin-top: 34px; font-size: 12px; letter-spacing: .07em; }
+.heroLink { display: inline-flex; align-items: center; gap: 30px; padding: 16px 0; margin-top: 15px; min-height: 44px; font-size: 11px; color: var(--accent); border-bottom: 1px solid var(--line); }
+.heroLink span { font-size: 21px; }
+.heroVisual { position: relative; aspect-ratio: 4 / 5; min-width: 0; background: var(--lilac); }
+.heroVisual > img { width: 100%; height: 100%; object-fit: cover; }
+.photoCaption { position: absolute; left: 18px; bottom: 18px; padding: 7px 10px; background: #faf9f6ed; color: var(--ink); font-size: 8px; letter-spacing: .16em; }
+.xvStamp { position: absolute; right: -24px; bottom: -38px; color: var(--paper); text-shadow: 0 2px 1px #4c3b6540; font-family: var(--font-display), Georgia, serif; font-size: clamp(92px, 12vw, 180px); line-height: 1; letter-spacing: -.1em; }
+.xvStamp svg { position: absolute; width: 55px; top: -30px; right: 4px; color: #5e4a77; filter: drop-shadow(1px 1px 0 #fff); }
+.coverArt { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 70% 25%, #fffaf2 0, #eee7f3 35%, #d0c0e0 80%); }
+.coverArt > span { position: absolute; width: 130%; height: 52%; border: 1px solid #8e7ba8; border-radius: 50%; transform: rotate(-42deg); }
+.coverArt > svg { width: 42%; z-index: 1; color: #fefdf9; filter: drop-shadow(3px 5px 1px #af9ec240); }
+.coverArt > i { position: absolute; font-family: var(--font-display), Georgia, serif; font-size: clamp(120px, 18vw, 260px); font-style: normal; color: #6c538b24; }
+.heroBottom { padding: 25px 0; border-block: 1px solid var(--line); color: var(--muted); font-size: 9px; }
+.section { max-width: 1140px; margin: auto; padding: 100px 40px; text-align: center; scroll-margin-top: 24px; }
+.section h2 { margin: 20px 0 35px; font-family: var(--font-display), Georgia, serif; font-size: clamp(34px, 4.8vw, 64px); font-weight: 400; line-height: 1.12; letter-spacing: -.045em; text-wrap: balance; }
+.section h2 em { color: var(--accent); font-weight: 350; }
+.bodyText, .messageText { max-width: 530px; margin: 22px auto; font-size: 14px; line-height: 1.9; color: var(--muted); white-space: pre-line; }
+.message { padding-top: 120px; }
+.messageText { font-size: 16px; max-width: 520px; }
+.messagePhoto { position: relative; max-width: 420px; margin: 50px auto 32px; }
+.messagePhoto img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.messagePhoto svg { position: absolute; bottom: -18px; right: -24px; width: 64px; color: var(--accent); }
+.signature { margin-top: 32px; font-size: 11px; color: var(--muted); }
+.signature span { display: block; margin-top: 10px; font-family: var(--font-script), cursive; font-size: 42px; color: var(--accent); }
+.countSection { max-width: none; background: var(--lilac); padding-block: 72px; }
+.countdown { max-width: 700px; display: grid; grid-template-columns: repeat(4, 1fr); margin: 45px auto 0; }
+.countdown > div { border-left: 1px solid #c6b9d4; }
+.countdown > div:first-child { border: 0; }
+.countdown strong { display: block; font-family: var(--font-display), Georgia, serif; font-size: clamp(36px, 5.5vw, 70px); font-weight: 400; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.countdown span { display: block; margin-top: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .15em; font-size: 9px; }
+.sectionDate { margin: -12px 0 45px; font-size: 13px; color: var(--muted); }
+.venues { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px; text-align: left; }
+.venue { padding: 28px; border: 1px solid var(--line); min-width: 0; }
+.venueTop { display: flex; align-items: center; gap: 15px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: .15em; font-size: 10px; }
+.venueTop > span:first-child { color: var(--accent); }
+.venueTop svg { width: 20px; margin-left: auto; color: #a08db6; }
+.venuePhoto { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; margin-bottom: 24px; }
+.venue h3 { font-family: var(--font-display), Georgia, serif; font-size: clamp(27px, 3vw, 38px); line-height: 1.15; font-weight: 400; letter-spacing: -.03em; }
+.venueTime { margin-top: 16px; font-size: 13px; }
+.venue .bodyText { margin: 12px 0 24px; font-size: 12px; }
+.link { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 48px; padding: 14px 20px; border: 1px solid var(--line); color: var(--accent); font-size: 12px; }
+.link:hover { background: var(--lilac); }
+.timeline { list-style: none; max-width: 740px; padding: 0; margin: 50px auto 0; text-align: left; }
+.timeline li { display: grid; grid-template-columns: 35px 85px 1fr; gap: 24px; border-top: 1px solid var(--line); padding: 28px 0; align-items: baseline; }
+.timeline li:last-child { border-bottom: 1px solid var(--line); }
+.timelineNumber { color: #857593; font-size: 10px; }
+.timelineTime { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.timeline h3 { font-family: var(--font-display), Georgia, serif; font-size: 28px; font-weight: 400; line-height: 1.2; }
+.timeline p { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.textLink { display: inline-block; padding-block: 12px; font-size: 12px; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.dress { position: relative; background: #eeebf0; max-width: 1060px; margin: 0 auto 40px; overflow: hidden; }
+.dress > :not(.dressStar) { position: relative; z-index: 1; }
+.dressStar { position: absolute; width: 250px; right: -75px; top: -65px; color: #dad1e4; }
+.dressCode { font-size: 14px; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 20px; }
+.dress .link { max-width: 310px; margin: 30px auto 0; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; margin-top: 55px; }
+.gallery button { position: relative; cursor: zoom-in; overflow: hidden; aspect-ratio: 3 / 4; }
+.gallery button:nth-child(3n + 2) { margin-top: 45px; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 400ms ease; }
+.gallery button:hover img { transform: scale(1.035); }
+.gallery button span { position: absolute; left: 12px; bottom: 12px; background: var(--paper); padding: 6px 9px; font-size: 9px; letter-spacing: .1em; }
+.lightbox { position: fixed; inset: 0; margin: auto; width: min(94vw, 1000px); max-height: 95svh; padding: 52px 15px 15px; border: 1px solid #ffffff40; background: #27232f; color: white; }
+.lightbox::backdrop { background: #17131deb; }
+.lightbox img { display: block; max-width: 100%; max-height: 78svh; margin: auto; object-fit: contain; }
+.lightbox > button { position: absolute; right: 15px; top: 4px; min-height: 44px; padding: 8px; font-size: 12px; cursor: pointer; }
+.gifts { border-top: 1px solid var(--line); }
+.giftLinks { max-width: 460px; display: grid; gap: 12px; margin: 30px auto 0; }
+.giftLinks small { font-size: 11px; }
+.transfer { max-width: 460px; padding: 24px; border: 1px solid var(--line); margin: 30px auto 0; }
+.transfer button { color: var(--accent); font-family: var(--font-text), sans-serif; font-size: 12px; font-style: normal; min-height: 44px; margin-block: 20px; }
+.transfer button:hover { background: var(--lilac); color: var(--ink); }
+.rsvp { background: var(--lilac); max-width: none; }
+.ticket { max-width: 580px; margin: 45px auto 0; padding: 45px 35px; background: var(--paper); border: 1px solid #d2c5df; }
+.ticket > svg { width: 32px; color: var(--accent); margin: 0 auto 22px; }
+.ticket > p:first-of-type { font-family: var(--font-display), Georgia, serif; font-size: 28px; line-height: 1.3; }
+.ticketDetails { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; margin: 24px 0; padding-bottom: 24px; border-bottom: 1px dashed #c9bdd5; font-size: 12px; color: var(--muted); }
+.ticket button { min-height: 46px; border-radius: 0; font-size: 12px; font-weight: 500; background: var(--accent); border: 1px solid var(--accent); padding: 12px 16px; }
+.ticket button:last-child { background: transparent; color: var(--accent); }
+.ticket button:disabled { opacity: .5; cursor: wait; }
+.previewNote { font-size: 12px; line-height: 1.7; color: var(--muted); margin-top: 24px; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 40px 6vw; max-width: 1440px; margin: auto; }
+.footer > svg { width: 30px; color: var(--accent); }
+.footer > p { margin-right: auto; font-family: var(--font-display), Georgia, serif; font-size: 22px; }
+.footer p span { display: block; font-family: var(--font-text), sans-serif; color: var(--muted); font-size: 10px; margin-top: 5px; }
+.brand { font-family: var(--font-display), Georgia, serif; font-size: 25px; letter-spacing: -.05em; color: var(--accent); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 700px) {
+  .hero { padding: 22px 24px 0; }
+  .topline { font-size: 8px; letter-spacing: .12em; }
+  .topline > span:last-child { gap: 10px; white-space: nowrap; }
+  .heroGrid { grid-template-columns: 1fr; gap: 40px; padding: 48px 0 44px; }
+  .heroCopy { text-align: center; }
+  .hero h1 { font-size: clamp(56px, 16vw, 100px); margin: 24px 0; }
+  .hero h1 span { font-size: .6em; }
+  .heroNote { font-size: 12px; }
+  .heroDate { margin-top: 22px; }
+  .heroLink { margin-top: 4px; }
+  .heroVisual { width: calc(100% - 16px); margin: 0 auto; max-width: 430px; }
+  .xvStamp { right: -16px; bottom: -24px; font-size: 115px; }
+  .xvStamp svg { width: 36px; top: -20px; }
+  .heroBottom { font-size: 8px; line-height: 1.8; }
+  .section { padding: 70px 24px; }
+  .section h2 { margin-bottom: 26px; }
+  .messageText { font-size: 14px; }
+  .messagePhoto { margin: 35px 12px 28px; }
+  .messagePhoto svg { right: -15px; width: 45px; }
+  .countdown { margin-top: 32px; }
+  .countdown span { font-size: 8px; letter-spacing: .07em; }
+  .venues { gap: 20px; }
+  .venue { padding: 22px; }
+  .timeline li { grid-template-columns: 22px 58px 1fr; gap: 12px; padding-block: 24px; }
+  .timeline h3 { font-size: 24px; }
+  .timelineTime { font-size: 12px; }
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 35px; }
+  .gallery button:nth-child(3n + 2) { margin-top: 0; }
+  .gallery button:nth-child(even) { margin-top: 25px; }
+  .ticket { padding: 30px 18px; }
+  .ticket button { padding: 12px; }
+  .footer { padding: 32px 24px; gap: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .gallery img { transition: none; } .gallery button:hover img { transform: none; } }

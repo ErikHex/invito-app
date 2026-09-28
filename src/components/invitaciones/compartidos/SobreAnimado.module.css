@@ -14,7 +14,7 @@
 .letter span { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
 .letter p { margin-top: 24px; font-family: var(--font-display), Georgia, serif; font-size: clamp(28px, 6vw, 54px); overflow-wrap: anywhere; }
 .pocket { position: absolute; inset: 0; background: linear-gradient(145deg, transparent 49.8%, #bdb59955 50%, transparent 50.3%), linear-gradient(215deg, transparent 49.8%, #bdb59955 50%, transparent 50.3%), linear-gradient(110deg, #d2ccb0, #e2dcc2); clip-path: polygon(0 32%, 50% 63%, 100% 32%, 100% 100%, 0 100%); }
-.flapShadow { position: absolute; inset: 0 0 auto; height: 65%; transform-origin: top center; filter: drop-shadow(0 14px 12px #51482b38); }
+.flapShadow { position: absolute; inset: 0 0 auto; height: 65%; transform-origin: top center; backface-visibility: hidden; filter: drop-shadow(0 14px 12px #51482b38); }
 .flap { height: 100%; background: radial-gradient(ellipse at 65% 70%, #efe8d2, transparent 75%), linear-gradient(120deg, #d5ceb0, #e5dfc7); clip-path: polygon(0 0, 100% 0, 100% 56%, 50% 100%, 0 56%); position: relative; }
 .flap span { position: absolute; top: 64%; left: 10%; right: 10%; text-align: center; font-family: "Snell Roundhand", "URW Chancery L", "Apple Chancery", cursive; font-style: italic; font-size: clamp(58px, 12vw, 108px); font-weight: 400; line-height: 1.2; }
 .trigger { position: absolute; top: 59%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 28px; width: min(90%, 360px); padding: 0 12px 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -23,15 +23,15 @@
 .seal svg { width: 100%; height: 100%; stroke: #541219; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(1px 1px 0 #d27665); }
 .hint { font-size: 11px; line-height: 1.6; letter-spacing: .14em; text-transform: uppercase; }
 .recipient { position: absolute; bottom: max(28px, env(safe-area-inset-bottom)); left: 24px; right: 24px; text-align: center; font-size: 12px; letter-spacing: .06em; overflow-wrap: anywhere; }
-.opening { animation: disappear .4s ease 1.5s both; pointer-events: none; }
-.opening .seal { animation: release .4s ease-in forwards; }
-.opening .hint, .opening .recipient { opacity: 0; transition: opacity .2s; }
-.opening .flapShadow { animation: unfold 1s cubic-bezier(.4, 0, .2, 1) .3s forwards; }
-.opening .letter { animation: emerge .8s ease .85s forwards; }
-@keyframes release { to { opacity: 0; transform: translateY(40px) rotate(-22deg) scale(.9); } }
-@keyframes unfold { to { transform: rotateX(180deg); } }
-@keyframes emerge { to { transform: translateY(-12%); } }
-@keyframes disappear { to { opacity: 0; } }
+.opening { pointer-events: none; }
 @media (min-width: 768px) { .flap { clip-path: polygon(0 0, 100% 0, 100% 20%, 50% 100%, 0 20%); } .flap span { top: 56%; } }
 @media (max-height: 500px) { .flap span { top: 44%; font-size: 48px; } .seal { width: 76px; } .trigger { gap: 8px; top: 56%; } .recipient { bottom: 12px; font-size: 10px; } }
-@media (prefers-reduced-motion: reduce) { .opening { animation: disappear .15s linear both; } .opening .seal, .opening .flapShadow, .opening .letter { animation: none; } }
+
+/* Aura XV comparte la secuencia GSAP, con papel lavanda y sello plateado. */
+.aura { --wine: #6c538b; background: #d8cfe3; }
+.aura .letter { background: #faf9f6; }
+.aura .pocket { background: linear-gradient(145deg, transparent 49.8%, #a28fb455 50%, transparent 50.3%), linear-gradient(215deg, transparent 49.8%, #a28fb455 50%, transparent 50.3%), linear-gradient(110deg, #d6cbe0, #eee8f2); }
+.aura .flap { background: radial-gradient(ellipse at 65% 70%, #f6f2f9, transparent 75%), linear-gradient(120deg, #dcd2e6, #eee8f2); }
+.aura .flap span { font-family: var(--font-display), Georgia, serif; font-size: clamp(48px, 9vw, 86px); letter-spacing: -.05em; }
+.aura .seal { border-color: #b5acbf; background: linear-gradient(135deg, #f9f6fc, #bdb3c8 40%, #ece6f2 65%, #a79ab6); box-shadow: inset 2px 3px 3px #ffffffbd, inset -3px -4px 4px #75668060, 1px 6px 9px #46334f33; }
+.aura .seal svg { stroke: #6c538b; filter: drop-shadow(1px 1px 0 #ffffff); }

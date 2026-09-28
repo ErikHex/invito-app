@@ -24,6 +24,7 @@ export default function Invitacion({ datos, preview = false }) {
     >
       {!abierta && (
         <SobreAnimado
+          variante={datos.plantilla === "aura_xv" ? "aura" : undefined}
           nombreInvitado={datos.nombre}
           colorFondo={colorFondo}
           colorAcento={colorAcento}
