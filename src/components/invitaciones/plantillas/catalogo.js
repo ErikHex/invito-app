@@ -1,7 +1,7 @@
 // Add templates here only after their component and database allowlist are deployed.
 export const catalogoPlantillas = [
   { id: 'editorial', version: 1, nombre: 'Editorial', descripcion: 'Tipografía editorial, fotografías y detalles elegantes.' },
-  { id: 'aura_xv', version: 1, nombre: 'Aura XV', descripcion: 'XV años modernos: lavanda, fotografía editorial y movimiento sutil.', demo: '/demo/xv' },
+  { id: 'aura_xv', version: 1, nombre: 'Aura', descripcion: 'Fotografía editorial y movimiento sutil para XV años, bodas y otras celebraciones.', demo: '/demo/xv' },
 ];
 export const modulosDisponibles = [
   ['sobre','Sobre de bienvenida'],['portada','Portada'],['mensaje','Mensaje'],

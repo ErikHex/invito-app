@@ -1,5 +1,6 @@
 "use client";
 
+import { colorValido, temaInvitacion } from "@/lib/invitation-theme";
 import { useState } from "react";
 import SobreAnimado from "./compartidos/SobreAnimado";
 import Musica from "./compartidos/Musica";
@@ -15,15 +16,16 @@ export default function Invitacion({ datos, preview = false }) {
   const tema = cfg.tema || {};
   const colorFondo = "#292927";
   const colorClaro = tema.colorClaro || "#F6F1E7";
-  const colorAcento = tema.colorAcento || "#C9A24B";
+  const { principal: colorAcento, texto: colorTextoAcento } = temaInvitacion(cfg, datos.plantilla);
 
   return (
     <div
       className="invitation-shell"
-      style={{ color: colorClaro }}
+      style={{ color: colorClaro, "--event-primary": colorAcento, "--event-accent-text": colorTextoAcento }}
     >
       {!abierta && (
         <SobreAnimado
+          personalizarColor={colorValido(tema.colorAcento)}
           variante={datos.plantilla === "aura_xv" ? "aura" : undefined}
           nombreInvitado={datos.nombre}
           colorFondo={colorFondo}

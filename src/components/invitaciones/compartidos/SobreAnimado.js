@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import styles from "./SobreAnimado.module.css";
 
-export default function SobreAnimado({ nombreInvitado, onAbrir, variante }) {
+export default function SobreAnimado({ nombreInvitado, onAbrir, variante, personalizarColor = false }) {
   const [abriendo, setAbriendo] = useState(false);
   const iniciado = useRef(false);
   const sobre = useRef(null);
@@ -63,7 +63,7 @@ export default function SobreAnimado({ nombreInvitado, onAbrir, variante }) {
   return (
     <div
       ref={sobre}
-      className={`${styles.envelope} ${variante === "aura" ? styles.aura : ""} ${abriendo ? styles.opening : ""}`}
+      className={`${styles.envelope} ${personalizarColor ? styles.personalizado : ""} ${variante === "aura" ? styles.aura : ""} ${abriendo ? styles.opening : ""}`}
       aria-busy={abriendo}
     >
       <div

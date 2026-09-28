@@ -3,6 +3,9 @@
 .brand { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-display), Georgia, serif; font-size: 38px; font-weight: 600; letter-spacing: -2px; }
 .brand span { color: #826393; font-size: 27px; margin-top: -12px; }
 .nav { display: flex; align-items: center; gap: 32px; }
+.account { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 0; }
+.greeting { max-width: 220px; overflow-wrap: anywhere; text-align: right; font-size: 12px; color: #67437a; }
+.greeting span { display: block; margin-top: 3px; font-size: 10px; color: #746b7c; }
 .navLink, .textLink { color: #746b7c; font-size: 12px; }
 .navLink:hover, .textLink:hover { color: #67437a; }
 .primary, .secondary { display: inline-flex; justify-content: center; align-items: center; gap: 24px; min-height: 51px; padding: 13px 21px; border-radius: 9px; font-size: 13px; font-weight: 500; transition: background 160ms, box-shadow 160ms; }

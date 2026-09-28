@@ -1,5 +1,7 @@
 import Link from "next/link";
 import styles from "./page.module.css";
+import { createClient } from '@/lib/supabase/server';
+import { accountDestination, accountName } from '@/lib/account';
 
 const features = [
   ["✳", "Lista para tu celebración", "Personalizamos el diseño disponible con tus fotos, textos y detalles. Recibes tu invitación publicada y lista para compartir."],
@@ -17,7 +19,13 @@ const steps = [
   ["Comparte y organiza", "Recibes tu enlace y acceso a tu cuenta para actualizar datos y gestionar invitados."],
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const client = await createClient();
+  const { data: { user } } = await client.auth.getUser();
+  const { data: session } = user
+    ? await client.rpc('panel_operacion', { operacion: 'sesion', datos: {} })
+    : { data: null };
+  const destination = accountDestination(session);
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -25,7 +33,10 @@ export default function HomePage() {
         <nav className={styles.nav} aria-label="Navegación principal">
           <a href="#detalles" className={styles.navLink}>Los detalles</a>
           <a href="#paquete" className={styles.navLink}>Tu invitación</a>
-          <Link href="/login" className={styles.secondary}>Iniciar sesión <span aria-hidden="true">↗</span></Link>
+          <div className={styles.account}>
+            {user && <p className={styles.greeting}>Hola, {accountName(user)}<span>Sesión iniciada</span></p>}
+            <Link href={user ? destination.href : '/login'} className={styles.secondary}>{user ? destination.label : 'Iniciar sesión'} <span aria-hidden="true">↗</span></Link>
+          </div>
         </nav>
       </header>
 

@@ -1,7 +1,7 @@
 .editorial {
   --inv-paper: #f6f1e7;
   --inv-ink: #292927;
-  --inv-gold: #b89a64;
+  --inv-gold: var(--event-accent-text, #b89a64);
   background: var(--inv-paper);
   color: var(--inv-ink);
   text-align: center;
@@ -71,7 +71,7 @@
   font-size: 0.42em;
   line-height: 1;
   letter-spacing: 0;
-  color: #e8c982;
+  color: var(--event-primary, #e8c982);
 }
 .portrait {
   position: absolute;

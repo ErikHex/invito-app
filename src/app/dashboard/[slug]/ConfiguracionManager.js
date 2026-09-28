@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+import { temaInvitacion, tipoCelebracion } from "@/lib/invitation-theme";
 import GaleriaManager from "./GaleriaManager";
 import { pinterestUrl, validClabe } from "@/lib/invitation-utils";
 
@@ -313,6 +314,23 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
             1. Datos principales
           </summary>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Tipo de celebración
+              <select className={inputClass} value={tipoCelebracion(configuracion, eventoInicial.plantilla)} onChange={event => actualizarCampo("tipoEvento", event.target.value)}>
+                <option value="xv">XV años</option>
+                <option value="boda">Boda</option>
+                <option value="otro">Otra celebración</option>
+              </select>
+              <span className="text-xs text-gray-500">Elige el evento sin cambiar de plantilla.</span>
+            </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Color principal
+                <input type="color" className="mt-1 block h-11 w-24 cursor-pointer rounded border border-gray-300" value={temaInvitacion(configuracion, eventoInicial.plantilla).principal} onChange={event => actualizarSeccion("tema", "colorAcento", event.target.value)} />
+              </label>
+              <p className="mt-1 text-xs text-gray-500">{temaInvitacion(configuracion, eventoInicial.plantilla).principal} · Se aplica a detalles y sobre; los tonos del texto se ajustan para facilitar la lectura.</p>
+              <button type="button" className="mt-2 text-sm underline text-gray-700" onClick={() => actualizarSeccion("tema", "colorAcento", null)}>Restablecer color original</button>
+            </div>
             <Campo
               label="Nombre del evento"
               value={nombreEvento}

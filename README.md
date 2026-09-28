@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Color y tipo de celebración
+
+En **Dashboard → Diseño de invitación → Datos principales** se eligen el color
+principal y el tipo de celebración (XV años, boda u otra celebración). El color
+se aplica a Aura, Editorial y al sobre; los textos pequeños usan una variante
+más oscura para mantener la legibilidad. Aura adapta sus textos y símbolos al
+tipo de evento. Guarda los cambios y abre la vista previa para revisar el resultado.
+
+Se utiliza el JSON existente de `eventos.configuracion`: `tema.colorAcento`
+(color hexadecimal `#RRGGBB`) y `tipoEvento` (`xv`, `boda`, `otro`). No requiere
+columnas nuevas ni migración con la función `guardar_editor_evento` del repositorio.
+El identificador interno `aura_xv` se conserva para las invitaciones existentes;
+sin `tipoEvento`, Aura mantiene XV años como valor predeterminado.

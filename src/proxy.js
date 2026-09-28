@@ -12,7 +12,7 @@ export async function proxy(request) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet, headers) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
@@ -20,6 +20,7 @@ export async function proxy(request) {
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
           );
+          Object.entries(headers || {}).forEach(([name, value]) => response.headers.set(name, value));
         },
       },
     },
@@ -32,5 +33,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/preview/:path*","/admin/:path*","/dashboard/:path*", "/checkin/:path*", "/auth/:path*", "/login"],
+  matcher: ["/", "/demo/:path*", "/preview/:path*","/admin/:path*","/dashboard/:path*", "/checkin/:path*", "/auth/:path*", "/login"],
 };

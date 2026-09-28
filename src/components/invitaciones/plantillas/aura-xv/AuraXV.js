@@ -10,6 +10,7 @@ import QrCode from '../../compartidos/QrCode';
 import Transferencia from '../../compartidos/Transferencia';
 import { invitationField, pinterestUrl } from '@/lib/invitation-utils';
 import { enlaceSeguro, enlaceRegalo, fechaInvitacion, tiempoRestante } from '@/lib/aura-xv';
+import { tipoCelebracion } from '@/lib/invitation-theme';
 import styles from './aura-xv.module.css';
 
 function Destello({ className = '' }) {
@@ -63,12 +64,12 @@ function Galeria({ fotos }) {
   return <>
     <div className={styles.gallery}>
       {fotos.map((foto, i) => <button key={`${foto}-${i}`} type="button" onClick={() => setSeleccionada(i)} aria-label={`Ampliar fotografía ${i + 1}`} data-reveal>
-        <img src={foto} alt={`Un recuerdo de mis XV, fotografía ${i + 1}`} loading="lazy" decoding="async" /><span aria-hidden="true">{String(i + 1).padStart(2, '0')} / ↗</span>
+        <img src={foto} alt={`Un recuerdo especial, fotografía ${i + 1}`} loading="lazy" decoding="async" /><span aria-hidden="true">{String(i + 1).padStart(2, '0')} / ↗</span>
       </button>)}
     </div>
     <dialog ref={dialog} className={styles.lightbox} aria-label="Fotografía ampliada" onCancel={() => setSeleccionada(null)} onClose={() => setSeleccionada(null)} onClick={event => { if (event.target === event.currentTarget) setSeleccionada(null); }}>
       <button type="button" autoFocus aria-label="Cerrar fotografía" onClick={() => setSeleccionada(null)}>Cerrar ×</button>
-      {seleccionada !== null && <img src={fotos[seleccionada]} alt={`Un recuerdo de mis XV, fotografía ${seleccionada + 1}`} />}
+      {seleccionada !== null && <img src={fotos[seleccionada]} alt={`Un recuerdo especial, fotografía ${seleccionada + 1}`} />}
     </dialog>
   </>;
 }
@@ -76,8 +77,12 @@ function Galeria({ fotos }) {
 export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
   const root = useRef(null);
   const cfg = datos.configuracion || {};
+  const tipo = tipoCelebracion(cfg, 'aura_xv');
+  const boda = tipo === 'boda';
+  const tituloEvento = tipo === 'xv' ? 'Mis XV' : boda ? 'Nuestra boda' : 'Celebremos';
+  const sello = tipo === 'xv' ? 'XV' : boda ? '&' : '✦';
   const visible = key => datos.modulos_activos?.[key] !== false;
-  const nombre = (Array.isArray(cfg.nombres) ? cfg.nombres.filter(Boolean).join(' ') : '') || datos.evento_nombre || 'Mis quince';
+  const nombre = (Array.isArray(cfg.nombres) ? cfg.nombres.filter(Boolean).join(boda ? ' & ' : ' ') : '') || datos.evento_nombre || tituloEvento;
   const fecha = fechaInvitacion(cfg.fechaHora);
   const ceremonia = invitationField(cfg, 'ceremonia');
   const recepcion = invitationField(cfg, 'recepcion');
@@ -115,25 +120,25 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
 
   return <main ref={root} className={styles.aura}>
     {visible('portada') && <header className={styles.hero}>
-      <div className={styles.topline} data-intro><span>Una noche. Mil recuerdos.</span><span>Mis XV <Destello /></span></div>
+      <div className={styles.topline} data-intro><span>Una noche. Mil recuerdos.</span><span>{tituloEvento} <Destello /></span></div>
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow} data-intro>{invitationField(cfg, 'encabezado') ?? 'Un nuevo capítulo'}</p>
-          <h1 data-intro>{nombre}<span>mis quince.</span></h1>
-          <p className={styles.heroNote} data-intro>Hay momentos que se viven una vez.<br />Este quiero vivirlo contigo.</p>
+          <h1 data-intro>{nombre}<span>{tituloEvento.toLowerCase()}.</span></h1>
+          <p className={styles.heroNote} data-intro>Hay momentos que se viven una vez.<br />{boda ? 'Este queremos vivirlo contigo.' : 'Este quiero vivirlo contigo.'}</p>
           {fecha && <p className={styles.heroDate} data-intro>{fecha}</p>}
           {destino && <a href={destino} className={styles.heroLink} data-intro>Descubre la celebración <span aria-hidden="true">↓</span></a>}
         </div>
         <div className={styles.heroVisual} data-intro>
-          {cfg.fotoPortada ? <img src={cfg.fotoPortada} alt={cfg.editorial?.fotoAlt || `Fotografía de ${nombre}`} fetchPriority="high" decoding="async" style={{ objectPosition: cfg.encuadrePortada || cfg.editorial?.encuadre || 'center' }} /> : <div className={styles.coverArt} aria-hidden="true"><span /><Destello /><i>XV</i></div>}
-          <span className={styles.photoCaption}>THIS IS MY MOMENT</span>
-          <div className={styles.xvStamp} aria-hidden="true">XV<Destello /></div>
+          {cfg.fotoPortada ? <img src={cfg.fotoPortada} alt={cfg.editorial?.fotoAlt || `Fotografía de ${nombre}`} fetchPriority="high" decoding="async" style={{ objectPosition: cfg.encuadrePortada || cfg.editorial?.encuadre || 'center' }} /> : <div className={styles.coverArt} aria-hidden="true"><span /><Destello /><i>{sello}</i></div>}
+          <span className={styles.photoCaption}>{boda ? 'NUESTRO GRAN DÍA' : 'UN MOMENTO ESPECIAL'}</span>
+          <div className={styles.xvStamp} aria-hidden="true">{sello}<Destello /></div>
         </div>
       </div>
-      <div className={styles.heroBottom} data-intro><span>El comienzo de algo increíble</span><span aria-hidden="true">01 — XV</span></div>
+      <div className={styles.heroBottom} data-intro><span>El comienzo de algo increíble</span><span aria-hidden="true">01 — {tituloEvento}</span></div>
     </header>}
 
-    {visible('mensaje') && <Seccion id="aura-mensaje" etiqueta={datos.nombre ? `Para ti, ${datos.nombre}` : 'Con todo mi cariño'} titulo={<>Mi mundo es más bonito<br /><em>contigo en él.</em></>} className={styles.message}>
+    {visible('mensaje') && <Seccion id="aura-mensaje" etiqueta={datos.nombre ? `Para ti, ${datos.nombre}` : boda ? 'Con todo nuestro cariño' : 'Con todo mi cariño'} titulo={<>{boda ? 'Nuestro mundo es más bonito' : 'Mi mundo es más bonito'}<br /><em>contigo en él.</em></>} className={styles.message}>
       {mensaje && <p className={styles.messageText} data-reveal>{mensaje}</p>}
       {fotoMensaje && <figure className={styles.messagePhoto} data-reveal><img src={fotoMensaje} alt={invitationField(cfg, 'fotoMensajeAlt') || 'Un recuerdo especial'} loading="lazy" decoding="async" /><Destello /></figure>}
       <p className={styles.signature} data-reveal>Con cariño, <span>{nombre}</span></p>
@@ -151,7 +156,7 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
       </div>
     </Seccion>}
 
-    {visible('itinerario') && itinerario.length > 0 && <Seccion id="aura-itinerario" etiqueta="Así se vive mi noche" titulo={<>El plan: <em>disfrutar.</em></>}>
+    {visible('itinerario') && itinerario.length > 0 && <Seccion id="aura-itinerario" etiqueta="Así se vive la celebración" titulo={<>El plan: <em>disfrutar.</em></>}>
       <ol className={styles.timeline}>{itinerario.map((item, i) => <li key={i} data-reveal><span className={styles.timelineNumber}>{String(i + 1).padStart(2, '0')}</span><span className={styles.timelineTime}>{item.hora}</span><div><h3>{item.titulo}</h3>{item.lugar && <p>{item.lugar}</p>}{enlaceSeguro(item.mapsUrl) && <a href={enlaceSeguro(item.mapsUrl)} target="_blank" rel="noopener noreferrer" className={styles.textLink}>Ver ubicación ↗</a>}</div></li>)}</ol>
     </Seccion>}
 
@@ -162,11 +167,11 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
       {pinterest && <a className={styles.link} href={pinterest} target="_blank" rel="noopener noreferrer">Inspiración para tu look ↗</a>}
     </Seccion>}
 
-    {visible('galeria') && fotos.length > 0 && <Seccion id="aura-galeria" etiqueta="Pequeños instantes, grandes recuerdos" titulo={<>Muy yo. <em>Muy XV.</em></>}><Galeria fotos={fotos} /></Seccion>}
+    {visible('galeria') && fotos.length > 0 && <Seccion id="aura-galeria" etiqueta="Pequeños instantes, grandes recuerdos" titulo={<>Momentos <em>para recordar.</em></>}><Galeria fotos={fotos} /></Seccion>}
 
     {visible('regalos') && hayRegalos && <Seccion id="aura-regalos" etiqueta="Detalles con cariño" titulo={<>El mejor regalo:<br /><em>que estés aquí.</em></>} className={styles.gifts}>
       {regalos.mensaje && <p className={styles.bodyText} data-reveal>{regalos.mensaje}</p>}
-      {regalos.sobres && <p className={styles.bodyText}>Si quieres regalarme un detalle, habrá lluvia de sobres durante la celebración.</p>}
+      {regalos.sobres && <p className={styles.bodyText}>Si quieres dar un detalle, habrá lluvia de sobres durante la celebración.</p>}
       <div className={styles.giftLinks}>{enlaces.map((enlace, i) => <a key={i} href={enlaceSeguro(enlace.url)} target="_blank" rel="noopener noreferrer" className={styles.link}>{enlace.nombre}{enlace.codigo && <small>Código: {enlace.codigo}</small>}<span aria-hidden="true">↗</span></a>)}</div>
       {regalos.transferencia?.activa && <div className={styles.transfer}><Transferencia datos={regalos.transferencia} /></div>}
     </Seccion>}
