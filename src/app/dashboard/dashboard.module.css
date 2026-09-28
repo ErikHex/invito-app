@@ -57,3 +57,4 @@
 .shell :global(.empty-state) { padding: 30px; border: 1px dashed #d4c9dc; border-radius: 12px; text-align: center; color: #746b7c; }
 .footer { display: flex; justify-content: space-between; gap: 15px; max-width: 1152px; margin: 0 auto; border-top: 1px solid #e7dfeb; padding: 24px; font-size: 10px; color: #8a818f; }
 @media(max-width:760px) { .shell :global(.dash-stats) { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; } .shell :global(.dash-stats) > :is(div,a) { padding: 16px; } .shell :global(.dash-nav-inner) { padding: 18px 16px; } .shell :global(.dash-links) { width: 100%; } .shell :global(.guest-filters) { grid-template-columns: 1fr; } .shell :global(.guest-card) { padding: 18px; } }
+.accountBar { max-width: 1200px; margin: 0 auto; padding: 12px 24px 0; display: flex; justify-content: flex-end; }

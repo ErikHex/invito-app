@@ -1,0 +1,44 @@
+.page { min-height: 100svh; display: flex; flex-direction: column; background: #fdfcf9; color: #302a39; color-scheme: light; }
+.header { flex-wrap: wrap; width: 100%; max-width: 1144px; margin: 0 auto; padding: 26px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #e7dfeb; }
+.brand { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-display), Georgia, serif; font-size: 36px; font-weight: 600; letter-spacing: -2px; }
+.brand span { font-size: 26px; color: #826393; margin-top: -12px; }
+.back { font-size: 12px; color: #746b7c; }
+.back:hover { color: #67437a; }
+.content { width: 100%; max-width: 600px; margin: 0 auto; padding: 38px 24px 52px; text-align: center; flex: 1; }
+.badge { display: grid; place-items: center; width: 48px; height: 48px; margin: 0 auto 18px; border: 1px solid #e7dfeb; border-radius: 15px; background: #f5f0f7; color: #88679b; font-size: 30px; }
+.eyebrow { font-size: 9px; line-height: 1.8; letter-spacing: 1.8px; color: #796386; }
+.content h1 { font-family: var(--font-display), Georgia, serif; font-size: clamp(32px, 5vw, 43px); font-weight: 400; letter-spacing: -1.5px; line-height: 1.2; margin: 12px 0; }
+.content h1 em { color: #826393; }
+.eventName { font-size: 15px; color: #5a4266; margin: 15px 0 8px; overflow-wrap: anywhere; }
+.description { max-width: 390px; margin: 0 auto 28px; font-size: 13px; line-height: 1.8; color: #746b7c; }
+.scannerCard { padding: 22px; background: #fffefa; border: 1px solid #e7dfeb; border-radius: 16px; box-shadow: 0 8px 30px #79528d08; }
+.scannerHeading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; text-align: left; }
+.scannerHeading h2 { font-family: var(--font-display), Georgia, serif; font-size: 21px; font-weight: 400; }
+.cameraStatus { background: #ede8f1; color: #745184; font-size: 10px; padding: 7px 10px; border-radius: 20px; }
+.camera { min-height: 270px; overflow: hidden; border-radius: 12px; background: #ede8f1; border: 1px solid #ded5e4; }
+.camera video { border-radius: 11px; }
+.cameraHint, .note { font-size: 11px; color: #746b7c; line-height: 1.7; margin-top: 14px; }
+.note { font-size: 10px; margin-top: 20px; }
+.result { margin-top: 18px; padding: 22px 18px; border: 1px solid; border-radius: 12px; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.success { background: #eff4ed; color: #426343; border-color: #d5e3ce; }
+.warning { background: #fcf5e7; color: #866022; border-color: #ecd9b0; }
+.error { background: #fff0f1; color: #9a3243; border-color: #f0cdd0; }
+.resultIcon { display: grid; place-items: center; width: 34px; height: 34px; margin: 0 auto 8px; border: 1px solid currentColor; border-radius: 50%; font-size: 22px; }
+.resultTitle { font-weight: 600; }
+.result h3 { font-family: var(--font-display), Georgia, serif; font-size: 27px; font-weight: 400; line-height: 1.3; margin: 12px 0 16px; }
+.guestDetails { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.guestDetails dt { font-size: 10px; }
+.guestDetails dd { font-weight: 500; }
+.primary { display: flex; justify-content: center; align-items: center; gap: 16px; width: 100%; min-height: 49px; margin-top: 20px; padding: 12px 18px; border-radius: 9px; background: #79528d; color: white; cursor: pointer; font-size: 13px; font-weight: 500; transition: background 160ms; }
+.primary:hover { background: #67437a; }
+.page :is(a,button):focus-visible { outline: 3px solid #a587b5; outline-offset: 4px; }
+.footer { width: 100%; max-width: 1080px; margin: auto; padding: 22px 24px; border-top: 1px solid #e7dfeb; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 10px; color: #8a818f; }
+@media(max-width:440px) { .header { padding: 18px 20px; } .brand { font-size: 31px; } .content { padding: 25px 16px 35px; } .badge { display: none; } .eyebrow { font-size: 8px; letter-spacing: 1.2px; } .scannerCard { padding: 14px; } .scannerHeading h2 { font-size: 19px; } .cameraStatus { font-size: 9px; } .camera { min-height: 250px; } .footer { font-size: 9px; } }
+.searchForm { text-align: left; margin-top: 20px; }
+.searchForm label { font-size: 12px; color: #746b7c; }
+.searchForm input, .quantity { display: block; width: 100%; min-height: 46px; padding: 10px 12px; margin-top: 8px; border: 1px solid #ded8e1; background: #fff; color: #302a39; border-radius: 9px; }
+.searchResults { display: grid; gap: 8px; margin-top: 18px; }
+.searchResults button { width: 100%; padding: 14px; text-align: left; border: 1px solid #ded8e1; border-radius: 9px; cursor: pointer; }
+.searchResults span { display: block; font-size: 11px; color: #746b7c; margin-top: 5px; }
+.page button:disabled { opacity: .5; cursor: not-allowed; }
+.page :is(input,select):focus-visible { outline: 3px solid #a587b5; outline-offset: 3px; }

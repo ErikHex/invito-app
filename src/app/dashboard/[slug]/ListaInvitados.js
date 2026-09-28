@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import TelefonoInput from "./TelefonoInput";
+import { splitPhone, joinPhone } from "@/lib/phone-country";
 import SeleccionarContacto from "./SeleccionarContacto";
 import { createClient } from "@/lib/supabase/client";
 import { guestMatches, normalizePhone, validPhone } from "@/lib/invitation-utils";
@@ -13,7 +15,8 @@ function fecha(value) { return value ? new Date(value).toLocaleString('es-MX') :
 function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, onChange, onDelete }) {
   const [editando,setEditando] = useState(false);
   const [nombre,setNombre] = useState(inv.nombre);
-  const [telefono,setTelefono] = useState(inv.telefono || '');
+  const [telefonoDatos,setTelefonoDatos] = useState(()=>splitPhone(inv.telefono || ''));
+  const telefono=joinPhone(telefonoDatos);
   const [acompanantes,setAcompanantes] = useState(inv.acompanantes || 0);
   const [mensaje,setMensaje] = useState(`Hola, ${inv.nombre}. Nos encantará contar contigo en ${eventoNombre}. Consulta los detalles y confirma tu asistencia aquí:`);
   const [canal,setCanal] = useState('whatsapp');
@@ -50,8 +53,8 @@ function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, onC
     <div className="guest-heading"><div><h3>{inv.nombre}</h3><p className="helper">{1+Number(inv.acompanantes||0)} lugares · {inv.telefono || 'Sin teléfono'}</p></div><span className={`status-pill ${inv.envio_estado==='enviada'?'status-success':''}`}>{estados[inv.envio_estado || 'pendiente']}</span></div>
     <p className="helper">Asistencia: {inv.estado==='confirmado'?'Confirmó':inv.estado==='rechazado'?'No asistirá':'Sin respuesta'}{inv.enviado_at && ` · Envío: ${fecha(inv.enviado_at)}`}</p>
     <AsignarMesa invitado={inv} mesas={mesas} invitados={invitados} onChange={onChange} />
-    <div className="row-actions"><button type="button" onClick={()=>{setNombre(inv.nombre);setTelefono(inv.telefono||'');setAcompanantes(inv.acompanantes||0);setEditando(!editando);}}>Editar datos</button><button type="button" disabled={ocupado} onClick={()=>{if(window.confirm(`¿Eliminar a ${inv.nombre} y su historial? Su enlace dejará de funcionar.`)) ejecutar(async()=>{const {data,error}=await supabase.from('invitados').delete().eq('id',inv.id).eq('evento_id',eventoId).select('id').single();if(error||!data) throw error || new Error('No se pudo eliminar.');onDelete(inv.id);});}}>Eliminar</button></div>
-    {editando && <form onSubmit={guardar} className="guest-edit"><label>Nombre o familia<input required value={nombre} onChange={e=>setNombre(e.target.value)} /></label><label>Teléfono con código de país<input type="tel" value={telefono} onChange={e=>setTelefono(e.target.value)} placeholder="525512345678" /></label><SeleccionarContacto disabled={ocupado} onSelect={contacto=>{setTelefono(contacto.telefono);setNombre(actual=>actual.trim()?actual:contacto.nombre);}} /><label>Acompañantes<input type="number" min="0" max="100" required value={acompanantes} onChange={e=>setAcompanantes(e.target.value)} /></label><button disabled={ocupado} className="dash-primary">Guardar datos</button></form>}
+    <div className="row-actions"><button type="button" onClick={()=>{setNombre(inv.nombre);setTelefonoDatos(splitPhone(inv.telefono||''));setAcompanantes(inv.acompanantes||0);setEditando(!editando);}}>Editar datos</button><button type="button" disabled={ocupado} onClick={()=>{if(window.confirm(`¿Eliminar a ${inv.nombre} y su historial? Su enlace dejará de funcionar.`)) ejecutar(async()=>{const {data,error}=await supabase.from('invitados').delete().eq('id',inv.id).eq('evento_id',eventoId).select('id').single();if(error||!data) throw error || new Error('No se pudo eliminar.');onDelete(inv.id);});}}>Eliminar</button></div>
+    {editando && <form onSubmit={guardar} className="guest-edit"><label>Nombre o familia<input required value={nombre} onChange={e=>setNombre(e.target.value)} /></label><TelefonoInput value={telefonoDatos} onChange={setTelefonoDatos} disabled={ocupado} /><SeleccionarContacto disabled={ocupado} onSelect={contacto=>{setTelefonoDatos(splitPhone(contacto.telefono,telefonoDatos.codigo));setNombre(actual=>actual.trim()?actual:contacto.nombre);}} /><label>Acompañantes<input type="number" min="0" max="100" required value={acompanantes} onChange={e=>setAcompanantes(e.target.value)} /></label><button disabled={ocupado} className="dash-primary">Guardar datos</button></form>}
     <details className="delivery-details"><summary>Compartir y registrar envío</summary>
       <label>Mensaje<textarea rows={3} value={mensaje} onChange={e=>setMensaje(e.target.value)} /></label>
       <p className="helper">El enlace personal se agrega al mensaje. Abrir WhatsApp o copiar el enlace no confirma el envío.</p>

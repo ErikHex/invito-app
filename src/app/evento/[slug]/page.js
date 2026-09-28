@@ -5,9 +5,7 @@ export default async function EventoPage({ params }) {
   const supabase = await createClient();
 
   const { data: evento, error } = await supabase
-    .from("eventos")
-    .select("*")
-    .eq("slug", slug)
+    .rpc("evento_publico", { slug_input: slug })
     .single();
 
   if (error || !evento) {
@@ -21,11 +19,7 @@ export default async function EventoPage({ params }) {
           {evento.nombre_evento}
         </h1>
         <p className="text-gray-500 mt-2">Fecha: {evento.fecha}</p>
-        {evento.modulos_activos?.cuenta_regresiva && (
-          <p className="mt-4 text-pink-500 font-semibold">
-            ⏳ Módulo de cuenta regresiva activo
-          </p>
-        )}
+
       </div>
     </main>
   );

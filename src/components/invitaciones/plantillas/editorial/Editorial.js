@@ -21,6 +21,7 @@ export default function Editorial({
   colorAcento,
 }) {
   const cfg = datos.configuracion || {};
+  const visible = key => datos.modulos_activos?.[key] !== false;
   const { fechaHora } = cfg;
   // Preserve the event's written calendar date rather than shifting it to the viewer's timezone.
   const fecha = fechaHora?.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -39,40 +40,40 @@ export default function Editorial({
   return (
     <>
       <div className={styles.editorial}>
-        <Hero
+        {visible("portada") && (<Hero
           nombreEvento={datos.evento_nombre}
           configuracion={cfg}
           fechaTexto={fechaTexto}
-        />
-        <Mensaje
+        />)}
+        {visible("mensaje") && (<Mensaje
           nombreEvento={datos.evento_nombre}
           nombreInvitado={datos.nombre}
           mensajeBase={cfg.mensajeBase || cfg.editorial?.mensajeBase}
           fotoMensaje={cfg.fotoMensaje || cfg.editorial?.fotoMensaje}
           fotoMensajeAlt={cfg.fotoMensajeAlt || cfg.editorial?.fotoMensajeAlt}
-        />
-        <CuentaRegresiva fechaHora={cfg.fechaHora} />
-        <Ceremonia
+        />)}
+        {visible("cuenta_regresiva") && (<CuentaRegresiva fechaHora={cfg.fechaHora} />)}
+        {visible("ceremonia") && (<Ceremonia
           ceremonia={cfg.ceremonia || cfg.editorial?.ceremonia}
           fechaTexto={fechaTexto}
-        />
-        <Recepcion
+        />)}
+        {visible("recepcion") && (<Recepcion
           recepcion={cfg.recepcion || cfg.editorial?.recepcion}
           fechaTexto={fechaTexto}
-        />
-        <Vestimenta vestimenta={cfg.vestimenta} />
-        <Regalos regalos={cfg.regalos} />
+        />)}
+        {visible("vestimenta") && (<Vestimenta vestimenta={cfg.vestimenta} />)}
+        {visible("regalos") && (<Regalos regalos={cfg.regalos} />)}
       </div>
 
-      <Galeria
+      {visible("galeria") && (<Galeria
         fotos={cfg.galeria}
         colorFondo={colorFondo}
-      />
-      <Itinerario
+      />)}
+      {visible("itinerario") && (<Itinerario
         items={cfg.itinerario}
         colorAcento={colorAcento}
         colorTexto={colorClaro}
-      />
+      />)}
 
       <div
         className="py-16 px-6 rounded-t-3xl"
@@ -86,13 +87,13 @@ export default function Editorial({
         <p className="text-center mb-6">
           Boletos disponibles: {Number(datos.acompanantes) + 1}
         </p>
-        <RsvpForm
+        {visible("rsvp") && (<RsvpForm
           invitado={datos}
           estado={estado}
           onEstadoChange={onEstadoChange}
           preview={preview}
-        />
-        {estado === "confirmado" &&
+        />)}
+        {visible("qr") && estado === "confirmado" &&
           (preview ? (
             <p className="text-sm text-center mt-6">
               Vista de muestra. El boleto QR se entrega en una invitación real.

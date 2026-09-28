@@ -1,0 +1,6 @@
+.account { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.button { min-height: 44px; padding: 10px 16px; border: 1px solid #ded5e4; border-radius: 9px; background: #f5f0f7; color: #67437a; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.button:hover { background: #ede8f1; }
+.button:focus-visible { outline: 3px solid #a587b5; outline-offset: 3px; }
+.button:disabled { opacity: .6; cursor: wait; }
+.error { max-width: 280px; color: #9a3243; font-size: 12px; }

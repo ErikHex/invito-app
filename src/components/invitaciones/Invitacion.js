@@ -6,7 +6,7 @@ import Musica from "./compartidos/Musica";
 import { plantillas } from "./plantillas/registro";
 
 export default function Invitacion({ datos, preview = false }) {
-  const [abierta, setAbierta] = useState(false);
+  const [abierta, setAbierta] = useState(datos.modulos_activos?.sobre === false);
   const [estado, setEstado] = useState(datos.estado);
   const cfg = datos.configuracion || {};
   const Plantilla = Object.hasOwn(plantillas, datos.plantilla)
@@ -31,10 +31,10 @@ export default function Invitacion({ datos, preview = false }) {
         />
       )}
 
-      <Musica
+      {datos.modulos_activos?.musica !== false && <Musica
         url={cfg.musicaUrl}
         reproducir={abierta}
-      />
+      />}
 
       {abierta && (
         <Plantilla

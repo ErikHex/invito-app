@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { normalizePhone } from "@/lib/invitation-utils";
 
 export default function SeleccionarContacto({ onSelect, disabled = false }) {
   const [abriendo, setAbriendo] = useState(false);
@@ -11,7 +10,7 @@ export default function SeleccionarContacto({ onSelect, disabled = false }) {
   function usar(nombre, telefono) {
     onSelect({ nombre, telefono });
     setContacto(null);
-    setMensaje("Número agregado. Revisa que incluya el código de país antes de guardar.");
+    setMensaje("Número agregado. Revisa el país y el número antes de guardar.");
   }
 
   async function elegir() {
@@ -27,7 +26,7 @@ export default function SeleccionarContacto({ onSelect, disabled = false }) {
       const seleccion = await navigator.contacts.select(["name", "tel"], { multiple: false });
       const elegido = seleccion[0];
       if (!elegido) return;
-      const numeros = [...new Set((elegido.tel || []).filter(n => typeof n === "string").map(normalizePhone).filter(Boolean))];
+      const numeros = [...new Set((elegido.tel || []).filter(n => typeof n === "string").map(n => n.trim()).filter(Boolean))];
       const nombre = elegido.name?.find(n => typeof n === "string" && n.trim())?.trim() || "";
       if (!numeros.length) {
         setMensaje("No se compartió un número de teléfono. Elige otro contacto o escríbelo manualmente.");
