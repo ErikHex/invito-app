@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { optimizePhoto } from "@/lib/optimize-photo";
 
 export default function GaleriaManager({ eventoId, configuracion, onChange, onBusy }) {
   const [progreso, setProgreso] = useState("");
@@ -20,34 +21,46 @@ export default function GaleriaManager({ eventoId, configuracion, onChange, onBu
     return config;
   }
   async function subir(event) {
-    const files = Array.from(event.target.files || []);
+    const input = event.currentTarget;
+    const files = Array.from(input.files || []);
     const target = reemplazo.current;
     reemplazo.current = null;
     if (!files.length) return;
     setError(""); setSubiendo(true); onBusy(true);
     let siguiente = { ...configuracion, bibliotecaFotos: fotos };
     const fallos = [];
+    let cargadas = 0;
+    let ahorrados = 0;
     try {
       for (let i=0; i<files.length; i++) {
         const file = files[i];
-        setProgreso(`Subiendo ${i+1} de ${files.length}…`);
         if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 8*1024*1024) {
           fallos.push(`${file.name}: usa JPG, PNG o WebP de hasta 8 MB.`); continue;
         }
-        const ext = { 'image/jpeg':'jpg','image/png':'png','image/webp':'webp' }[file.type];
-        const path = `${eventoId}/${crypto.randomUUID()}.${ext}`;
-        const storage = createClient().storage.from('fotos_eventos');
-        const { error } = await storage.upload(path, file, { contentType: file.type });
-        if (error) { fallos.push(`${file.name}: no se pudo subir. Intenta de nuevo.`); continue; }
-        const url = storage.getPublicUrl(path).data.publicUrl;
-        if (target) siguiente = reemplazarReferencias(siguiente, target, url);
-        else siguiente = { ...siguiente, bibliotecaFotos: [...siguiente.bibliotecaFotos, url], galeria: [...(siguiente.galeria || []), url] };
+        try {
+          setProgreso(`Optimizando ${i+1} de ${files.length}…`);
+          const optimizada = await optimizePhoto(file);
+          const ext = { 'image/jpeg':'jpg','image/png':'png','image/webp':'webp' }[optimizada.type];
+          const path = `${eventoId}/${crypto.randomUUID()}.${ext}`;
+          const storage = createClient().storage.from('fotos_eventos');
+          setProgreso(`Subiendo ${i+1} de ${files.length}…`);
+          const { error } = await storage.upload(path, optimizada, { contentType: optimizada.type });
+          if (error) { fallos.push(`${file.name}: no se pudo subir. Intenta de nuevo.`); continue; }
+          const url = storage.getPublicUrl(path).data.publicUrl;
+          if (target) siguiente = reemplazarReferencias(siguiente, target, url);
+          else siguiente = { ...siguiente, bibliotecaFotos: [...siguiente.bibliotecaFotos, url], galeria: [...(siguiente.galeria || []), url] };
+          cargadas++;
+          ahorrados += file.size - optimizada.size;
+        } catch (error) {
+          fallos.push(`${file.name}: ${error.message || 'No se pudo procesar. Intenta de nuevo.'}`);
+        }
       }
       onChange(siguiente);
       setError(fallos.join(' '));
-      setProgreso('Carga terminada. Guarda los cambios para publicar tus fotos.');
+      const ahorro = ahorrados > 0 ? ` Ahorro: ${(ahorrados / (1024 * 1024)).toLocaleString('es-MX', { maximumFractionDigits: 2 })} MB.` : '';
+      setProgreso(cargadas ? `${cargadas} de ${files.length} fotos cargadas.${ahorro} Guarda los cambios para publicarlas.` : 'No se cargaron fotografías. Revisa los errores e intenta de nuevo.');
     } catch { setError('La carga se interrumpió. Revisa tu conexión.'); onChange(siguiente); }
-    finally { setSubiendo(false); onBusy(false); event.target.value = ''; }
+    finally { setSubiendo(false); onBusy(false); input.value = ''; }
   }
   function quitar(url) {
     if (!window.confirm('¿Quitar esta foto de la biblioteca y de las secciones donde se usa? Se publicará al guardar.')) return;
@@ -62,6 +75,7 @@ export default function GaleriaManager({ eventoId, configuracion, onChange, onBu
   return <section className="photo-library">
     <h3>Tu biblioteca de fotografías</h3>
     <p className="helper">Sube varias fotos y elige cuáles mostrar en la galería. JPG, PNG o WebP · hasta 8 MB por foto.</p>
+    <p className="helper">Optimizamos tus fotos automáticamente para que la invitación cargue más rápido.</p>
     <label className="upload-zone">Agregar fotografías<input type="file" multiple accept="image/jpeg,image/png,image/webp" disabled={subiendo} onChange={subir} /></label>
     <input ref={replaceInput} type="file" hidden accept="image/jpeg,image/png,image/webp" onChange={subir} />
     {progreso && <p role="status" className="helper">{progreso}</p>}

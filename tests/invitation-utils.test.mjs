@@ -1,6 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { pinterestUrl, validClabe, normalizePhone, validPhone, guestMatches } from '../src/lib/invitation-utils.js';
+import { pinterestUrl, validClabe, normalizePhone, validPhone, guestMatches, invitationField } from '../src/lib/invitation-utils.js';
+test('saved invitation fields override legacy content, including cleared text and photos', () => {
+  const editorial = { mensajeBase: 'Anterior', fotoMensaje: 'old.jpg' };
+  assert.equal(invitationField({ editorial, mensajeBase: 'Nuevo' }, 'mensajeBase'), 'Nuevo');
+  assert.equal(invitationField({ editorial, mensajeBase: '' }, 'mensajeBase'), '');
+  assert.equal(invitationField({ editorial, fotoMensaje: null }, 'fotoMensaje'), null);
+  assert.equal(invitationField({ editorial }, 'fotoMensaje'), 'old.jpg');
+});
 test('Pinterest accepts HTTPS boards and rejects deceptive domains or scripts',()=>{
   assert.equal(pinterestUrl('https://www.pinterest.com/person/board/'),'https://www.pinterest.com/person/board/');
   assert.equal(pinterestUrl('https://pin.it/example'),'https://pin.it/example');

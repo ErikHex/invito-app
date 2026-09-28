@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 import GaleriaManager from "./GaleriaManager";
@@ -193,6 +194,7 @@ function Textarea({ label, value, onChange, placeholder }) {
 }
 
 export default function ConfiguracionManager({ eventoId, eventoInicial }) {
+  const router = useRouter();
   const [nombreEvento, setNombreEvento] = useState(
     eventoInicial.nombre_evento || "",
   );
@@ -261,7 +263,7 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
         .split(",")
         .map((nombre) => nombre.trim())
         .filter(Boolean),
-      fechaHora: fecha ? `${fecha}${hora}` : configuracion.fechaHora,
+      fechaHora: fecha ? `${fecha}${hora}` : null,
     };
 
     try {
@@ -274,7 +276,8 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
       setConfiguracion(nuevaConfiguracion);
       setBase(nuevaConfiguracion);
       setGuardado(JSON.stringify([nombreEvento, fecha, nuevaConfiguracion, nombres]));
-      setMensaje("Cambios publicados en tu invitación.");
+      setMensaje("Cambios guardados. Ya puedes revisar la vista previa.");
+      router.refresh();
     } catch (error) { setMensaje(error.message || "No pudimos guardar. Revisa tu conexión."); }
     finally { setGuardando(false); }
   }
@@ -298,6 +301,7 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
         >
           {guardando ? "Guardando..." : "Guardar cambios"}
         </button>
+        {mensaje && <p className="w-full text-sm text-gray-700" role="status">{mensaje}</p>}
       </div>
 
       <fieldset disabled={guardando || subiendo} className="space-y-3">
@@ -526,14 +530,6 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
         </details>
       </fieldset>
 
-      {mensaje && (
-        <p
-          className="mt-5 text-sm text-gray-600"
-          role="status"
-        >
-          {mensaje}
-        </p>
-      )}
     </section>
   );
 }

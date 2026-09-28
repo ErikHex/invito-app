@@ -18,3 +18,7 @@ export function guestMatches(guest, filter) {
   if (filter === 'sin_respuesta') return guest.envio_estado === 'enviada' && guest.estado === 'pendiente';
   return true;
 }
+// An explicitly cleared field must not bring back the legacy editorial value.
+export function invitationField(config, field) {
+  return Object.hasOwn(config, field) ? config[field] : config.editorial?.[field];
+}

@@ -10,6 +10,7 @@ import Itinerario from "./Itinerario";
 import RsvpForm from "../../compartidos/RsvpForm";
 import QrCode from "../../compartidos/QrCode";
 import styles from "./editorial.module.css";
+import { invitationField } from "@/lib/invitation-utils";
 
 export default function Editorial({
   datos,
@@ -48,17 +49,17 @@ export default function Editorial({
         {visible("mensaje") && (<Mensaje
           nombreEvento={datos.evento_nombre}
           nombreInvitado={datos.nombre}
-          mensajeBase={cfg.mensajeBase || cfg.editorial?.mensajeBase}
-          fotoMensaje={cfg.fotoMensaje || cfg.editorial?.fotoMensaje}
-          fotoMensajeAlt={cfg.fotoMensajeAlt || cfg.editorial?.fotoMensajeAlt}
+          mensajeBase={invitationField(cfg, "mensajeBase")}
+          fotoMensaje={invitationField(cfg, "fotoMensaje")}
+          fotoMensajeAlt={invitationField(cfg, "fotoMensajeAlt")}
         />)}
         {visible("cuenta_regresiva") && (<CuentaRegresiva fechaHora={cfg.fechaHora} />)}
         {visible("ceremonia") && (<Ceremonia
-          ceremonia={cfg.ceremonia || cfg.editorial?.ceremonia}
+          ceremonia={invitationField(cfg, "ceremonia")}
           fechaTexto={fechaTexto}
         />)}
         {visible("recepcion") && (<Recepcion
-          recepcion={cfg.recepcion || cfg.editorial?.recepcion}
+          recepcion={invitationField(cfg, "recepcion")}
           fechaTexto={fechaTexto}
         />)}
         {visible("vestimenta") && (<Vestimenta vestimenta={cfg.vestimenta} />)}

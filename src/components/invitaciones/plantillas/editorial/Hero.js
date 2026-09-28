@@ -1,4 +1,5 @@
 import styles from "./editorial.module.css";
+import { invitationField } from "@/lib/invitation-utils";
 
 export default function Hero({ nombreEvento, configuracion }) {
   const { fotoPortada } = configuracion;
@@ -12,9 +13,7 @@ export default function Hero({ nombreEvento, configuracion }) {
   return (
     <header className={styles.cover}>
       <p className={styles.eyebrow}>
-        {configuracion.encabezado ||
-          editorial.encabezado ||
-          "Celebremos juntos"}
+        {invitationField(configuracion, "encabezado") ?? "Celebremos juntos"}
       </p>
       <h1 className={styles.names}>
         {nombres.length >= 2 ? (
@@ -29,7 +28,7 @@ export default function Hero({ nombreEvento, configuracion }) {
             <span>{nombres[1]}</span>
           </>
         ) : (
-          nombreEvento
+          nombres[0] || nombreEvento
         )}
       </h1>
       {fotoPortada && (

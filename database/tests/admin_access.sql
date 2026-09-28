@@ -13,6 +13,15 @@ begin
  perform set_config('request.jwt.claim.sub',admin_id::text,true); set local role authenticated;
  result:=public.panel_operacion('crear_evento',jsonb_build_object('nombre','Prueba de permisos','slug','test-'||replace(gen_random_uuid()::text,'-',''),'fecha','2027-06-19','plantilla','editorial'));
  eid:=(result->>'id')::uuid;
+ select configuracion into cfg from public.eventos where id=eid;
+ perform public.guardar_editor_evento(eid,'Evento guardado por administrador','2027-07-20',cfg || '{"encabezado":"Encabezado actualizado"}'::jsonb,cfg);
+ if not exists(select 1 from public.eventos where id=eid and nombre_evento='Evento guardado por administrador' and fecha='2027-07-20' and configuracion->>'encabezado'='Encabezado actualizado') then
+  raise exception 'FAIL: administrator changes were not persisted';
+ end if;
+ begin
+  perform public.guardar_editor_evento(eid,'Cambios obsoletos','2027-06-19',cfg,cfg);
+  raise exception 'FAIL: stale configuration overwrote saved changes';
+ exception when others then if sqlerrm like 'FAIL:%' then raise; end if; end;
  perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','titular','plaza',1,'email','titular1-test@invito.invalid'));
  perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','titular','plaza',2,'email','titular2-test@invito.invalid'));
  begin perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','titular','plaza',3,'email','third@invito.invalid')); raise exception 'FAIL: third holder accepted'; exception when others then if sqlerrm like 'FAIL:%' then raise; end if; end;
