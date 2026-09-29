@@ -3,7 +3,7 @@
 // Plantilla Nocturno: fondo oscuro, cristal esmerilado y acentos de color.
 // Sigue el mismo contrato de props que Editorial y Aura XV.
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import RsvpForm from '../../compartidos/RsvpForm';
 import QrCode from '../../compartidos/QrCode';
 import { invitationField } from '@/lib/invitation-utils';
@@ -63,12 +63,19 @@ function CuentaRegresiva({ fechaHora }) {
   );
 }
 
-function TarjetaLugar({ etiqueta, datos, fechaTexto }) {
+function TarjetaLugar({ id, etiqueta, datos, fechaTexto }) {
   if (!datos || !Object.values(datos).some(Boolean)) return null;
   const url = typeof datos.mapsUrl === 'string' && /^https:\/\//.test(datos.mapsUrl) ? datos.mapsUrl : null;
   return (
-    <article className={styles.card}>
+    <article id={id} className={styles.card}>
       <p className={styles.cardLabel}>{etiqueta}</p>
+      {datos.foto && <img
+        src={datos.foto}
+        alt={datos.fotoAlt || `Lugar de ${etiqueta.toLowerCase()}`}
+        className={styles.lugarFoto}
+        loading="lazy"
+        decoding="async"
+      />}
       <h3 className={styles.cardTitle}>{datos.lugar || etiqueta}</h3>
       {datos.hora && <p className={styles.cardSub}>{datos.hora}</p>}
       {fechaTexto && <p className={styles.cardSub}>{fechaTexto}</p>}
@@ -155,16 +162,15 @@ export default function Nocturno({
   estado,
   onEstadoChange,
   preview,
-  colorAcento,
 }) {
   const cfg = datos.configuracion || {};
   const visible = key => datos.modulos_activos?.[key] !== false;
   const { fechaHora } = cfg;
   const fechaTexto = fechaTextoDe(fechaHora);
   const horaTexto = horaDe(fechaHora);
-  const nombres = Array.isArray(datos.nombres) && datos.nombres.length > 0
-    ? datos.nombres.filter(Boolean).join(' & ')
-    : datos.evento_nombre;
+  const nombres = (Array.isArray(cfg.nombres) ? cfg.nombres.filter(Boolean).join(' & ') : '') || datos.evento_nombre;
+  const mensaje = invitationField(cfg, 'mensajeBase');
+  const fotoMensaje = invitationField(cfg, 'fotoMensaje');
   const tipo = invitationField(cfg, 'tipoEvento') || 'celebración';
 
   return (
@@ -183,49 +189,54 @@ export default function Nocturno({
 
         {visible('portada') && (
           <section id="portada" className={styles.portada}>
-            <p className={styles.eyebrow}>Celebramos a</p>
+            <p className={styles.eyebrow}>{invitationField(cfg, 'encabezado') ?? 'Celebremos juntos'}</p>
             <h1 className={styles.nombre}>{nombres}</h1>
-            {invitationField(cfg, 'mensajeBase') && (
-              <p className={styles.frase}>{invitationField(cfg, 'mensajeBase')}</p>
-            )}
+            {fechaTexto && <p className={styles.frase}>{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
             {cfg.fotoPortada && (
               <img
-                src={invitationField(cfg, 'fotoPortada')}
-                alt={invitationField(cfg, 'fotoPortadaAlt') || `Portada de ${nombres}`}
+                src={cfg.fotoPortada}
+                alt={invitationField(cfg, 'fotoPortadaAlt') || cfg.editorial?.fotoAlt || `Portada de ${nombres}`}
                 className={styles.portadaFoto}
-                loading="lazy"
+                style={{ objectPosition: cfg.encuadrePortada || cfg.editorial?.encuadre || 'center' }}
+                fetchPriority="high"
                 decoding="async"
               />
             )}
-            {visible('cuenta_regresiva') && <CuentaRegresiva fechaHora={fechaHora} />}
           </section>
         )}
 
-        <div className={styles.fechaGrid}>
-          <TarjetaLugar etiqueta="Fecha" datos={{ fecha: fechaTexto, hora: horaTexto }} fechaTexto={fechaTexto} />
-          <TarjetaLugar etiqueta="Ceremonia" datos={invitationField(cfg, 'ceremonia')} />
-          <TarjetaLugar etiqueta="Recepción" datos={invitationField(cfg, 'recepcion')} />
-        </div>
-
-        {visible('mensaje') && invitationField(cfg, 'mensajeBase') && (
-          <section id="mensaje" className={styles.section}>
-            <p className={styles.eyebrow}>Un mensaje</p>
-            <p className={styles.mensajeTexto}>
-              {invitationField(cfg, 'mensajeBase')}
-              {datos.nombre && (
-                <>
-                  <br />
-                  <strong className={styles.mensajeInvitado}>{datos.nombre}</strong>
-                </>
-              )}
-            </p>
+        {visible('mensaje') && (
+          <section id="mensaje" className={styles.section} aria-labelledby="nocturno-mensaje-titulo">
+            <p className={styles.eyebrow}>{datos.nombre ? `Para ti, ${datos.nombre}` : 'Con mucho cariño'}</p>
+            <h2 id="nocturno-mensaje-titulo" className={styles.titulo}>Lo más bonito es compartirlo contigo.</h2>
+            {mensaje && <p className={styles.mensajeTexto}>{mensaje}</p>}
+            {fotoMensaje && <img
+              src={fotoMensaje}
+              alt={invitationField(cfg, 'fotoMensajeAlt') || 'Un momento de nuestra historia'}
+              className={styles.mensajeFoto}
+              loading="lazy"
+              decoding="async"
+            />}
+            <p className={styles.firma}>Con cariño, <strong>{nombres}</strong></p>
           </section>
         )}
+
+        {visible('cuenta_regresiva') && fechaHora && (
+          <section id="cuenta-regresiva" className={styles.section} aria-labelledby="nocturno-cuenta-titulo">
+            <p className={styles.eyebrow}>Cada vez más cerca</p>
+            <h2 id="nocturno-cuenta-titulo" className={styles.titulo}>La cuenta para celebrar</h2>
+            <CuentaRegresiva fechaHora={fechaHora} />
+          </section>
+        )}
+
+        {visible('ceremonia') && <TarjetaLugar id="ceremonia" etiqueta="Ceremonia" datos={invitationField(cfg, 'ceremonia')} fechaTexto={fechaTexto} />}
+        {visible('recepcion') && <TarjetaLugar id="recepcion" etiqueta="Recepción" datos={invitationField(cfg, 'recepcion')} fechaTexto={fechaTexto} />}
 
         {visible('vestimenta') && cfg.vestimenta && (
           <section id="vestimenta" className={styles.section}>
             <p className={styles.eyebrow}>Dress code</p>
             <h2 className={styles.titulo}>Vestimenta</h2>
+            {cfg.vestimenta.codigo && <p className={styles.codigoVestimenta}>{cfg.vestimenta.codigo}</p>}
             {cfg.vestimenta.descripcion && <p className={styles.texto}>{cfg.vestimenta.descripcion}</p>}
             {Array.isArray(cfg.vestimenta.coloresReservados) && cfg.vestimenta.coloresReservados.length > 0 && (
               <div className={styles.muestras}>
@@ -266,13 +277,13 @@ export default function Nocturno({
         {visible('galeria') && <Galeria fotos={cfg.galeria} />}
         {visible('itinerario') && <Itinerario items={cfg.itinerario} />}
 
-        <section id="rsvp" className={styles.rsvp}>
+        {(visible('rsvp') || visible('qr')) && <section id="rsvp" className={styles.rsvp}>
           <div className={styles.rsvpHead}>
             <h2 className={styles.titulo}>Confirma tu asistencia</h2>
             {fechaTexto && <p className={styles.texto}>{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
           </div>
           {datos.mesa_nombre && <p className={styles.texto}>Tu mesa: <strong>{datos.mesa_nombre}</strong></p>}
-          <p className={styles.texto}>Boletos disponibles: {Number(datos.acompanantes) + 1}</p>
+          <p className={styles.texto}>Boletos disponibles: {Number(datos.acompanantes || 0) + 1}</p>
           {visible('rsvp') && (
             <RsvpForm invitado={datos} estado={estado} onEstadoChange={onEstadoChange} preview={preview} />
           )}
@@ -282,7 +293,7 @@ export default function Nocturno({
             ) : (
               <QrCode token={datos.token} />
             ))}
-        </section>
+        </section>}
 
         <footer className={styles.footer}>Con amor · {nombres} · {fechaTexto ? new Date(fechaHora).getFullYear() : ''}</footer>
       </div>

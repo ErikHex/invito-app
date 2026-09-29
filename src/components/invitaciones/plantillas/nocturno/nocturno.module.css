@@ -187,19 +187,44 @@
   color: var(--apagado);
 }
 
-.fechaGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.fechaGrid:only-child,
-.card:only-child {
-  grid-column: 1 / -1;
-}
-
 .card {
-  padding: 16px;
+  padding: 26px 22px;
+  scroll-margin-top: 24px;
+}
+
+.mensajeFoto,
+.lugarFoto {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--linea);
+}
+
+.mensajeFoto { aspect-ratio: 4 / 5; }
+.lugarFoto { aspect-ratio: 4 / 3; margin-bottom: 18px; }
+
+.firma {
+  margin-top: 20px;
+  color: var(--apagado);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.firma strong {
+  display: block;
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--claro);
+}
+
+.codigoVestimenta {
+  margin-top: 16px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 20px;
+  color: var(--claro);
 }
 
 .cardLabel {
@@ -271,13 +296,6 @@
   font-style: italic;
   line-height: 1.7;
   color: color-mix(in srgb, var(--claro) 90%, transparent);
-}
-
-.mensajeInvitado {
-  font-style: normal;
-  font-size: 15px;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--acento) 70%, var(--claro));
 }
 
 .muestras {

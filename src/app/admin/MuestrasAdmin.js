@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { catalogoPlantillas } from '@/components/invitaciones/plantillas/catalogo';
 
-function AsignacionMuestra({ plantilla, asignacion, eventos }) {
+function AsignacionMuestra({ plantilla, asignacion, eventos, asignaciones }) {
   const [seleccion, setSeleccion] = useState(asignacion?.evento_id || '');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -32,7 +32,8 @@ function AsignacionMuestra({ plantilla, asignacion, eventos }) {
   }
 
   return <form className="guest-card" onSubmit={guardar}>
-    <h3>{plantilla.nombre}</h3>
+    <div className="guest-heading"><h3>{plantilla.nombre}</h3><span className="status-pill">{asignacion?.disponible ? 'Visible en el inicio' : 'Oculta'}</span></div>
+    {evento && <p className="helper">Contenido compartido con: {asignaciones.filter(item => item.evento_id === evento.id && item.plantilla !== plantilla.id).map(item => catalogoPlantillas.find(p => p.id === item.plantilla)?.nombre || item.plantilla).join(', ') || 'ninguna otra plantilla'}.</p>}
     <fieldset disabled={busy} className="grid gap-4 mt-4">
       <label>Evento de muestra
         <select value={seleccion} onChange={e => { setSeleccion(e.target.value); setMessage(''); }}>
@@ -45,7 +46,7 @@ function AsignacionMuestra({ plantilla, asignacion, eventos }) {
       <button className="dash-primary" disabled={!cambio}>{busy ? 'Guardando…' : 'Guardar muestra pública'}</button>
     </fieldset>
     <div className="row-actions mt-4">
-      {evento && <><Link href={`/dashboard/${evento.slug}/diseno`}>Editar fotos y contenido ↗</Link><Link href={`/admin/${evento.id}`}>Configurar secciones y estado ↗</Link></>}
+      {evento && <><Link href={`/dashboard/${evento.slug}/diseno?plantilla=${plantilla.id}`}>Editar fotos y contenido ↗</Link><Link href={`/admin/${evento.id}?plantilla=${plantilla.id}`}>Configurar secciones y estado ↗</Link></>}
       {asignacion?.disponible && <a href={plantilla.demo} target="_blank" rel="noopener noreferrer">Ver muestra publicada ↗</a>}
     </div>
     {asignacion?.evento_id && !asignacion.disponible && <p className="helper">La muestra está oculta porque el evento está archivado.</p>}
@@ -85,9 +86,19 @@ export default function MuestrasAdmin({ eventos, asignaciones }) {
       {catalogoPlantillas.map(plantilla => {
         const asignacion = asignaciones.find(item => item.plantilla === plantilla.id);
         return <AsignacionMuestra key={`${plantilla.id}-${asignacion?.evento_id || ''}-${asignacion?.disponible}`}
-          plantilla={plantilla} asignacion={asignacion} eventos={eventos} />;
+          plantilla={plantilla} asignacion={asignacion} eventos={eventos} asignaciones={asignaciones} />;
       })}
     </div>
+    <section className="mt-8" aria-labelledby="contenidos-title">
+      <h2 id="contenidos-title">Eventos de muestra</h2>
+      <p className="helper">Gestiona aquí también las muestras sin asignar y las archivadas.</p>
+      <div className="guest-list mt-4">{eventos.map(evento => <article key={evento.id} className="guest-card">
+        <div className="guest-heading"><h3>{evento.nombre_evento}</h3><span className="status-pill">{evento.publicacion === 'archivado' ? 'Archivada' : 'Disponible'}</span></div>
+        <p className="helper">{evento.slug} · Plantillas: {asignaciones.filter(item => item.evento_id === evento.id).map(item => catalogoPlantillas.find(p => p.id === item.plantilla)?.nombre || item.plantilla).join(', ') || 'Sin asignar'}</p>
+        <div className="row-actions"><Link href={`/dashboard/${evento.slug}/diseno`}>Editar contenido ↗</Link><Link href={`/admin/${evento.id}`}>Secciones y estado ↗</Link></div>
+      </article>)}</div>
+      {!eventos.length && <p className="empty-state">Aún no hay eventos de muestra. Crea el primero para presentar tus plantillas.</p>}
+    </section>
     <details className="guest-card mt-5">
       <summary>Crear otro evento de muestra</summary>
       <p className="helper mt-3">Empezarás con una boda ficticia completa: textos, fotos de referencia, horarios, lugares, vestimenta, regalos, galería e itinerario. Personalízala antes de asignarla a una plantilla.</p>

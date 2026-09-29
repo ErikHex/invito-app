@@ -3,17 +3,29 @@ import { catalogoPlantillas } from '@/components/invitaciones/plantillas/catalog
 import { getDashboardData } from "../dashboard-data";
 import ConfiguracionManager from "../ConfiguracionManager";
 
-export default async function DisenoPage({ params }) {
+export default async function DisenoPage({ params, searchParams }) {
   const { slug } = await params;
   const data = await getDashboardData(slug);
   if (!data) return null;
 
+  const query = await searchParams;
+  const muestra = data.evento.es_muestra;
+  const modelo = catalogoPlantillas.find(p => p.id === (muestra && query.plantilla || data.evento.plantilla)) || catalogoPlantillas[0];
+  const contexto = muestra ? `?plantilla=${modelo.id}` : '';
+
   return (
     <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
       <div className="mb-6"><h1 className="text-2xl font-bold text-gray-900">Diseño de invitación</h1><p className="mt-1 text-gray-600">Gestiona las fotos y el contenido de tu evento.</p></div>
-      {data.rol === 'admin' && <div className="dash-banner mb-6"><div><h2>Modelo de plantilla: {catalogoPlantillas.find(p => p.id === data.evento.plantilla)?.nombre || data.evento.plantilla}</h2><p className="helper">{data.evento.es_muestra?'Este modelo se usa en el editor; las muestras públicas usan cada plantilla asignada.':'Cambia el modelo conservando el contenido y los invitados del evento.'}</p></div><Link className="dash-primary" href={`/admin/${data.evento.id}#plantilla`}>Cambiar plantilla ↗</Link></div>}
-      {data.evento.es_muestra && <div className="dash-banner mb-6"><div><h2>Evento de muestra</h2><p className="helper">Al guardar, las fotos y el contenido se actualizan en todas las plantillas que tengan asignada esta muestra.</p></div><Link className="dash-primary" href="/admin#muestras">Asignar a plantillas ↗</Link></div>}
-      <ConfiguracionManager eventoId={data.evento.id} eventoInicial={data.evento} />
+      {data.rol === 'admin' && <div className="dash-banner mb-6"><div>
+        <h2>{muestra ? 'Editando muestra' : 'Modelo de plantilla'}: {modelo.nombre}</h2>
+        <p className="helper">{muestra ? `Contenido de ${data.evento.nombre_evento}. Si otras plantillas usan este evento, también recibirán los cambios en textos y fotos.` : 'Cambia el modelo conservando el contenido y los invitados del evento.'}</p>
+        {muestra && <div className="row-actions">{catalogoPlantillas.map(p => <Link key={p.id} href={`/dashboard/${slug}/diseno?plantilla=${p.id}`} aria-current={p.id === modelo.id ? 'page' : undefined}>{p.id === modelo.id ? `✓ ${p.nombre}` : p.nombre}</Link>)}</div>}
+      </div><div className="row-actions">
+        <Link href={`/preview/${slug}${contexto}`} target="_blank">Previsualizar {modelo.nombre} ↗</Link>
+        <Link href={`/admin/${data.evento.id}${contexto}#plantilla`}>{muestra ? 'Secciones y estado' : 'Cambiar plantilla'} ↗</Link>
+        {muestra && <Link href="/admin/muestras">Volver a plantillas y muestras ↗</Link>}
+      </div></div>}
+      <ConfiguracionManager eventoId={data.evento.id} eventoInicial={{ ...data.evento, plantilla: modelo.id }} />
     </main>
   );
 }

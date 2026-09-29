@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children, params }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardNav slug={slug} invitacionToken={data.invitados[0]?.token} />
+      <DashboardNav slug={slug} esMuestra={data.evento.es_muestra} />
       {children}
     </div>
   );
