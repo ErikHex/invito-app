@@ -4,7 +4,13 @@ export function colorValido(value) {
 
 export function temaInvitacion(configuracion = {}, plantilla) {
   const value = configuracion.tema?.colorAcento;
-  const principal = colorValido(value) ? value : plantilla === 'aura_xv' ? '#6c538b' : '#C9A24B';
+  const principal = colorValido(value)
+    ? value
+    : plantilla === 'aura_xv'
+      ? '#6c538b'
+      : plantilla === 'nocturno'
+        ? '#7c6cff'
+        : '#C9A24B';
   let rgb = principal.slice(1).match(/../g).map(value => parseInt(value, 16));
   // Keep small accent text readable on the templates' light paper.
   const luminancia = () => rgb.map(value => {
@@ -18,5 +24,9 @@ export function temaInvitacion(configuracion = {}, plantilla) {
 
 export function tipoCelebracion(configuracion = {}, plantilla) {
   const tipo = configuracion.tipoEvento;
-  return ['xv', 'boda', 'otro'].includes(tipo) ? tipo : plantilla === 'aura_xv' ? 'xv' : 'otro';
+  return ['xv', 'boda', 'otro'].includes(tipo)
+    ? tipo
+    : plantilla === 'aura_xv' || plantilla === 'nocturno'
+      ? 'xv'
+      : 'otro';
 }
