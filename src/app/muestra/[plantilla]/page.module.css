@@ -1,0 +1,7 @@
+.bar { position: relative; z-index: 100; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 14px 24px; background: #fdfcf9; color: #463c4c; font-size: 12px; border-bottom: 1px solid #ded8e1; }
+.bar > span { color: #746b7c; font-size: 11px; }
+.designs { display: flex; gap: 16px; }
+.bar a { padding-block: 5px; }
+.bar a[aria-current] { color: #79528d; text-decoration: underline; text-underline-offset: 5px; }
+.bar a:focus-visible { outline: 2px solid #79528d; outline-offset: 4px; }
+@media (max-width: 600px) { .bar > span { order: 3; width: 100%; } }

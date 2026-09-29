@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { catalogoPlantillas } from "@/components/invitaciones/plantillas/catalogo";
 import styles from "./page.module.css";
 import { createClient } from "@/lib/supabase/server";
 import { accountDestination, accountName } from "@/lib/account";
@@ -7,7 +8,7 @@ const features = [
   [
     "✳",
     "Lista para tu celebración",
-    "Personalizamos el diseño disponible con tus fotos, textos y detalles. Recibes tu invitación publicada y lista para compartir.",
+    "Personalizamos el diseño que elijas con tus fotos, textos y detalles. Recibes tu invitación publicada y lista para compartir.",
   ],
   [
     "↗",
@@ -43,7 +44,7 @@ const steps = [
   ],
   [
     "Le damos forma",
-    "Personalizamos tu invitación sobre el diseño disponible.",
+    "Personalizamos tu invitación sobre el diseño que elijas.",
   ],
   [
     "Revisa cada detalle",
@@ -63,6 +64,8 @@ export default async function HomePage() {
   const { data: session } = user
     ? await client.rpc("panel_operacion", { operacion: "sesion", datos: {} })
     : { data: null };
+  const { data: muestras } = await client.from('muestras_plantillas').select('plantilla').eq('disponible', true);
+  const plantillasConMuestra = catalogoPlantillas.filter(plantilla => muestras?.some(muestra => muestra.plantilla === plantilla.id));
   const destination = accountDestination(session);
   return (
     <main className={styles.page}>
@@ -78,6 +81,7 @@ export default async function HomePage() {
           className={styles.nav}
           aria-label="Navegación principal"
         >
+          <a href="#plantillas" className={styles.navLink}>Plantillas</a>
           <a
             href="#detalles"
             className={styles.navLink}
@@ -132,10 +136,10 @@ export default async function HomePage() {
               Quiero mi invitación <span aria-hidden="true">↗</span>
             </a>
             <Link
-              href="/demo"
+              href="#plantillas"
               className={styles.textLink}
             >
-              Ver invitación de ejemplo <span aria-hidden="true">↗</span>
+              Explorar plantillas <span aria-hidden="true">↗</span>
             </Link>
           </div>
           <p className={styles.heroNote}>
@@ -219,6 +223,32 @@ export default async function HomePage() {
         <span aria-hidden="true">✳</span> Tu evento, tu estilo, todos tus
         invitados.<span aria-hidden="true">✳</span>
       </div>
+
+      <section id="plantillas" className={styles.templates} aria-labelledby="templates-title">
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>UNA CELEBRACIÓN. TU FORMA DE CONTARLA.</p>
+          <h2 id="templates-title">Encuentra <em>tu estilo.</em></h2>
+          <p>Celebraciones de muestra para conocer cada uno de nuestros diseños.
+            Abre las invitaciones y descubre sus fotos, detalles y animaciones.</p>
+        </div>
+        {!plantillasConMuestra.length && <p className={styles.sectionHeading}>Estamos preparando nuevas invitaciones de muestra. Vuelve pronto para descubrirlas.</p>}
+        <div className={styles.templateGrid}>
+          {plantillasConMuestra.map((plantilla) => (
+            <article key={plantilla.id} className={styles.templateCard}>
+              <Link href={plantilla.demo} className={styles.templateWindow} aria-label={`Ver invitación completa: ${plantilla.nombre}`}>
+                <iframe src={`${plantilla.demo}?portada=1`} title={`Portada de ${plantilla.nombre}`}
+                  loading="lazy" tabIndex={-1} aria-hidden="true" />
+                <span className={styles.templateOpen}>Explorar invitación ↗</span>
+              </Link>
+              <div className={styles.templateInfo}>
+                <h3>{plantilla.nombre}</h3>
+                <p>{plantilla.descripcion}</p>
+                <Link href={plantilla.demo} className={styles.textLink}>Ver ejemplo completo <span aria-hidden="true">↗</span></Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section
         id="detalles"
@@ -317,7 +347,7 @@ export default async function HomePage() {
           </p>
           <p className={styles.priceNote}>Pago único por evento.</p>
           <ul>
-            <li>Personalización del diseño disponible</li>
+            <li>Personalización del diseño que elijas</li>
             <li>Dos rondas de ajustes antes de la entrega</li>
             <li>Acceso para actualizar la información del evento</li>
             <li>Confirmaciones, acompañantes y mesas</li>
