@@ -7,18 +7,16 @@ export default function Musica({ url, reproducir }) {
   const [reproduciendo, setReproduciendo] = useState(false);
 
   useEffect(() => {
-    if (reproducir && audioRef.current) {
+    if (reproducir && url && audioRef.current) {
       audioRef.current
         .play()
         .then(() => setReproduciendo(true))
         .catch(() => setReproduciendo(false));
     }
-  }, [reproducir]);
-
-  if (!url) return null;
+  }, [reproducir, url]);
 
   const cambiarReproduccion = () => {
-    if (!audioRef.current) return;
+    if (!url || !audioRef.current) return;
     if (audioRef.current.paused) {
       audioRef.current
         .play()
@@ -43,11 +41,12 @@ export default function Musica({ url, reproducir }) {
         type="button"
         className="music-control"
         onClick={cambiarReproduccion}
+        disabled={!url}
         aria-pressed={reproduciendo}
-        aria-label={reproduciendo ? "Pausar música" : "Reanudar música"}
+        aria-label={!url ? "Música no configurada" : reproduciendo ? "Pausar música" : "Reanudar música"}
       >
         <span aria-hidden="true">{reproduciendo ? "♫" : "▶"}</span>
-        {reproduciendo ? "Pausar música" : "Reanudar música"}
+        {!url ? "Música no configurada" : reproduciendo ? "Pausar música" : "Reanudar música"}
       </button>
     </>
   );

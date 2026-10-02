@@ -64,6 +64,16 @@ body {
   transform: translateY(-1px);
 }
 
+.music-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.music-control:disabled:hover {
+  background: color-mix(in srgb, #292927 82%, transparent);
+  transform: none;
+}
+
 .music-control:focus-visible {
   outline: 2px solid var(--event-primary, #ffffff);
   outline-offset: 3px;
