@@ -33,6 +33,54 @@ body {
   background: #292927;
 }
 
+.music-control {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid
+    color-mix(in srgb, var(--event-primary, #ffffff) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #292927 82%, transparent);
+  color: var(--event-primary, #ffffff);
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.music-control:hover {
+  background: color-mix(in srgb, #292927 68%, transparent);
+  transform: translateY(-1px);
+}
+
+.music-control:focus-visible {
+  outline: 2px solid var(--event-primary, #ffffff);
+  outline-offset: 3px;
+}
+
+.music-control span {
+  font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+  .music-control {
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.72rem;
+  }
+}
+
 .inv-glass-section {
   position: relative;
   overflow: hidden;
