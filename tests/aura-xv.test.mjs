@@ -25,7 +25,7 @@ test('enlaces externos no permiten scripts ni protocolos arbitrarios', () => {
   assert.equal(enlaceRegalo('javascript:alert(1)'), null);
 });
 
-test('las tres plantillas tienen identificadores independientes', () => {
-  assert.deepEqual(catalogoPlantillas.map(p => p.id), ['editorial', 'aura_xv', 'nocturno']);
+test('las plantillas tienen identificadores independientes', () => {
+  assert.deepEqual(catalogoPlantillas.map(p => p.id), ['editorial', 'aura_xv', 'nocturno', 'jardin_romantico']);
   assert.equal(catalogoPlantillas.find(p => p.id === 'aura_xv').version, 1);
 });

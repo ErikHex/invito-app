@@ -6,6 +6,8 @@ export function temaInvitacion(configuracion = {}, plantilla) {
   const value = configuracion.tema?.colorAcento;
   const principal = colorValido(value)
     ? value
+    : plantilla === 'jardin_romantico'
+      ? '#596b4e'
     : plantilla === 'aura_xv'
       ? '#6c538b'
       : plantilla === 'nocturno'

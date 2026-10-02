@@ -26,7 +26,7 @@ export default function Invitacion({ datos, preview = false }) {
       {!abierta && (
         <SobreAnimado
           personalizarColor={colorValido(tema.colorAcento)}
-          variante={datos.plantilla === "aura_xv" ? "aura" : undefined}
+          variante={datos.plantilla === "aura_xv" ? "aura" : datos.plantilla === "jardin_romantico" ? "jardin" : undefined}
           nombreInvitado={datos.nombre}
           colorFondo={colorFondo}
           colorAcento={colorAcento}

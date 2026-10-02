@@ -37,6 +37,13 @@
 .aura .seal svg { stroke: #6c538b; filter: drop-shadow(1px 1px 0 #ffffff); }
 
 /* El papel y el sello toman el color elegido para cualquier plantilla. */
+.jardin { --wine: #596b4e; background: #dddac9; }
+.jardin .letter { background: #faf7ee; }
+.jardin .pocket { background: linear-gradient(145deg, transparent 49.8%, #7b856033 50%, transparent 50.3%), linear-gradient(215deg, transparent 49.8%, #7b856033 50%, transparent 50.3%), linear-gradient(110deg, #d8ddca, #eceede); }
+.jardin .flap { background: url('/plantillas/jardin-romantico/botanica.webp') left bottom / auto 85% no-repeat, linear-gradient(120deg, #ede9db, #faf7ee); }
+.jardin .flap span { font-family: var(--font-script), cursive; font-style: normal; }
+.jardin .seal { border-color: #748163; background: radial-gradient(circle at 30% 20%, #b1b39a, #6c785f 60%, #526047); box-shadow: inset 1px 2px 3px #e4e5cb99, inset -2px -2px 4px #35442988, 2px 6px 8px #39442e30; }
+.jardin .seal svg { stroke: #d9dcc3; filter: drop-shadow(1px 1px 0 #35442966); }
 .personalizado { --wine: var(--event-accent-text, #781b20); background: color-mix(in srgb, var(--event-primary, #781b20) 25%, white); }
 .personalizado .pocket { background: linear-gradient(110deg, color-mix(in srgb, var(--event-primary, #781b20) 28%, white), color-mix(in srgb, var(--event-primary, #781b20) 12%, white)); }
 .personalizado .flap { background: linear-gradient(120deg, color-mix(in srgb, var(--event-primary, #781b20) 20%, white), color-mix(in srgb, var(--event-primary, #781b20) 8%, white)); }

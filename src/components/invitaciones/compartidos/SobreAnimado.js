@@ -63,7 +63,7 @@ export default function SobreAnimado({ nombreInvitado, onAbrir, variante, person
   return (
     <div
       ref={sobre}
-      className={`${styles.envelope} ${personalizarColor ? styles.personalizado : ""} ${variante === "aura" ? styles.aura : ""} ${abriendo ? styles.opening : ""}`}
+      className={`${styles.envelope} ${personalizarColor ? styles.personalizado : ""} ${variante === "aura" ? styles.aura : variante === "jardin" ? styles.jardin : ""} ${abriendo ? styles.opening : ""}`}
       aria-busy={abriendo}
     >
       <div
