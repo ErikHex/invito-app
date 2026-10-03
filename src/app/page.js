@@ -343,7 +343,7 @@ export default async function HomePage() {
             para compartir.
           </h3>
           <p className={styles.price}>
-            $1,490 <span>MXN</span>
+            $699 <span>MXN</span>
           </p>
           <p className={styles.priceNote}>Pago único por evento.</p>
           <ul>
