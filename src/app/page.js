@@ -342,6 +342,7 @@ export default async function HomePage() {
             <br />
             para compartir.
           </h3>
+          <p className={styles.regularPrice}>Precio regular $1,490 MXN</p>
           <p className={styles.price}>
             $699 <span>MXN</span>
           </p>
@@ -360,6 +361,7 @@ export default async function HomePage() {
           >
             Quiero mi invitación <span aria-hidden="true">↗</span>
           </a>
+          <p className={styles.paymentNote}>Paga hasta recibir tus accesos.</p>
           <p className={styles.scopeNote}>
             Tú cargas y envías las invitaciones y operas el registro de acceso.
             Si necesitas que lo hagamos por ti o buscas un diseño desde cero, lo
