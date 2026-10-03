@@ -69,7 +69,9 @@
 .packageFlower { display: block; color: #a68ab4; font-size: 66px; margin-top: 25px; }
 .packageCard { background: #fdfcf9; padding: 38px; border: 1px solid #e0d7e5; border-radius: 14px; max-width: 460px; width: 100%; justify-self: end; }
 .packageCard h3 { font-size: 32px; margin: 16px 0; letter-spacing: -1px; }
+.regularPrice { margin-top: 18px; font-size: 13px; color: #9a919f; text-decoration: line-through; text-decoration-thickness: 1px; }
 .priceNote { font-size: 12px; color: #817887; }
+.paymentNote { margin-top: 12px; text-align: center; font-size: 12px; font-weight: 600; color: #6f537f; letter-spacing: .2px; }
 .packageCard ul { padding: 24px 0; margin-top: 24px; border-top: 1px solid #e7dfeb; display: grid; gap: 15px; list-style: none; }
 .packageCard li { display: flex; gap: 12px; font-size: 12px; line-height: 1.7; color: #746b7c; }
 .packageCard li::before { content: '✓'; color: #88679b; }
