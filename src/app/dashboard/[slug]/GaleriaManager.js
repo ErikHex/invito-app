@@ -2,7 +2,6 @@
 /* Customer-uploaded images use public Storage URLs. */
 /* eslint-disable @next/next/no-img-element */
 import { useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { optimizePhoto } from "@/lib/optimize-photo";
 
 export default function GaleriaManager({ eventoId, configuracion, onChange, onBusy }) {
@@ -40,13 +39,18 @@ export default function GaleriaManager({ eventoId, configuracion, onChange, onBu
         try {
           setProgreso(`Optimizando ${i+1} de ${files.length}…`);
           const optimizada = await optimizePhoto(file);
-          const ext = { 'image/jpeg':'jpg','image/png':'png','image/webp':'webp' }[optimizada.type];
-          const path = `${eventoId}/${crypto.randomUUID()}.${ext}`;
-          const storage = createClient().storage.from('fotos_eventos');
           setProgreso(`Subiendo ${i+1} de ${files.length}…`);
-          const { error } = await storage.upload(path, optimizada, { contentType: optimizada.type });
-          if (error) { fallos.push(`${file.name}: no se pudo subir. Intenta de nuevo.`); continue; }
-          const url = storage.getPublicUrl(path).data.publicUrl;
+          const permiso = await fetch('/api/media/upload', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ eventoId, contentType: optimizada.type, size: optimizada.size }),
+          });
+          const datos = await permiso.json();
+          if (!permiso.ok) throw new Error(datos.error || 'No se pudo preparar la subida.');
+          const subida = await fetch(datos.uploadUrl, {
+            method: 'PUT', headers: { 'Content-Type': optimizada.type }, body: optimizada,
+          });
+          if (!subida.ok) throw new Error('No se pudo subir la fotografía. Intenta de nuevo.');
+          const url = datos.publicUrl;
           if (target) siguiente = reemplazarReferencias(siguiente, target, url);
           else siguiente = { ...siguiente, bibliotecaFotos: [...siguiente.bibliotecaFotos, url], galeria: [...(siguiente.galeria || []), url] };
           cargadas++;

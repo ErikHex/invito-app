@@ -43,10 +43,20 @@ export default function Musica({ url, reproducir }) {
         onClick={cambiarReproduccion}
         disabled={!url}
         aria-pressed={reproduciendo}
-        aria-label={!url ? "Música no configurada" : reproduciendo ? "Pausar música" : "Reanudar música"}
+        aria-label={
+          !url
+            ? "Música no configurada"
+            : reproduciendo
+              ? "Pausar música"
+              : "Reanudar música"
+        }
       >
         <span aria-hidden="true">{reproduciendo ? "♫" : "▶"}</span>
-        {!url ? "Música no configurada" : reproduciendo ? "Pausar música" : "Reanudar música"}
+        {!url
+          ? "Música no configurada"
+          : reproduciendo
+            ? "Pausar música"
+            : "Reanudar música"}
       </button>
     </>
   );
