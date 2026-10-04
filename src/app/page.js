@@ -65,7 +65,12 @@ export default async function HomePage() {
     ? await client.rpc("panel_operacion", { operacion: "sesion", datos: {} })
     : { data: null };
   const { data: muestras } = await client.from('muestras_plantillas').select('plantilla').eq('disponible', true);
-  const plantillasConMuestra = catalogoPlantillas.filter(plantilla => muestras?.some(muestra => muestra.plantilla === plantilla.id));
+  // A new template can safely reuse an existing public fictional sample until
+  // its own database assignment is deployed. Never use a non-public event.
+  const plantillasConMuestra = catalogoPlantillas.filter(plantilla =>
+    muestras?.some(muestra => muestra.plantilla === plantilla.id) ||
+    (plantilla.id === 'cronica_encantada' && muestras?.length > 0),
+  );
   const destination = accountDestination(session);
   return (
     <main className={styles.page}>

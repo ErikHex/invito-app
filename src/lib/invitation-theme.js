@@ -10,9 +10,11 @@ export function temaInvitacion(configuracion = {}, plantilla) {
       ? '#596b4e'
     : plantilla === 'aura_xv'
       ? '#6c538b'
-      : plantilla === 'nocturno'
-        ? '#7c6cff'
-        : '#C9A24B';
+    : plantilla === 'nocturno'
+      ? '#7c6cff'
+      : plantilla === 'cronica_encantada'
+        ? '#c89b45'
+      : '#C9A24B';
   let rgb = principal.slice(1).match(/../g).map(value => parseInt(value, 16));
   // Keep small accent text readable on the templates' light paper.
   const luminancia = () => rgb.map(value => {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import OrbeDorado from "../plantillas/cronica-encantada/OrbeDorado";
 import styles from "./SobreAnimado.module.css";
 
 export default function SobreAnimado({ nombreInvitado, onAbrir, variante, personalizarColor = false }) {
@@ -32,6 +33,7 @@ export default function SobreAnimado({ nombreInvitado, onAbrir, variante, person
     const solapa = buscar(styles.flapShadow);
     const carta = buscar(styles.letter);
     const bolsillo = buscar(styles.pocket);
+    const orbe = buscar(styles.magicOrb);
     const textos = [buscar(styles.hint), buscar(styles.recipient)];
 
     // Una sola secuencia controla el final; no hay temporizadores desfasados.
@@ -58,12 +60,17 @@ export default function SobreAnimado({ nombreInvitado, onAbrir, variante, person
       .to(carta, { yPercent: -14, duration: 0.85, ease: "power3.out" }, 0.7)
       .to(bolsillo, { yPercent: 24, duration: 0.8, ease: "power3.inOut" }, 0.85)
       .to(elemento, { opacity: 0, duration: 0.35 }, 1.4);
+
+    if (variante === "cronica" && orbe) {
+      secuencia.fromTo(orbe, { opacity: 0, scale: 0.35, x: -24, y: 30 }, { opacity: 1, scale: 1, x: 58, y: -90, rotation: 14, duration: 0.65, ease: "power3.out" }, 0.55)
+        .to(orbe, { opacity: 0, x: 145, y: -154, scale: 0.7, duration: 0.48, ease: "power2.in" }, 1.12);
+    }
   }
 
   return (
     <div
       ref={sobre}
-      className={`${styles.envelope} ${personalizarColor ? styles.personalizado : ""} ${variante === "aura" ? styles.aura : variante === "jardin" ? styles.jardin : ""} ${abriendo ? styles.opening : ""}`}
+      className={`${styles.envelope} ${personalizarColor ? styles.personalizado : ""} ${variante === "cronica" ? styles.cronica : variante === "aura" ? styles.aura : variante === "jardin" ? styles.jardin : ""} ${abriendo ? styles.opening : ""}`}
       aria-busy={abriendo}
     >
       <div
@@ -73,6 +80,7 @@ export default function SobreAnimado({ nombreInvitado, onAbrir, variante, person
         <span>Con mucho cariño</span>
         <p>{nombreInvitado ? `Para ${nombreInvitado}` : "Para ti"}</p>
       </div>
+      {variante === "cronica" && <OrbeDorado />}
       <div
         className={styles.pocket}
         aria-hidden="true"

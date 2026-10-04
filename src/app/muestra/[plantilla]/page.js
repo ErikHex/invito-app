@@ -22,7 +22,11 @@ export default async function MuestraPage({ params, searchParams }) {
   const { data: muestras, error } = await client.from('muestras_plantillas')
     .select('plantilla,nombre_evento,configuracion,modulos_activos').eq('disponible', true);
   if (error) throw new Error('No pudimos cargar la invitación de muestra. Intenta de nuevo.');
-  const muestra = muestras.find(item => item.plantilla === plantilla);
+  // Cronica encantada may be deployed before its sample-row migration. In that
+  // brief interval, reuse another explicitly public sample instead of exposing
+  // an event that was not selected for the public gallery.
+  const muestra = muestras.find(item => item.plantilla === plantilla)
+    || (plantilla === 'cronica_encantada' ? muestras[0] : null);
   if (!muestra) notFound();
   const disponibles = catalogoPlantillas.filter(item => muestras.some(muestra => muestra.plantilla === item.id));
   const portada = (await searchParams).portada === '1';

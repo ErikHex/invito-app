@@ -381,6 +381,13 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
               fotos={fotos}
               onChange={(foto) => actualizarCampo("fotoPortada", foto)}
             />
+            <Campo
+              label="Video animado de portada (opcional)"
+              value={configuracion.videoPortada || ""}
+              onChange={(valor) => actualizarCampo("videoPortada", valor)}
+              placeholder="https://.../retrato-animado.mp4"
+            />
+            <p className="-mt-4 text-xs text-gray-500">En Crónica encantada, este video sustituye la foto de portada. Usa un MP4 vertical, corto y sin audio.</p>
             <SelectorFoto
               label="Foto del mensaje"
               value={configuracion.fotoMensaje || null}
