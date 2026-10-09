@@ -41,7 +41,10 @@ export default function CuentaRegresiva({ fechaHora }) {
         >
           <p
             className="text-3xl sm:text-5xl font-bold tabular-nums"
-            style={{ color: "var(--event-text, #292927)", fontFamily: "var(--font-display)" }}
+            style={{
+              color: "var(--event-text, #292927)",
+              fontFamily: "var(--font-display)",
+            }}
           >
             {String(val).padStart(2, "0")}
           </p>
