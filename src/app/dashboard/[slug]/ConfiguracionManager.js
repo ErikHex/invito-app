@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { ajusteTextoPortada, tipoCelebracion } from "@/lib/invitation-theme";
 import { familiasPaleta } from "@/lib/invitation-palettes";
 import { familiasTipografia } from "@/lib/invitation-fonts";
+import { catalogoPlantillas } from "@/components/invitaciones/plantillas/catalogo";
 import GaleriaManager from "./GaleriaManager";
 import { pinterestUrl, validClabe } from "@/lib/invitation-utils";
 import Invitacion from "@/components/invitaciones/Invitacion";
@@ -496,6 +497,27 @@ export default function ConfiguracionManager({ eventoId, eventoInicial, slug, es
             Diseño
           </summary>
           <div className="mt-4 space-y-6">
+            <div className="rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700">
+              <strong className="block text-gray-900">Plantillas</strong>
+              <p className="mt-1 text-xs text-gray-500">Elige un diseño para verlo en el editor. Los textos y fotografías se conservan.</p>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {catalogoPlantillas.map((plantilla) => {
+                  const seleccionada = plantilla.id === eventoInicial.plantilla;
+                  return <Link
+                    key={plantilla.id}
+                    href={`/dashboard/${slug}/diseno?plantilla=${encodeURIComponent(plantilla.id)}`}
+                    aria-current={seleccionada ? "page" : undefined}
+                    className={`rounded-lg border p-3 transition ${seleccionada ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 hover:border-gray-500"}`}
+                  >
+                    <strong className="block text-sm">{seleccionada ? `✓ ${plantilla.nombre}` : plantilla.nombre}</strong>
+                    <span className={`mt-1 block text-xs ${seleccionada ? "text-gray-200" : "text-gray-500"}`}>{plantilla.descripcion}</span>
+                  </Link>;
+                })}
+              </div>
+              <Link className="mt-3 inline-block text-sm font-semibold text-gray-700 underline" href={`/admin/${eventoId}#plantilla`}>
+                Guardar otra plantilla como modelo del evento ↗
+              </Link>
+            </div>
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700" role="note">
               <strong className="block text-gray-900">↕ Mueve el texto de portada</strong>
               <span className="mt-1 block text-xs">Toca y arrastra el título directamente en la previsualización. Al soltarlo aparecerán sus ajustes de color, efecto, tamaño y rotación.</span>

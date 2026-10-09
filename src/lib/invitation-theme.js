@@ -92,11 +92,12 @@ export function ajusteTextoPortada(configuracion = {}, { relativoAContenedor = f
   };
   return {
     x, y, escala, rotacion, interlineado, separacionCaracteres, color, efecto,
-    // The editor embeds the invitation in a smaller viewport. Editorial opts into
-    // container units so its position and scale are measured against its cover,
-    // rather than against the surrounding dashboard window.
+    // The editor may render each design in a narrow pane. Container units keep
+    // the offset proportional to its own cover instead of the browser window.
+    // Both axes use the cover width: this works with inline-size containment and
+    // mirrors the pointer math in TextoPortadaEditable.
     style: {
-      transform: `translate(${x}${relativoAContenedor ? "cqw" : "vw"}, ${y}${relativoAContenedor ? "cqh" : "vh"}) rotate(${rotacion}deg) scale(${escala / 100})`,
+      transform: `translate(${x}${relativoAContenedor ? "cqw" : "vw"}, ${y}${relativoAContenedor ? "cqw" : "vh"}) rotate(${rotacion}deg) scale(${escala / 100})`,
       lineHeight: interlineado,
       letterSpacing: `${separacionCaracteres}em`,
       ...(color ? { color } : {}),

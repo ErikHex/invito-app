@@ -78,7 +78,7 @@ function Galeria({ fotos }) {
 
 export default function JardinRomantico({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const cfg = datos.configuracion || {};
-  const textoPortada = ajusteTextoPortada(cfg);
+  const textoPortada = ajusteTextoPortada(cfg, { relativoAContenedor: true });
   const visible = key => datos.modulos_activos?.[key] !== false;
   const tipo = tipoCelebracion(cfg, 'jardin_romantico');
   const nombres = Array.isArray(cfg.nombres) ? cfg.nombres.filter(nombre => typeof nombre === 'string' && nombre.trim()) : [];
@@ -108,12 +108,12 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       <div className={styles.heroTop}><span>{tipo === 'boda' ? 'Una historia que florece' : 'Un día para florecer'}</span><span>Con todo el corazón</span></div>
       <div className={styles.stationery}>
         <Flores className={styles.heroFlowersLeft} priority /><Flores className={styles.heroFlowersRight} />
-        <div className={styles.invitationCard}>
+        <div className={styles.invitationCard} data-portada-contenedor data-editor-section="diseno">
           <div className={styles.monogram} aria-hidden="true"><Rama /><span>{iniciales}</span></div>
-          <p className={styles.eyebrow}>{invitationField(cfg, 'encabezado') ?? (tipo === 'boda' ? 'Nos casamos' : tipo === 'xv' ? 'Mis quince años' : 'Celebremos juntos')}</p>
+          <p className={styles.eyebrow} data-editor-section="informacion">{invitationField(cfg, 'encabezado') ?? (tipo === 'boda' ? 'Nos casamos' : tipo === 'xv' ? 'Mis quince años' : 'Celebremos juntos')}</p>
           <TextoPortadaEditable as="h1" className={styles.names} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{tipo === 'boda' && nombres.length >= 2 ? nombres.map((n, i) => <span key={i}>{i > 0 && <i className={styles.ampersand}>&</i>}{n}</span>) : nombre}</TextoPortadaEditable>
           <p className={styles.heroNote}>Hay días que se guardan<br />para siempre en el corazón.</p>
-          {partesFecha && <div className={styles.date} aria-label={fecha}><span>{mes}</span><strong>{Number(partesFecha[2])}</strong><span>{partesFecha[0]}</span></div>}
+          {partesFecha && <div className={styles.date} data-editor-section="informacion" aria-label={fecha}><span>{mes}</span><strong>{Number(partesFecha[2])}</strong><span>{partesFecha[0]}</span></div>}
           {destino && <a className={styles.discover} href={destino}>Descubre la invitación <span aria-hidden="true">↓</span></a>}
         </div>
         <div className={styles.seal} aria-hidden="true"><Rama /></div>
@@ -126,7 +126,7 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       <figcaption>{tipo === 'boda' ? 'Y elegirnos, una y otra vez.' : 'Lo bonito de la vida es compartirla.'}</figcaption>
     </figure>}
 
-    {visible('mensaje') && <section id="jardin-mensaje" className={`${styles.section} ${styles.message}`}>
+    {visible('mensaje') && <section id="jardin-mensaje" className={`${styles.section} ${styles.message}`} data-editor-section="informacion">
       <Rama className={styles.branch} />
       <Encabezado etiqueta={datos.nombre ? `Para ti, ${datos.nombre}` : 'Con mucho cariño'} titulo={<>Lo más bonito es<br /><em>compartirlo contigo.</em></>} />
       {mensaje && <p className={styles.bodyText}>{mensaje}</p>}
@@ -134,12 +134,12 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       <p className={styles.signature}>Con todo el corazón,<span>{nombre}</span></p>
     </section>}
 
-    {visible('cuenta_regresiva') && fecha && <section id="jardin-cuenta" className={`${styles.section} ${styles.countSection}`}>
+    {visible('cuenta_regresiva') && fecha && <section id="jardin-cuenta" className={`${styles.section} ${styles.countSection}`} data-editor-section="informacion">
       <Encabezado etiqueta="Cada vez más cerca" titulo={<>Falta muy poco<br /><em>para celebrar.</em></>} />
       <Cuenta fechaHora={cfg.fechaHora} />
     </section>}
 
-    {lugares && <section id="jardin-lugares" className={`${styles.section} ${styles.places}`}>
+    {lugares && <section id="jardin-lugares" className={`${styles.section} ${styles.places}`} data-editor-section="evento">
       <Encabezado etiqueta={fecha || 'Guarda este día'} titulo={<>El lugar de<br /><em>nuestros recuerdos.</em></>} />
       <div className={styles.venues}>
         {visible('ceremonia') && <Lugar datos={ceremonia} tipo="Ceremonia" numero="01" />}
@@ -147,12 +147,12 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       </div>
     </section>}
 
-    {visible('itinerario') && itinerario.length > 0 && <section id="jardin-itinerario" className={`${styles.section} ${styles.program}`}>
+    {visible('itinerario') && itinerario.length > 0 && <section id="jardin-itinerario" className={`${styles.section} ${styles.program}`} data-editor-section="evento">
       <div className={styles.programHeading}><Rama className={styles.branch} /><Encabezado etiqueta="Cada momento cuenta" titulo={<>Un día<br /><em>inolvidable.</em></>} /><p className={styles.bodyText}>Tiempo de abrazar, brindar<br />y crear nuevos recuerdos.</p></div>
       <ol className={styles.timeline}>{itinerario.map((item, i) => <li key={i}><span className={styles.timelineTime}>{item.hora}</span><div><h3>{item.titulo}</h3>{item.lugar && <p>{item.lugar}</p>}{enlaceSeguro(item.mapsUrl) && <a href={enlaceSeguro(item.mapsUrl)} target="_blank" rel="noopener noreferrer" className={styles.textLink}>Ver ubicación ↗</a>}</div></li>)}</ol>
     </section>}
 
-    {visible('vestimenta') && (vestimenta.codigo || vestimenta.descripcion || colores.length > 0 || pinterest) && <section id="jardin-vestimenta" className={`${styles.section} ${styles.dress}`}>
+    {visible('vestimenta') && (vestimenta.codigo || vestimenta.descripcion || colores.length > 0 || pinterest) && <section id="jardin-vestimenta" className={`${styles.section} ${styles.dress}`} data-editor-section="detalles">
       <Flores className={styles.dressFlowers} />
       <div className={styles.dressCard}>
         <Encabezado etiqueta="Un toque especial" titulo={<>Viste para<br /><em>celebrar.</em></>} />
@@ -163,11 +163,11 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       </div>
     </section>}
 
-    {visible('galeria') && fotos.length > 0 && <section id="jardin-galeria" className={`${styles.section} ${styles.memories}`}>
+    {visible('galeria') && fotos.length > 0 && <section id="jardin-galeria" className={`${styles.section} ${styles.memories}`} data-editor-section="fotos">
       <Encabezado etiqueta="Nuestro pequeño álbum" titulo={<>Instantes que<br /><em>se quedan.</em></>} /><Galeria fotos={fotos} />
     </section>}
 
-    {visible('regalos') && hayRegalos && <section id="jardin-regalos" className={`${styles.section} ${styles.gifts}`}>
+    {visible('regalos') && hayRegalos && <section id="jardin-regalos" className={`${styles.section} ${styles.gifts}`} data-editor-section="detalles">
       <Rama className={styles.branch} /><Encabezado etiqueta="Detalles que abrazan" titulo={<>Tu presencia,<br /><em>el mejor regalo.</em></>} />
       {regalos.mensaje && <p className={styles.bodyText}>{regalos.mensaje}</p>}
       {regalos.sobres && <p className={styles.bodyText}>Habrá un espacio para lluvia de sobres durante la celebración.</p>}

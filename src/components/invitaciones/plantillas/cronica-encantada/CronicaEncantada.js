@@ -62,7 +62,7 @@ export { default as OrbeDorado } from './OrbeDorado';
 export default function CronicaEncantada({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const root = useRef(null);
   const cfg = datos.configuracion || {};
-  const textoPortada = ajusteTextoPortada(cfg);
+  const textoPortada = ajusteTextoPortada(cfg, { relativoAContenedor: true });
   const visible = key => datos.modulos_activos?.[key] !== false;
   const tipo = tipoCelebracion(cfg, 'cronica_encantada');
   const nombres = Array.isArray(cfg.nombres) ? cfg.nombres.filter(Boolean).join(tipo === 'boda' ? ' & ' : ' ') : datos.evento_nombre;
@@ -100,11 +100,11 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
     <div className={styles.candles}>{Array.from({ length: 11 }, (_, index) => <Vela key={index} clase={styles[`c${index + 1}`]} />)}</div>
 
     {visible('portada') && <>
-      <section className={styles.hero} data-editor-section="diseno">
+      <section className={styles.hero} data-portada-contenedor data-editor-section="diseno">
         <p className={`${styles.kicker} ${styles.reveal}`}>{tipo === 'boda' ? 'Una historia escrita entre dos almas' : tipo === 'xv' ? 'Una nueva etapa escrita entre estrellas' : 'Una noche escrita entre las estrellas'}</p>
         <span className={`${styles.sigils} ${styles.reveal}`} aria-hidden="true">☾ · ✦ · ☽</span>
         <TextoPortadaEditable as="h1" className={styles.reveal} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombres || 'Una celebración extraordinaria'}</TextoPortadaEditable>
-        <p className={`${styles.heroText} ${styles.reveal}`}>{encabezado}</p>
+        <p className={`${styles.heroText} ${styles.reveal}`} data-editor-section="informacion">{encabezado}</p>
       </section>
       <section className={styles.portrait}><figure>{video ? <video src={video} autoPlay loop muted playsInline poster={foto || undefined} /> : foto ? <img src={foto} alt={`Retrato de ${nombres}`} style={{ objectPosition: cfg.encuadrePortada || 'center' }} /> : <div>Tu retrato<br />encantado</div>}</figure></section>
     </>}

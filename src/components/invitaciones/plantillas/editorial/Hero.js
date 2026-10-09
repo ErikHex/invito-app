@@ -4,7 +4,7 @@ import { ajusteTextoPortada } from "@/lib/invitation-theme";
 import TextoPortadaEditable from "../../compartidos/TextoPortadaEditable";
 
 export default function Hero({ nombreEvento, configuracion, editorPreview, onPortadaTextoChange }) {
-  const textoPortada = ajusteTextoPortada(configuracion);
+  const textoPortada = ajusteTextoPortada(configuracion, { relativoAContenedor: true });
   const { fotoPortada } = configuracion;
   const editorial = configuracion.editorial || {};
   const nombresConfigurados = Array.isArray(configuracion.nombres)

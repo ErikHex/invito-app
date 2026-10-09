@@ -19,7 +19,12 @@ function Destello({ className = '' }) {
 }
 
 function Seccion({ id, etiqueta, titulo, children, className = '' }) {
-  return <section id={id} className={`${styles.section} ${className}`} aria-labelledby={`${id}-titulo`}>
+  const seccionEditor = id.includes('galeria') ? 'fotos'
+    : /lugares|itinerario/.test(id) ? 'evento'
+      : /vestimenta|regalos/.test(id) ? 'detalles'
+        : /mensaje|cuenta/.test(id) ? 'informacion'
+          : undefined;
+  return <section id={id} className={`${styles.section} ${className}`} data-editor-section={seccionEditor} aria-labelledby={`${id}-titulo`}>
     <div data-reveal><p className={styles.eyebrow}>{etiqueta}</p><h2 id={`${id}-titulo`}>{titulo}</h2></div>
     {children}
   </section>;
@@ -78,7 +83,7 @@ function Galeria({ fotos }) {
 export default function AuraXV({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const root = useRef(null);
   const cfg = datos.configuracion || {};
-  const textoPortada = ajusteTextoPortada(cfg);
+  const textoPortada = ajusteTextoPortada(cfg, { relativoAContenedor: true });
   const tipo = tipoCelebracion(cfg, 'aura_xv');
   const boda = tipo === 'boda';
   const tituloEvento = tipo === 'xv' ? 'Mis XV' : boda ? 'Nuestra boda' : 'Celebremos';
@@ -124,11 +129,11 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview, editorP
     {visible('portada') && <header className={styles.hero}>
       <div className={styles.topline} data-intro><span>Una noche. Mil recuerdos.</span><span>{tituloEvento} <Destello /></span></div>
       <div className={styles.heroGrid}>
-        <div className={styles.heroCopy}>
-          <p className={styles.eyebrow} data-intro>{invitationField(cfg, 'encabezado') ?? 'Un nuevo capítulo'}</p>
+        <div className={styles.heroCopy} data-portada-contenedor data-editor-section="diseno">
+          <p className={styles.eyebrow} data-editor-section="informacion" data-intro>{invitationField(cfg, 'encabezado') ?? 'Un nuevo capítulo'}</p>
           <TextoPortadaEditable as="h1" data-intro style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombre}<span>{tituloEvento.toLowerCase()}.</span></TextoPortadaEditable>
           <p className={styles.heroNote} data-intro>Hay momentos que se viven una vez.<br />{boda ? 'Este queremos vivirlo contigo.' : 'Este quiero vivirlo contigo.'}</p>
-          {fecha && <p className={styles.heroDate} data-intro>{fecha}</p>}
+          {fecha && <p className={styles.heroDate} data-editor-section="informacion" data-intro>{fecha}</p>}
           {destino && <a href={destino} className={styles.heroLink} data-intro>Descubre la celebración <span aria-hidden="true">↓</span></a>}
         </div>
         <div className={styles.heroVisual} data-intro>

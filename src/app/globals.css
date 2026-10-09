@@ -36,6 +36,11 @@ body {
   background: #292927;
 }
 
+/* Keeps title-position adjustments proportional to each template's cover. */
+[data-portada-contenedor] {
+  container-type: inline-size;
+}
+
 .music-control {
   position: fixed;
   top: 1rem;

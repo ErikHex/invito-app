@@ -69,7 +69,7 @@ function TarjetaLugar({ id, etiqueta, datos, fechaTexto }) {
   if (!datos || !Object.values(datos).some(Boolean)) return null;
   const url = typeof datos.mapsUrl === 'string' && /^https:\/\//.test(datos.mapsUrl) ? datos.mapsUrl : null;
   return (
-    <article id={id} className={styles.card}>
+    <article id={id} className={styles.card} data-editor-section="evento">
       <p className={styles.cardLabel}>{etiqueta}</p>
       {datos.foto && <img
         src={datos.foto}
@@ -107,7 +107,7 @@ function Galeria({ fotos }) {
   if (!hayFotos) return null;
   const visibles = fotos.filter(Boolean);
   return (
-    <section id="galeria" className={styles.section}>
+    <section id="galeria" className={styles.section} data-editor-section="fotos">
       <p className={styles.eyebrow}>Recuerdos</p>
       <h2 className={styles.titulo}>Galería</h2>
       <div className={styles.gridFotos}>
@@ -141,7 +141,7 @@ function Galeria({ fotos }) {
 function Itinerario({ items }) {
   if (!Array.isArray(items) || items.length === 0) return null;
   return (
-    <section id="itinerario" className={styles.section}>
+    <section id="itinerario" className={styles.section} data-editor-section="evento">
       <p className={styles.eyebrow}>Programa</p>
       <h2 className={styles.titulo}>Itinerario</h2>
       <ol className={styles.itinerario}>
@@ -168,7 +168,7 @@ export default function Nocturno({
   onPortadaTextoChange,
 }) {
   const cfg = datos.configuracion || {};
-  const textoPortada = ajusteTextoPortada(cfg);
+  const textoPortada = ajusteTextoPortada(cfg, { relativoAContenedor: true });
   const visible = key => datos.modulos_activos?.[key] !== false;
   const { fechaHora } = cfg;
   const fechaTexto = fechaTextoDe(fechaHora);
@@ -193,10 +193,10 @@ export default function Nocturno({
         </div>
 
         {visible('portada') && (
-          <section id="portada" className={styles.portada}>
-            <p className={styles.eyebrow}>{invitationField(cfg, 'encabezado') ?? 'Celebremos juntos'}</p>
+          <section id="portada" className={styles.portada} data-portada-contenedor data-editor-section="diseno">
+            <p className={styles.eyebrow} data-editor-section="informacion">{invitationField(cfg, 'encabezado') ?? 'Celebremos juntos'}</p>
             <TextoPortadaEditable as="h1" className={styles.nombre} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombres}</TextoPortadaEditable>
-            {fechaTexto && <p className={styles.frase}>{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
+            {fechaTexto && <p className={styles.frase} data-editor-section="informacion">{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
             {cfg.fotoPortada && (
               <img
                 src={cfg.fotoPortada}
@@ -211,7 +211,7 @@ export default function Nocturno({
         )}
 
         {visible('mensaje') && (
-          <section id="mensaje" className={styles.section} aria-labelledby="nocturno-mensaje-titulo">
+          <section id="mensaje" className={styles.section} data-editor-section="informacion" aria-labelledby="nocturno-mensaje-titulo">
             <p className={styles.eyebrow}>{datos.nombre ? `Para ti, ${datos.nombre}` : 'Con mucho cariño'}</p>
             <h2 id="nocturno-mensaje-titulo" className={styles.titulo}>Lo más bonito es compartirlo contigo.</h2>
             {mensaje && <p className={styles.mensajeTexto}>{mensaje}</p>}
@@ -227,7 +227,7 @@ export default function Nocturno({
         )}
 
         {visible('cuenta_regresiva') && fechaHora && (
-          <section id="cuenta-regresiva" className={styles.section} aria-labelledby="nocturno-cuenta-titulo">
+          <section id="cuenta-regresiva" className={styles.section} data-editor-section="informacion" aria-labelledby="nocturno-cuenta-titulo">
             <p className={styles.eyebrow}>Cada vez más cerca</p>
             <h2 id="nocturno-cuenta-titulo" className={styles.titulo}>La cuenta para celebrar</h2>
             <CuentaRegresiva fechaHora={fechaHora} />
@@ -238,7 +238,7 @@ export default function Nocturno({
         {visible('recepcion') && <TarjetaLugar id="recepcion" etiqueta="Recepción" datos={invitationField(cfg, 'recepcion')} fechaTexto={fechaTexto} />}
 
         {visible('vestimenta') && cfg.vestimenta && (
-          <section id="vestimenta" className={styles.section}>
+          <section id="vestimenta" className={styles.section} data-editor-section="detalles">
             <p className={styles.eyebrow}>Dress code</p>
             <h2 className={styles.titulo}>Vestimenta</h2>
             {cfg.vestimenta.codigo && <p className={styles.codigoVestimenta}>{cfg.vestimenta.codigo}</p>}
@@ -257,7 +257,7 @@ export default function Nocturno({
         )}
 
         {visible('regalos') && cfg.regalos && (
-          <section id="regalos" className={styles.section}>
+          <section id="regalos" className={styles.section} data-editor-section="detalles">
             <p className={styles.eyebrow}>Con cariño</p>
             <h2 className={styles.titulo}>Regalos</h2>
             {cfg.regalos.mensaje && <p className={styles.texto}>{cfg.regalos.mensaje}</p>}

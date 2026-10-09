@@ -46,7 +46,6 @@ export default function TextoPortadaEditable({
       y: evento.clientY,
       ajuste,
       ancho: rectContenedor?.width || window.innerWidth,
-      alto: rectContenedor?.height || window.innerHeight,
     };
     raiz.current?.setPointerCapture?.(evento.pointerId);
   }
@@ -56,7 +55,9 @@ export default function TextoPortadaEditable({
     if (!inicial) return;
     onChange({
       x: limitar(inicial.ajuste.x + (evento.clientX - inicial.x) / inicial.ancho * 100, -150, 150),
-      y: limitar(inicial.ajuste.y + (evento.clientY - inicial.y) / inicial.alto * 100, -150, 150),
+      // The adjustment is rendered in cqw. Use the same reference for both
+      // axes so the title lands exactly where the pointer is released.
+      y: limitar(inicial.ajuste.y + (evento.clientY - inicial.y) / inicial.ancho * 100, -150, 150),
     });
   }
 
