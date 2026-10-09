@@ -1,6 +1,6 @@
 .editorial {
-  --inv-paper: #f6f1e7;
-  --inv-ink: #292927;
+  --inv-paper: var(--event-background, #f6f1e7);
+  --inv-ink: var(--event-text, #292927);
   --inv-gold: var(--event-accent-text, #b89a64);
   background: var(--inv-paper);
   color: var(--inv-ink);
@@ -71,7 +71,7 @@
   font-size: 0.42em;
   line-height: 1;
   letter-spacing: 0;
-  color: var(--event-primary, #e8c982);
+  color: inherit;
 }
 .portrait {
   position: absolute;
@@ -154,6 +154,13 @@
   letter-spacing: -0.045em;
   margin: 30px 20px;
 }
+.message h2 {
+  color: var(--inv-ink);
+}
+.event h2,
+.event h3 {
+  color: var(--event-panel-text, #f6f1e7);
+}
 .message h2 em,
 .event h2 em {
   font-weight: 400;
@@ -189,18 +196,14 @@
 .event {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    rgba(41, 41, 39, 0.9),
-    rgba(41, 41, 39, 0.72)
-  );
+  background: var(--event-panel-background, #292927);
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 24px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -18px 35px rgba(0, 0, 0, 0.12),
     0 18px 45px rgba(7, 15, 11, 0.28);
-  color: var(--inv-paper);
+  color: var(--event-panel-text, #f6f1e7);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
   backdrop-filter: blur(22px) saturate(140%);
   padding: 48px 20px 56px;
@@ -287,7 +290,7 @@
   border: 1px solid currentColor;
   max-width: 420px;
   margin: auto;
-  color: var(--inv-paper);
+  color: var(--event-panel-text, #f6f1e7);
   font-family: var(--font-display), Georgia, serif;
   font-size: 22px;
   font-style: italic;

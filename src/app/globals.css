@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-script: var(--font-script-allura);
+  --font-display: var(--font-display-fraunces);
+  --font-text: var(--font-text-work-sans);
 }
 
 @theme inline {

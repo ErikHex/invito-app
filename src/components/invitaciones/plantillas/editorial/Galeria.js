@@ -8,7 +8,7 @@ export default function Galeria({ fotos, colorFondo }) {
   if (!fotos || fotos.length === 0) return null;
 
   return (
-    <div className="inv-glass-section py-16 px-6 mx-4 my-8">
+    <div className="inv-glass-section py-16 px-6 mx-4 my-8" data-editor-section="fotos">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
         {fotos.map((foto, i) => (
           <button

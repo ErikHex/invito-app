@@ -20,6 +20,8 @@ export default function Editorial({
   colorFondo,
   colorClaro,
   colorAcento,
+  editorPreview,
+  onPortadaTextoChange,
 }) {
   const cfg = datos.configuracion || {};
   const visible = key => datos.modulos_activos?.[key] !== false;
@@ -45,6 +47,8 @@ export default function Editorial({
           nombreEvento={datos.evento_nombre}
           configuracion={cfg}
           fechaTexto={fechaTexto}
+          editorPreview={editorPreview}
+          onPortadaTextoChange={onPortadaTextoChange}
         />)}
         {visible("mensaje") && (<Mensaje
           nombreEvento={datos.evento_nombre}

@@ -1,8 +1,8 @@
 .shell { min-height: 100svh; color-scheme: light; color: #302a39; background: #fdfcf9; --dash-ink: #302a39; --dash-muted: #746b7c; --dash-accent: #79528d; }
-.shell :is(h1,h2,h3) { font-family: var(--font-display), Georgia, serif; font-weight: 400; letter-spacing: -.6px; color: #302a39; }
-.shell h1 { font-size: clamp(30px,4vw,43px); line-height: 1.2; margin-bottom: 12px; }
-.shell h2 { font-size: 25px; }
-.shell h3 { font-size: 21px; }
+:where(.shell) :is(h1,h2,h3) { font-family: var(--font-display), Georgia, serif; font-weight: 400; letter-spacing: -.6px; color: #302a39; }
+:where(.shell) h1 { font-size: clamp(30px,4vw,43px); line-height: 1.2; margin-bottom: 12px; }
+:where(.shell) h2 { font-size: 25px; }
+:where(.shell) h3 { font-size: 21px; }
 .shell main { max-width: 1200px; padding-top: 36px; padding-bottom: 60px; }
 .shell :is(input:not([type=checkbox]):not([type=file]),textarea,select) { display: block; width: 100%; min-width: 0; background: #fff; border: 1px solid #ded8e1; border-radius: 9px; min-height: 44px; padding: 10px 12px; color: #302a39; margin-top: 6px; font-size: 13px; }
 .shell label { font-size: 12px; color: #63576c; }

@@ -14,6 +14,7 @@ export default function Recepcion({ recepcion, fechaTexto }) {
   return (
     <section
       className={styles.event}
+      data-editor-section="evento"
       aria-labelledby="recepcion-titulo"
     >
       <p className={styles.eyebrow}>Después del sí</p>

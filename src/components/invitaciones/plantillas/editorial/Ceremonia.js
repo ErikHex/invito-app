@@ -5,6 +5,7 @@ export default function Ceremonia({ ceremonia, fechaTexto }) {
   return (
     <section
       className={styles.event}
+      data-editor-section="evento"
       aria-labelledby="ceremonia-titulo"
     >
       <p className={styles.eyebrow}>El gran día</p>

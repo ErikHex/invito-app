@@ -10,8 +10,9 @@ import QrCode from '../../compartidos/QrCode';
 import Transferencia from '../../compartidos/Transferencia';
 import { invitationField, pinterestUrl } from '@/lib/invitation-utils';
 import { enlaceSeguro, enlaceRegalo, fechaInvitacion, tiempoRestante } from '@/lib/aura-xv';
-import { tipoCelebracion } from '@/lib/invitation-theme';
+import { ajusteTextoPortada, tipoCelebracion } from '@/lib/invitation-theme';
 import styles from './aura-xv.module.css';
+import TextoPortadaEditable from '../../compartidos/TextoPortadaEditable';
 
 function Destello({ className = '' }) {
   return <svg className={className} viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 2C53 37 63 47 98 50C63 53 53 63 50 98C47 63 37 53 2 50C37 47 47 37 50 2Z" fill="currentColor" /></svg>;
@@ -74,9 +75,10 @@ function Galeria({ fotos }) {
   </>;
 }
 
-export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
+export default function AuraXV({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const root = useRef(null);
   const cfg = datos.configuracion || {};
+  const textoPortada = ajusteTextoPortada(cfg);
   const tipo = tipoCelebracion(cfg, 'aura_xv');
   const boda = tipo === 'boda';
   const tituloEvento = tipo === 'xv' ? 'Mis XV' : boda ? 'Nuestra boda' : 'Celebremos';
@@ -124,7 +126,7 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview }) {
       <div className={styles.heroGrid}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow} data-intro>{invitationField(cfg, 'encabezado') ?? 'Un nuevo capítulo'}</p>
-          <h1 data-intro>{nombre}<span>{tituloEvento.toLowerCase()}.</span></h1>
+          <TextoPortadaEditable as="h1" data-intro style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombre}<span>{tituloEvento.toLowerCase()}.</span></TextoPortadaEditable>
           <p className={styles.heroNote} data-intro>Hay momentos que se viven una vez.<br />{boda ? 'Este queremos vivirlo contigo.' : 'Este quiero vivirlo contigo.'}</p>
           {fecha && <p className={styles.heroDate} data-intro>{fecha}</p>}
           {destino && <a href={destino} className={styles.heroLink} data-intro>Descubre la celebración <span aria-hidden="true">↓</span></a>}

@@ -1,6 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pinterestUrl, validClabe, normalizePhone, validPhone, guestMatches, invitationField } from '../src/lib/invitation-utils.js';
+import { temaInvitacion } from '../src/lib/invitation-theme.js';
+
+test('palette resolves readable section text for dark backgrounds', () => {
+  const tema = temaInvitacion({ tema: { paleta: 'neutros:noche' } }, 'editorial');
+  assert.equal(tema.fondo, '#171719');
+  assert.equal(tema.textoPrincipal, '#F8F1E7');
+});
+
 test('saved invitation fields override legacy content, including cleared text and photos', () => {
   const editorial = { mensajeBase: 'Anterior', fotoMensaje: 'old.jpg' };
   assert.equal(invitationField({ editorial, mensajeBase: 'Nuevo' }, 'mensajeBase'), 'Nuevo');

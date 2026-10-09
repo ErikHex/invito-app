@@ -1,0 +1,2 @@
+.editable { cursor: grab; }
+.editable:active { cursor: grabbing; }

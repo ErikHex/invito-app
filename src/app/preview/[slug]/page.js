@@ -2,12 +2,16 @@ import { getDashboardData } from '@/app/dashboard/[slug]/dashboard-data';
 import Invitacion from '@/components/invitaciones/Invitacion';
 import { catalogoPlantillas } from '@/components/invitaciones/plantillas/catalogo';
 
+// This route is opened immediately after an editor save. Rendering it per
+// request prevents a stale server payload from differing from the editor.
+export const dynamic = 'force-dynamic';
+
 export default async function PreviewPage({ params, searchParams }) {
   const { slug } = await params;
   const data = await getDashboardData(slug);
   if (!data) return null;
   const query = await searchParams;
-  const modelo = data.evento.es_muestra && catalogoPlantillas.find(p => p.id === query.plantilla);
+  const modelo = catalogoPlantillas.find(p => p.id === query.plantilla);
   return <Invitacion preview datos={{
     evento_nombre: data.evento.nombre_evento,
     configuracion: data.evento.configuracion,

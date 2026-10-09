@@ -8,6 +8,7 @@ export default function Vestimenta({ vestimenta }) {
   return (
     <section
       className={styles.event}
+      data-editor-section="detalles"
       aria-labelledby="vestimenta-titulo"
     >
       <p className={styles.eyebrow}>Para tener en cuenta</p>

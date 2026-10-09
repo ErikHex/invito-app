@@ -2,13 +2,18 @@
 // Photos may come from customer-provided hosts and public Storage.
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-import { temaInvitacion, tipoCelebracion } from "@/lib/invitation-theme";
+import { ajusteTextoPortada, tipoCelebracion } from "@/lib/invitation-theme";
+import { familiasPaleta } from "@/lib/invitation-palettes";
+import { familiasTipografia } from "@/lib/invitation-fonts";
 import GaleriaManager from "./GaleriaManager";
 import { pinterestUrl, validClabe } from "@/lib/invitation-utils";
+import Invitacion from "@/components/invitaciones/Invitacion";
+import styles from "./editor.module.css";
 
 const inputClass =
   "mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-800";
@@ -97,6 +102,7 @@ function ItinerarioEditor({ items, onChange }) {
         >
           <Campo
             label="Hora"
+            type="time"
             value={item.hora}
             onChange={(valor) => actualizarItem(index, "hora", valor)}
             placeholder="17:00"
@@ -194,7 +200,7 @@ function Textarea({ label, value, onChange, placeholder }) {
   );
 }
 
-export default function ConfiguracionManager({ eventoId, eventoInicial }) {
+export default function ConfiguracionManager({ eventoId, eventoInicial, slug, esMuestra = false }) {
   const router = useRouter();
   const [nombreEvento, setNombreEvento] = useState(
     eventoInicial.nombre_evento || "",
@@ -210,6 +216,15 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
   const [mensaje, setMensaje] = useState("");
   const [subiendo, setSubiendo] = useState(false);
   const [base, setBase] = useState(eventoInicial.configuracion || {});
+  const [panelAbierto, setPanelAbierto] = useState(true);
+  const [seccionActiva, setSeccionActiva] = useState("informacion");
+  const [familiaPaletaActiva, setFamiliaPaletaActiva] = useState(
+    eventoInicial.configuracion?.tema?.paleta?.split(":")[0] || "neutros",
+  );
+  const [textoPortadaSeleccionado, setTextoPortadaSeleccionado] = useState(false);
+  const inicioArrastrePanel = useRef(null);
+  const ajustesPortadaRef = useRef(null);
+  const [menuNavegacionAbierto, setMenuNavegacionAbierto] = useState(false);
   const [guardado, setGuardado] = useState(JSON.stringify([eventoInicial.nombre_evento || "", eventoInicial.fecha || "", eventoInicial.configuracion || {}, (eventoInicial.configuracion?.nombres || []).join(", ")]));
   const actual = JSON.stringify([nombreEvento, fecha, configuracion, nombres]);
   const pendiente = actual !== guardado;
@@ -223,6 +238,25 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
     document.addEventListener('click', navegar, true);
     return () => { window.removeEventListener('beforeunload', avisar); document.removeEventListener('click', navegar, true); };
   }, [pendiente, subiendo]);
+  useEffect(() => {
+    const enfocarAjustesPortada = () => {
+      setTextoPortadaSeleccionado(true);
+      setPanelAbierto(true);
+      setSeccionActiva("diseno");
+      requestAnimationFrame(() => {
+        document.getElementById("editor-diseno")?.setAttribute("open", "");
+        ajustesPortadaRef.current?.focus({ preventScroll: false });
+        ajustesPortadaRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    };
+    const ocultarAjustesPortada = () => setTextoPortadaSeleccionado(false);
+    document.addEventListener("invito:seleccionar-texto-portada", enfocarAjustesPortada);
+    document.addEventListener("invito:deseleccionar-texto-portada", ocultarAjustesPortada);
+    return () => {
+      document.removeEventListener("invito:seleccionar-texto-portada", enfocarAjustesPortada);
+      document.removeEventListener("invito:deseleccionar-texto-portada", ocultarAjustesPortada);
+    };
+  }, []);
   const supabase = createClient();
   const fotos = Array.isArray(configuracion.bibliotecaFotos || configuracion.galeria)
     ? (configuracion.bibliotecaFotos || configuracion.galeria)
@@ -234,6 +268,20 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
     : [];
   const regalos = configuracion.regalos || {};
   const vestimenta = configuracion.vestimenta || {};
+  const textoPortada = ajusteTextoPortada(configuracion);
+  const textoPortadaGuardable = {
+    x: textoPortada.x,
+    y: textoPortada.y,
+    escala: textoPortada.escala,
+    rotacion: textoPortada.rotacion,
+    interlineado: textoPortada.interlineado,
+    separacionCaracteres: textoPortada.separacionCaracteres,
+    color: textoPortada.color,
+    efecto: textoPortada.efecto,
+  };
+  const familiaPaleta = familiasPaleta.find(
+    (familia) => familia.id === familiaPaletaActiva,
+  ) || familiasPaleta[0];
 
   function actualizarCampo(campo, valor) {
     setConfiguracion((actual) => ({ ...actual, [campo]: valor }));
@@ -247,10 +295,10 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
   }
 
   async function guardar() {
-    if (configuracion.vestimenta?.pinterestUrl && !pinterestUrl(configuracion.vestimenta.pinterestUrl)) { setMensaje('Usa un enlace HTTPS válido de Pinterest o pin.it.'); return; }
+    if (configuracion.vestimenta?.pinterestUrl && !pinterestUrl(configuracion.vestimenta.pinterestUrl)) { setMensaje('Usa un enlace HTTPS válido de Pinterest o pin.it.'); return false; }
     const transferencia = configuracion.regalos?.transferencia;
-    if (transferencia?.activa && (!transferencia.titular?.trim() || !transferencia.banco?.trim() || !validClabe(transferencia.clabe || ''))) { setMensaje('Completa titular, banco y una CLABE válida de 18 dígitos.'); return; }
-    if (!nombreEvento.trim()) { setMensaje('Escribe el nombre del evento.'); return; }
+    if (transferencia?.activa && (!transferencia.titular?.trim() || !transferencia.banco?.trim() || !validClabe(transferencia.clabe || ''))) { setMensaje('Completa titular, banco y una CLABE válida de 18 dígitos.'); return false; }
+    if (!nombreEvento.trim()) { setMensaje('Escribe el nombre del evento.'); return false; }
     setGuardando(true);
     setMensaje("");
 
@@ -279,21 +327,110 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
       setGuardado(JSON.stringify([nombreEvento, fecha, nuevaConfiguracion, nombres]));
       setMensaje("Cambios guardados. Ya puedes revisar la vista previa.");
       router.refresh();
+      return true;
     } catch (error) { setMensaje(error.message || "No pudimos guardar. Revisa tu conexión."); }
     finally { setGuardando(false); }
+    return false;
   }
 
+  const datosPreview = {
+    evento_nombre: nombreEvento,
+    configuracion,
+    plantilla: eventoInicial.plantilla,
+    modulos_activos: eventoInicial.modulos_activos,
+    nombre: "Invitado de muestra",
+    acompanantes: 1,
+    estado: "pendiente",
+  };
+
+  const seleccionarSeccion = (seccion, { enfocarPestana = false } = {}) => {
+    setPanelAbierto(true);
+    setSeccionActiva(seccion);
+    requestAnimationFrame(() => {
+      const detalle = document.getElementById(`editor-${seccion}`);
+      if (detalle) detalle.open = true;
+      if (enfocarPestana) {
+        document.querySelector(`[data-editor-tab="${seccion}"]`)?.focus({ preventScroll: true });
+      }
+    });
+  };
+  const seleccionarTextoVistaPrevia = (event) => {
+    const objetivo = event.target instanceof Element ? event.target : null;
+    if (!objetivo || objetivo.closest("button, a, input, select, textarea, label")) return;
+    if (!objetivo.closest("p, h1, h2, h3, h4, h5, h6, span, strong, em, small, li, address")) return;
+
+    const seccionMarcada = objetivo.closest("[data-editor-section]")?.dataset.editorSection;
+    const identificador = objetivo.closest("[id]")?.id || "";
+    const seccionPorId = identificador.includes("galeria")
+      ? "fotos"
+      : /ceremonia|recepcion|lugar|itinerario/.test(identificador)
+        ? "evento"
+        : /vestimenta|regalos/.test(identificador)
+          ? "detalles"
+          : /mensaje|cuenta/.test(identificador)
+            ? "informacion"
+            : null;
+    const seccion = seccionMarcada || seccionPorId;
+    if (seccion) seleccionarSeccion(seccion, { enfocarPestana: true });
+  };
+  const minimizarDesdeVistaPrevia = (event) => {
+    if (event.target.closest("button, a, input, select, textarea, label")) return;
+    setPanelAbierto(false);
+  };
+  const abrirVistaPublica = async (event) => {
+    event.preventDefault();
+    if (pendiente && !(await guardar())) {
+      setPanelAbierto(true);
+      return;
+    }
+    const destino = new URL(event.currentTarget.href);
+    destino.searchParams.set("actualizado", String(Date.now()));
+    window.location.assign(destino.href);
+  };
+  const seccionesEditor = [['informacion', 'Información'], ['diseno', 'Diseño'], ['fotos', 'Fotos'], ['evento', 'Evento'], ['detalles', 'Detalles']];
+  const vistaPreviaHref = `/preview/${slug}?plantilla=${encodeURIComponent(eventoInicial.plantilla)}`;
+  const enlacesDashboard = esMuestra
+    ? [["Plantillas y muestras", "/admin/muestras"], ["Ver invitación", vistaPreviaHref]]
+    : [["Resumen", `/dashboard/${slug}`], ["Invitados", `/dashboard/${slug}/invitados`], ["Mesas", `/dashboard/${slug}/mesas`], ["Equipo y accesos", `/dashboard/${slug}/equipo`], ["Registrar accesos", `/checkin/${slug}`], ["Ver invitación", vistaPreviaHref]];
+
   return (
-    <section className="mb-6 rounded-lg bg-white p-4 shadow">
-      <div className="sticky top-0 z-10 -mx-4 mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3">
-        <div>
-          <h2 className="font-semibold text-gray-800">
-            Datos de la invitación
-          </h2>
-          <p className="text-sm text-gray-500">
-            {pendiente ? "Tienes cambios sin guardar." : "Tu invitación, a tu manera."}
-          </p>
+    <div className={styles.editor}>
+      <section onPointerDown={minimizarDesdeVistaPrevia} onClick={seleccionarTextoVistaPrevia} className={`${styles.preview} ${seccionActiva === "diseno" && panelAbierto ? styles.designPreview : ""}`} aria-label="Vista previa en vivo de la invitación">
+        <button type="button" className={styles.dashboardMenu} onClick={() => setMenuNavegacionAbierto((abierto) => !abierto)} aria-expanded={menuNavegacionAbierto} aria-controls="navegacion-dashboard" aria-label="Abrir navegación del dashboard">☰</button>
+        {menuNavegacionAbierto && <nav id="navegacion-dashboard" className={styles.dashboardMenuList} aria-label="Navegación del dashboard">
+          {enlacesDashboard.map(([etiqueta, href]) => <Link key={href} href={href} prefetch={etiqueta === "Ver invitación" ? false : undefined} onClick={etiqueta === "Ver invitación" ? abrirVistaPublica : undefined}>{etiqueta}</Link>)}
+        </nav>}
+        <div className={styles.previewViewport}>
+          <Invitacion datos={datosPreview} editorPreview onPortadaTextoChange={(cambios) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, ...cambios })} />
         </div>
+      </section>
+
+      <section className={`${styles.panel} ${panelAbierto ? "" : styles.compact} ${seccionActiva === "diseno" ? styles.designPanel : ""}`} aria-label="Panel de edición">
+        <div
+          className={styles.panelHandle}
+          onTouchStart={(event) => { inicioArrastrePanel.current = event.touches[0]?.clientY ?? null; }}
+          onTouchEnd={(event) => {
+            const inicio = inicioArrastrePanel.current;
+            const final = event.changedTouches[0]?.clientY;
+            inicioArrastrePanel.current = null;
+            if (inicio === null || final === undefined || Math.abs(final - inicio) < 30) return;
+            setPanelAbierto(final < inicio);
+          }}
+        >
+          <span className={styles.grip} aria-hidden="true" />
+          <span className={styles.panelHeading}>
+            <strong>Editar invitación</strong>
+            <button type="button" className={styles.panelToggle} onClick={() => setPanelAbierto((abierto) => !abierto)} aria-expanded={panelAbierto} aria-controls="panel-edicion">{panelAbierto ? seccionActiva === "diseno" ? "Ver portada" : "Minimizar" : "Editar"}</button>
+          </span>
+        </div>
+        <div id="panel-edicion" className={styles.panelBody}>
+          <nav className={styles.sectionTabs} aria-label="Secciones de edición">
+            {seccionesEditor.map(([id, etiqueta]) => (
+              <button key={id} type="button" data-editor-tab={id} onClick={() => seleccionarSeccion(id)} aria-pressed={seccionActiva === id}>{etiqueta}</button>
+            ))}
+          </nav>
+      <div className="editor-savebar flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3">
+        <p className="text-xs text-gray-500">{pendiente ? "Cambios sin guardar" : "Todo guardado"}</p>
         <button
           type="button"
           onClick={guardar}
@@ -306,12 +443,11 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
       </div>
 
       <fieldset disabled={guardando || subiendo} className="space-y-3">
-        <details
+        <details id="editor-informacion" className={`rounded border border-gray-200 p-4 ${styles.mobileSection} ${seccionActiva === "informacion" ? styles.mobileSectionActive : ""}`}
           open
-          className="rounded border border-gray-200 p-4"
         >
-          <summary className="cursor-pointer font-semibold text-gray-800">
-            1. Datos principales
+          <summary className={`cursor-pointer font-semibold text-gray-800 ${styles.sectionSummary}`}>
+            Información principal
           </summary>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="block text-sm font-medium text-gray-700">
@@ -323,14 +459,6 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
               </select>
               <span className="text-xs text-gray-500">Elige el evento sin cambiar de plantilla.</span>
             </label>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Color principal
-                <input type="color" className="mt-1 block h-11 w-24 cursor-pointer rounded border border-gray-300" value={temaInvitacion(configuracion, eventoInicial.plantilla).principal} onChange={event => actualizarSeccion("tema", "colorAcento", event.target.value)} />
-              </label>
-              <p className="mt-1 text-xs text-gray-500">{temaInvitacion(configuracion, eventoInicial.plantilla).principal} · Se aplica a detalles y sobre; los tonos del texto se ajustan para facilitar la lectura.</p>
-              <button type="button" className="mt-2 text-sm underline text-gray-700" onClick={() => actualizarSeccion("tema", "colorAcento", null)}>Restablecer color original</button>
-            </div>
             <Campo
               label="Nombre del evento"
               value={nombreEvento}
@@ -363,9 +491,97 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
           </div>
         </details>
 
-        <details className="rounded border border-gray-200 p-4">
-          <summary className="cursor-pointer font-semibold text-gray-800">
-            2. Fotos
+        <details id="editor-diseno" className={`rounded border border-gray-200 p-4 ${styles.mobileSection} ${seccionActiva === "diseno" ? styles.mobileSectionActive : ""}`}>
+          <summary className={`cursor-pointer font-semibold text-gray-800 ${styles.sectionSummary}`}>
+            Diseño
+          </summary>
+          <div className="mt-4 space-y-6">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700" role="note">
+              <strong className="block text-gray-900">↕ Mueve el texto de portada</strong>
+              <span className="mt-1 block text-xs">Toca y arrastra el título directamente en la previsualización. Al soltarlo aparecerán sus ajustes de color, efecto, tamaño y rotación.</span>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800">Paleta de color</h3>
+              <p className="mt-1 text-xs text-gray-500">Elige una combinación completa: fondo, texto, recuadros y acentos se ajustan juntos para conservar un diseño armonioso y legible.</p>
+            </div>
+            <label className="block text-sm font-medium text-gray-700">
+              Familia de color
+              <select className={inputClass} value={familiaPaleta.id} onChange={(event) => setFamiliaPaletaActiva(event.target.value)}>
+                {familiasPaleta.map((familia) => <option key={familia.id} value={familia.id}>{familia.nombre} · {familia.descripcion}</option>)}
+              </select>
+            </label>
+            <section aria-labelledby="variantes-paleta">
+              <div className="mb-2 flex items-baseline justify-between gap-3">
+                <h4 id="variantes-paleta" className="text-sm font-medium text-gray-800">Variantes de {familiaPaleta.nombre}</h4>
+                <span className="text-xs text-gray-500">{familiaPaleta.descripcion}</span>
+              </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {familiaPaleta.variantes.map((variante) => {
+                  const id = `${familiaPaleta.id}:${variante.id}`;
+                  const seleccionada = configuracion.tema?.paleta === id;
+                  return <button key={id} type="button" onClick={() => actualizarSeccion("tema", "paleta", id)} aria-pressed={seleccionada} className={`flex min-h-16 items-center gap-3 rounded-lg border p-2 text-left transition ${seleccionada ? "border-gray-900 ring-2 ring-gray-300" : "border-gray-200 hover:border-gray-400"}`}>
+                    <span className="flex overflow-hidden rounded-full border border-black/10" aria-hidden="true">{variante.colores.map((color) => <i key={color} className="block h-8 w-5" style={{ backgroundColor: color }} />)}</span>
+                    <span><strong className="block text-sm text-gray-800">{variante.nombre}</strong><small className="text-xs text-gray-500">{familiaPaleta.nombre}</small></span>
+                  </button>;
+                })}
+              </div>
+            </section>
+            <button type="button" className="text-sm underline text-gray-700" onClick={() => actualizarSeccion("tema", "paleta", null)}>Restablecer los colores originales de la plantilla</button>
+            <section className="border-t border-gray-200 pt-6" aria-labelledby="tipografias">
+              <h3 id="tipografias" className="text-sm font-semibold text-gray-800">Tipografía</h3>
+              <p className="mt-1 text-xs text-gray-500">Elige el estilo para los títulos, firmas y textos de toda tu invitación. La opción editorial usa caligrafía en títulos y serif en el cuerpo.</p>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                {familiasTipografia.map((familia) => {
+                  const seleccionada = (configuracion.tema?.tipografia || "clasica") === familia.id;
+                  return <button key={familia.id} type="button" onClick={() => actualizarSeccion("tema", "tipografia", familia.id)} aria-pressed={seleccionada} className={`grid h-44 grid-rows-[auto_3.75rem_auto_1fr] overflow-hidden rounded-lg border p-3 text-left transition ${seleccionada ? "border-gray-900 ring-2 ring-gray-300" : "border-gray-200 hover:border-gray-400"}`}>
+                    <strong className="block text-sm text-gray-800">{familia.nombre}</strong>
+                    <span className="mt-2 block overflow-hidden text-xl leading-tight text-gray-800" style={{ ...familia.variables, fontFamily: "var(--font-display)" }}>{familia.muestraTitulo}</span>
+                    <span className="block text-xs text-gray-600" style={{ ...familia.variables, fontFamily: "var(--font-text)" }}>{familia.muestraTexto}</span>
+                    <small className="mt-auto block pt-2 text-xs text-gray-500">{familia.descripcion}</small>
+                  </button>;
+                })}
+              </div>
+            </section>
+            {textoPortadaSeleccionado && <section ref={ajustesPortadaRef} data-portada-controls tabIndex={-1} className="border-t border-gray-200 pt-6 outline-none" aria-labelledby="ajuste-portada">
+              <h3 id="ajuste-portada" className="text-sm font-semibold text-gray-800">Ajustar texto de portada</h3>
+              <p className="mt-1 text-xs text-gray-500">Arrastra el título directamente con mouse o touch para moverlo. Al soltarlo, estos controles reciben el foco.</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-gray-700">Color del texto
+                  <input className="mt-2 block h-10 w-full cursor-pointer rounded border border-gray-300 bg-white p-1" type="color" value={textoPortada.color || "#ffffff"} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, color: event.target.value })} />
+                </label>
+                <label className="block text-sm font-medium text-gray-700">Efecto para resaltar
+                  <select className={inputClass} value={textoPortada.efecto} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, efecto: event.target.value })}>
+                    <option value="sombra">Sombra suave</option>
+                    <option value="resplandor">Resplandor</option>
+                    <option value="contorno">Contorno oscuro</option>
+                    <option value="ninguno">Sin efecto</option>
+                  </select>
+                </label>
+                <label className="block text-sm font-medium text-gray-700">Tamaño
+                  <input className="mt-2 w-full accent-gray-900" type="range" min="40" max="300" step="1" value={textoPortada.escala} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, escala: Number(event.target.value) })} />
+                  <span className="mt-1 block text-xs font-normal text-gray-500">{textoPortada.escala}%</span>
+                </label>
+                <label className="block text-sm font-medium text-gray-700">Rotación
+                  <input className="mt-2 w-full accent-gray-900" type="range" min="-90" max="90" step="1" value={textoPortada.rotacion} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, rotacion: Number(event.target.value) })} />
+                  <span className="mt-1 block text-xs font-normal text-gray-500">{textoPortada.rotacion}°</span>
+                </label>
+                <label className="block text-sm font-medium text-gray-700">Interlineado
+                  <input className="mt-2 w-full accent-gray-900" type="range" min="0.7" max="2" step="0.05" value={textoPortada.interlineado} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, interlineado: Number(event.target.value) })} />
+                  <span className="mt-1 block text-xs font-normal text-gray-500">{textoPortada.interlineado.toFixed(2)}</span>
+                </label>
+                <label className="block text-sm font-medium text-gray-700">Separación de caracteres
+                  <input className="mt-2 w-full accent-gray-900" type="range" min="-0.1" max="0.5" step="0.01" value={textoPortada.separacionCaracteres} onChange={(event) => actualizarSeccion("portada", "texto", { ...textoPortadaGuardable, separacionCaracteres: Number(event.target.value) })} />
+                  <span className="mt-1 block text-xs font-normal text-gray-500">{textoPortada.separacionCaracteres.toFixed(2)} em</span>
+                </label>
+              </div>
+              <button type="button" className="mt-4 text-sm underline text-gray-700" onClick={() => actualizarSeccion("portada", "texto", null)}>Restablecer ajustes del texto</button>
+            </section>}
+          </div>
+        </details>
+
+        <details id="editor-fotos" className={`rounded border border-gray-200 p-4 ${styles.mobileSection} ${seccionActiva === "fotos" ? styles.mobileSectionActive : ""}`}>
+          <summary className={`cursor-pointer font-semibold text-gray-800 ${styles.sectionSummary}`}>
+            Fotos
           </summary>
           <div className="mt-4 space-y-6">
             <GaleriaManager eventoId={eventoId} configuracion={configuracion} onChange={setConfiguracion} onBusy={setSubiendo} />
@@ -409,9 +625,9 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
           </div>
         </details>
 
-        <details className="rounded border border-gray-200 p-4">
-          <summary className="cursor-pointer font-semibold text-gray-800">
-            3. Ceremonia y recepción
+        <details id="editor-evento" className={`rounded border border-gray-200 p-4 ${styles.mobileSection} ${seccionActiva === "evento" ? styles.mobileSectionActive : ""}`}>
+          <summary className={`cursor-pointer font-semibold text-gray-800 ${styles.sectionSummary}`}>
+            Ceremonia y recepción
           </summary>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
@@ -419,6 +635,7 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
             </div>
             <Campo
               label="Hora"
+              type="time"
               value={ceremonia.hora}
               onChange={(valor) =>
                 actualizarSeccion("ceremonia", "hora", valor)
@@ -453,6 +670,7 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
             </div>
             <Campo
               label="Hora"
+              type="time"
               value={recepcion.hora}
               onChange={(valor) =>
                 actualizarSeccion("recepcion", "hora", valor)
@@ -482,12 +700,16 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
               }
               placeholder="https://maps.google.com/..."
             />
+            <ItinerarioEditor
+              items={itinerario}
+              onChange={(items) => actualizarCampo("itinerario", items)}
+            />
           </div>
         </details>
 
-        <details className="rounded border border-gray-200 p-4">
-          <summary className="cursor-pointer font-semibold text-gray-800">
-            4. Contenido adicional
+        <details id="editor-detalles" className={`rounded border border-gray-200 p-4 ${styles.mobileSection} ${seccionActiva === "detalles" ? styles.mobileSectionActive : ""}`}>
+          <summary className={`cursor-pointer font-semibold text-gray-800 ${styles.sectionSummary}`}>
+            Detalles adicionales
           </summary>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <Textarea
@@ -500,10 +722,6 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
               value={configuracion.musicaUrl}
               onChange={(valor) => actualizarCampo("musicaUrl", valor)}
               placeholder="https://.../cancion.mp3"
-            />
-            <ItinerarioEditor
-              items={itinerario}
-              onChange={(items) => actualizarCampo("itinerario", items)}
             />
             <div className="md:col-span-2 mt-4">
               <h3 className="font-semibold text-gray-700">
@@ -554,7 +772,8 @@ export default function ConfiguracionManager({ eventoId, eventoInicial }) {
           </div>
         </details>
       </fieldset>
-
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }

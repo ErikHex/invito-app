@@ -1,10 +1,10 @@
 .jardin {
-  --paper: #faf7ee;
-  --ink: #343e30;
-  --muted: #717464;
+  --paper: var(--event-background, #faf7ee);
+  --ink: var(--event-text, #343e30);
+  --muted: var(--event-muted, #717464);
   --accent: var(--event-accent-text, #596b4e);
   --sage: color-mix(in srgb, var(--event-primary, #596b4e) 13%, #f5f3e9);
-  --line: #b9b39470;
+  --line: var(--event-border, #b9b39470);
   position: relative;
   isolation: isolate;
   overflow: clip;
@@ -29,7 +29,7 @@
 .hero { position: relative; padding: 27px 5vw 24px; background: radial-gradient(ellipse at 50% 42%, #fffcf4, #ebe7d9); }
 .heroTop { max-width: 1250px; margin: auto; display: flex; justify-content: space-between; gap: 20px; font-size: 9px; text-transform: uppercase; letter-spacing: .2em; color: var(--muted); }
 .stationery { position: relative; width: min(100%, 1080px); margin: 42px auto 30px; padding: 30px 0; }
-.invitationCard { position: relative; width: 600px; max-width: 82%; margin: auto; padding: 50px 65px 44px; min-height: 690px; background: #fdfaf2; text-align: center; border: 1px solid #c9bea278; box-shadow: 0 20px 70px #605f3c14, 5px 5px 0 #f2ede0, 6px 6px 0 #c9bea278; }
+.invitationCard { position: relative; width: 600px; max-width: 82%; margin: auto; padding: 50px 65px 44px; min-height: 690px; background: var(--event-surface-soft, #fdfaf2); text-align: center; border: 1px solid var(--line); box-shadow: 0 20px 70px #605f3c14, 5px 5px 0 var(--paper), 6px 6px 0 var(--line); }
 .invitationCard::before { position: absolute; content: ''; inset: 16px; border: 1px solid var(--line); border-radius: 180px 180px 0 0; pointer-events: none; }
 .invitationCard > * { position: relative; }
 .monogram { display: grid; place-items: center; margin: 0 auto 24px; color: var(--accent); }
@@ -38,7 +38,7 @@
 .eyebrow { color: var(--accent); font-size: 10px; line-height: 1.8; font-weight: 500; text-transform: uppercase; letter-spacing: .22em; }
 .names { font-family: var(--font-script), cursive; font-size: clamp(70px, 7.6vw, 105px); line-height: .95; font-weight: 400; margin: 29px -18px 24px; color: var(--accent); }
 .names > span { display: block; }
-.ampersand { display: block; margin: 8px 0 10px; font-family: var(--font-display), Georgia, serif; font-weight: 300; font-size: 30px; font-style: italic; color: #a89c75; }
+.ampersand { display: block; margin: 8px 0 10px; font-family: var(--font-display), Georgia, serif; font-weight: 300; font-size: 30px; font-style: italic; color: inherit; }
 .heroNote { font-family: var(--font-display), Georgia, serif; font-weight: 350; font-size: 15px; line-height: 1.8; font-style: italic; color: var(--muted); }
 .date { display: flex; justify-content: center; align-items: center; gap: 22px; margin: 29px auto 20px; }
 .date span { font-size: 10px; text-transform: uppercase; letter-spacing: .17em; min-width: 68px; }
@@ -95,7 +95,7 @@
 .textLink { display: inline-block; padding: 12px 0; font-size: 11px; text-decoration: underline; text-underline-offset: 4px; color: var(--accent); }
 .dress { overflow: hidden; padding: 60px 28px; background: #eee8db; }
 .dressFlowers { width: 440px; left: calc(50% - 530px); bottom: -90px; transform: rotate(24deg); }
-.dressCard { position: relative; width: min(570px, 100%); margin: auto; padding: 45px 42px; background: #fcf9f0ed; border: 1px solid var(--line); outline: 1px solid var(--line); outline-offset: -12px; }
+.dressCard { position: relative; width: min(570px, 100%); margin: auto; padding: 45px 42px; background: var(--event-surface, #fcf9f0ed); border: 1px solid var(--line); outline: 1px solid var(--line); outline-offset: -12px; }
 .dressCode { margin-top: 28px; color: var(--accent); text-transform: uppercase; font-size: 13px; letter-spacing: .18em; }
 .reserved { font-size: 11px; color: var(--muted); margin: 24px auto; }
 .reserved > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 14px; }

@@ -11,8 +11,9 @@ import CuentaBanderines from './CuentaBanderines';
 import OrbeDorado from './OrbeDorado';
 import { invitationField, pinterestUrl } from '@/lib/invitation-utils';
 import { enlaceRegalo, enlaceSeguro } from '@/lib/aura-xv';
-import { tipoCelebracion } from '@/lib/invitation-theme';
+import { ajusteTextoPortada, tipoCelebracion } from '@/lib/invitation-theme';
 import styles from './cronica-encantada.module.css';
+import TextoPortadaEditable from '../../compartidos/TextoPortadaEditable';
 
 function fechaLarga(valor) {
   const match = valor?.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -58,9 +59,10 @@ function Galeria({ fotos }) {
 
 export { default as OrbeDorado } from './OrbeDorado';
 
-export default function CronicaEncantada({ datos, estado, onEstadoChange, preview }) {
+export default function CronicaEncantada({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const root = useRef(null);
   const cfg = datos.configuracion || {};
+  const textoPortada = ajusteTextoPortada(cfg);
   const visible = key => datos.modulos_activos?.[key] !== false;
   const tipo = tipoCelebracion(cfg, 'cronica_encantada');
   const nombres = Array.isArray(cfg.nombres) ? cfg.nombres.filter(Boolean).join(tipo === 'boda' ? ' & ' : ' ') : datos.evento_nombre;
@@ -98,18 +100,18 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
     <div className={styles.candles}>{Array.from({ length: 11 }, (_, index) => <Vela key={index} clase={styles[`c${index + 1}`]} />)}</div>
 
     {visible('portada') && <>
-      <section className={styles.hero}>
+      <section className={styles.hero} data-editor-section="diseno">
         <p className={`${styles.kicker} ${styles.reveal}`}>{tipo === 'boda' ? 'Una historia escrita entre dos almas' : tipo === 'xv' ? 'Una nueva etapa escrita entre estrellas' : 'Una noche escrita entre las estrellas'}</p>
         <span className={`${styles.sigils} ${styles.reveal}`} aria-hidden="true">☾ · ✦ · ☽</span>
-        <h1 className={styles.reveal}>{nombres || 'Una celebración extraordinaria'}</h1>
+        <TextoPortadaEditable as="h1" className={styles.reveal} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombres || 'Una celebración extraordinaria'}</TextoPortadaEditable>
         <p className={`${styles.heroText} ${styles.reveal}`}>{encabezado}</p>
       </section>
       <section className={styles.portrait}><figure>{video ? <video src={video} autoPlay loop muted playsInline poster={foto || undefined} /> : foto ? <img src={foto} alt={`Retrato de ${nombres}`} style={{ objectPosition: cfg.encuadrePortada || 'center' }} /> : <div>Tu retrato<br />encantado</div>}</figure></section>
     </>}
 
-    {visible('cuenta_regresiva') && cfg.fechaHora && <section className={styles.program} style={{ marginTop: visible('portada') ? '-74px' : 0, paddingTop: 0, paddingBottom: 38, position: 'relative', zIndex: 3 }}><CuentaBanderines fechaHora={cfg.fechaHora} /></section>}
+    {visible('cuenta_regresiva') && cfg.fechaHora && <section className={styles.program} data-editor-section="informacion" style={{ marginTop: visible('portada') ? '-74px' : 0, paddingTop: 0, paddingBottom: 38, position: 'relative', zIndex: 3 }}><CuentaBanderines fechaHora={cfg.fechaHora} /></section>}
 
-    {visible('mensaje') && (mensaje || fotoMensaje) && <section className={styles.venues}>
+    {visible('mensaje') && (mensaje || fotoMensaje) && <section className={styles.venues} data-editor-section="informacion">
       <p className={styles.kicker}>{datos.nombre ? `Una carta para ${datos.nombre}` : 'Un mensaje para ti'}</p><h2>El comienzo de la historia</h2>
       <div className={styles.placeGrid}><article className={styles.place} style={{ gridColumn: '1 / -1' }}>
         {fotoMensaje && <img src={fotoMensaje} alt={invitationField(cfg, 'fotoMensajeAlt') || 'Un momento de nuestra historia'} loading="lazy" decoding="async" style={{ width: '100%', maxHeight: 420, objectFit: 'cover', marginBottom: 22 }} />}
@@ -117,14 +119,14 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
       </article></div>
     </section>}
 
-    {(visible('ceremonia') || visible('recepcion')) && <section className={styles.venues}>
+    {(visible('ceremonia') || visible('recepcion')) && <section className={styles.venues} data-editor-section="evento">
       <p className={styles.kicker}>El mapa de las estrellas</p><h2>Donde la magia sucede</h2>
       <div className={styles.placeGrid}>{visible('ceremonia') && <Lugar titulo="Ceremonia" datos={ceremonia} fecha={fecha} />}{visible('recepcion') && <Lugar titulo="Recepción" datos={recepcion} fecha={fecha} />}</div>
     </section>}
 
-    {visible('itinerario') && itinerario.length > 0 && <section className={styles.program}><p className={styles.kicker}>El conjuro de la noche</p><h2>La travesía</h2><p className={styles.tapHint}>Toca cada pergamino para revelar el siguiente momento</p><ol>{itinerario.map((item, index) => <Pergamino key={`${item.titulo}-${index}`} item={item} numero={index} />)}</ol></section>}
+    {visible('itinerario') && itinerario.length > 0 && <section className={styles.program} data-editor-section="evento"><p className={styles.kicker}>El conjuro de la noche</p><h2>La travesía</h2><p className={styles.tapHint}>Toca cada pergamino para revelar el siguiente momento</p><ol>{itinerario.map((item, index) => <Pergamino key={`${item.titulo}-${index}`} item={item} numero={index} />)}</ol></section>}
 
-    {visible('vestimenta') && hayVestimenta && <section className={styles.venues}>
+    {visible('vestimenta') && hayVestimenta && <section className={styles.venues} data-editor-section="detalles">
       <p className={styles.kicker}>Un detalle para la noche</p><h2>Viste para celebrar</h2>
       <div className={styles.placeGrid}><article className={styles.place} style={{ position: 'relative', gridColumn: '1 / -1' }}>
         <img src="/plantillas/cronica-encantada/sombrero-encantado.png" alt="" aria-hidden="true" style={{ position: 'absolute', zIndex: 1, top: '-42px', right: '-31px', width: '144px', height: '192px', objectFit: 'contain', pointerEvents: 'none', filter: 'drop-shadow(0 9px 9px rgba(0,0,0,.42))' }} />
@@ -134,7 +136,7 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
       </article></div>
     </section>}
 
-    {visible('regalos') && hayRegalos && <section className={styles.venues}>
+    {visible('regalos') && hayRegalos && <section className={styles.venues} data-editor-section="detalles">
       <p className={styles.kicker}>Tu presencia es el mayor tesoro</p><h2>Un gesto de cariño</h2>
       <div className={styles.placeGrid}><article className={styles.place} style={{ position: 'relative', overflow: 'visible', gridColumn: '1 / -1' }}>
         <img src="/plantillas/cronica-encantada/lechuza-mensajera.png" alt="" aria-hidden="true" style={{ position: 'absolute', zIndex: 1, top: '-62px', left: '-60px', width: '190px', height: '190px', objectFit: 'contain', pointerEvents: 'none', filter: 'drop-shadow(0 10px 10px rgba(0,0,0,.45))' }} />
@@ -146,7 +148,7 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
       </article></div>
     </section>}
 
-    {visible('galeria') && fotosGaleria.length > 0 && <section className={styles.memories}><p className={styles.kicker}>Recuerdos bajo el mismo cielo</p><h2>El gran salón de los recuerdos</h2><Galeria fotos={fotosGaleria} /></section>}
+    {visible('galeria') && fotosGaleria.length > 0 && <section className={styles.memories} data-editor-section="fotos"><p className={styles.kicker}>Recuerdos bajo el mismo cielo</p><h2>El gran salón de los recuerdos</h2><Galeria fotos={fotosGaleria} /></section>}
 
     {(visible('rsvp') || visible('qr')) && <section className={styles.rsvp}>
       <p className={styles.kicker}>La invitación te ha encontrado</p><h2>¿Serás parte de esta historia?</h2>

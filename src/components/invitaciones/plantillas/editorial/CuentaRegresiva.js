@@ -41,13 +41,13 @@ export default function CuentaRegresiva({ fechaHora }) {
         >
           <p
             className="text-3xl sm:text-5xl font-bold tabular-nums"
-            style={{ color: "#292927", fontFamily: "var(--font-display)" }}
+            style={{ color: "var(--event-text, #292927)", fontFamily: "var(--font-display)" }}
           >
             {String(val).padStart(2, "0")}
           </p>
           <p
             className="text-[10px] sm:text-sm mt-1 opacity-70 uppercase tracking-wider"
-            style={{ color: "#56544F" }}
+            style={{ color: "var(--event-muted, #56544F)" }}
           >
             {label}
           </p>

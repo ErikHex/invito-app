@@ -11,6 +11,7 @@ export default function Mensaje({
     <section
       id="mensaje-pareja"
       className={styles.message}
+      data-editor-section="informacion"
       aria-labelledby="mensaje-titulo"
     >
       <p className={styles.eyebrow}>

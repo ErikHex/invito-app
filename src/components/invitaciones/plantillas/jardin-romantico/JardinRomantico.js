@@ -8,8 +8,9 @@ import QrCode from '../../compartidos/QrCode';
 import Transferencia from '../../compartidos/Transferencia';
 import { invitationField, pinterestUrl } from '@/lib/invitation-utils';
 import { enlaceSeguro, enlaceRegalo, fechaInvitacion, tiempoRestante } from '@/lib/aura-xv';
-import { colorValido, tipoCelebracion } from '@/lib/invitation-theme';
+import { ajusteTextoPortada, colorValido, tipoCelebracion } from '@/lib/invitation-theme';
 import styles from './jardin-romantico.module.css';
+import TextoPortadaEditable from '../../compartidos/TextoPortadaEditable';
 
 function Rama({ className = '' }) {
   return <svg className={className} viewBox="0 0 100 60" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true">
@@ -75,8 +76,9 @@ function Galeria({ fotos }) {
   </>;
 }
 
-export default function JardinRomantico({ datos, estado, onEstadoChange, preview }) {
+export default function JardinRomantico({ datos, estado, onEstadoChange, preview, editorPreview, onPortadaTextoChange }) {
   const cfg = datos.configuracion || {};
+  const textoPortada = ajusteTextoPortada(cfg);
   const visible = key => datos.modulos_activos?.[key] !== false;
   const tipo = tipoCelebracion(cfg, 'jardin_romantico');
   const nombres = Array.isArray(cfg.nombres) ? cfg.nombres.filter(nombre => typeof nombre === 'string' && nombre.trim()) : [];
@@ -109,7 +111,7 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
         <div className={styles.invitationCard}>
           <div className={styles.monogram} aria-hidden="true"><Rama /><span>{iniciales}</span></div>
           <p className={styles.eyebrow}>{invitationField(cfg, 'encabezado') ?? (tipo === 'boda' ? 'Nos casamos' : tipo === 'xv' ? 'Mis quince años' : 'Celebremos juntos')}</p>
-          <h1 className={styles.names}>{tipo === 'boda' && nombres.length >= 2 ? nombres.map((n, i) => <span key={i}>{i > 0 && <i className={styles.ampersand}>&</i>}{n}</span>) : nombre}</h1>
+          <TextoPortadaEditable as="h1" className={styles.names} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{tipo === 'boda' && nombres.length >= 2 ? nombres.map((n, i) => <span key={i}>{i > 0 && <i className={styles.ampersand}>&</i>}{n}</span>) : nombre}</TextoPortadaEditable>
           <p className={styles.heroNote}>Hay días que se guardan<br />para siempre en el corazón.</p>
           {partesFecha && <div className={styles.date} aria-label={fecha}><span>{mes}</span><strong>{Number(partesFecha[2])}</strong><span>{partesFecha[0]}</span></div>}
           {destino && <a className={styles.discover} href={destino}>Descubre la invitación <span aria-hidden="true">↓</span></a>}

@@ -2,11 +2,11 @@
    Los acentos siguen el color elegido por el administrador (--event-primary). */
 
 .nocturno {
-  --tinta: #131120;
-  --claro: #f4f2fb;
-  --apagado: color-mix(in srgb, var(--claro) 62%, transparent);
-  --linea: color-mix(in srgb, var(--claro) 14%, transparent);
-  --vidrio: color-mix(in srgb, var(--claro) 7%, transparent);
+  --tinta: var(--event-background, #131120);
+  --claro: var(--event-text, #f4f2fb);
+  --apagado: var(--event-muted, color-mix(in srgb, var(--claro) 76%, var(--tinta)));
+  --linea: var(--event-border, color-mix(in srgb, var(--claro) 32%, transparent));
+  --vidrio: var(--event-surface, color-mix(in srgb, var(--claro) 7%, var(--tinta)));
   --acento: var(--event-primary, #7c6cff);
   position: relative;
   min-height: 100vh;
@@ -129,7 +129,7 @@
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--acento) 70%, var(--claro));
+  color: var(--claro);
 }
 
 .nombre {
@@ -231,7 +231,7 @@
   font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--acento) 70%, var(--claro));
+  color: var(--claro);
 }
 
 .cardTitle {
@@ -251,7 +251,7 @@
   margin: 8px 0 0;
   font-size: 13px;
   line-height: 1.6;
-  color: color-mix(in srgb, var(--claro) 82%, transparent);
+  color: var(--apagado);
 }
 
 .link {
@@ -295,7 +295,7 @@
   font-size: 18px;
   font-style: italic;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--claro) 90%, transparent);
+  color: var(--claro);
 }
 
 .muestras {

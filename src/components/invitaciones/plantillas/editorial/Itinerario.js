@@ -2,7 +2,7 @@ export default function Itinerario({ items, colorAcento, colorTexto }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="inv-glass-section py-16 px-6 max-w-md mx-auto my-8">
+    <div className="inv-glass-section py-16 px-6 max-w-md mx-auto my-8" data-editor-section="evento">
       <h2
         className="text-2xl text-center mb-10"
         style={{ fontFamily: "var(--font-display)", color: colorTexto }}

@@ -11,6 +11,7 @@ export default function Regalos({ regalos }) {
   return (
     <section
       className={`${styles.event} ${styles.giftSection}`}
+      data-editor-section="detalles"
       aria-labelledby="regalos-titulo"
     >
       <p className={styles.eyebrow}>Un detalle para nosotros</p>

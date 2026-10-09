@@ -7,7 +7,9 @@ import { useEffect, useState } from 'react';
 import RsvpForm from '../../compartidos/RsvpForm';
 import QrCode from '../../compartidos/QrCode';
 import { invitationField } from '@/lib/invitation-utils';
+import { ajusteTextoPortada } from '@/lib/invitation-theme';
 import styles from './nocturno.module.css';
+import TextoPortadaEditable from '../../compartidos/TextoPortadaEditable';
 
 // Fecha escrita del evento, sin moverla a la zona horaria del visitante.
 function fechaTextoDe(fechaHora) {
@@ -162,8 +164,11 @@ export default function Nocturno({
   estado,
   onEstadoChange,
   preview,
+  editorPreview,
+  onPortadaTextoChange,
 }) {
   const cfg = datos.configuracion || {};
+  const textoPortada = ajusteTextoPortada(cfg);
   const visible = key => datos.modulos_activos?.[key] !== false;
   const { fechaHora } = cfg;
   const fechaTexto = fechaTextoDe(fechaHora);
@@ -190,7 +195,7 @@ export default function Nocturno({
         {visible('portada') && (
           <section id="portada" className={styles.portada}>
             <p className={styles.eyebrow}>{invitationField(cfg, 'encabezado') ?? 'Celebremos juntos'}</p>
-            <h1 className={styles.nombre}>{nombres}</h1>
+            <TextoPortadaEditable as="h1" className={styles.nombre} style={textoPortada.style} ajuste={textoPortada} editorPreview={editorPreview} onChange={onPortadaTextoChange}>{nombres}</TextoPortadaEditable>
             {fechaTexto && <p className={styles.frase}>{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
             {cfg.fotoPortada && (
               <img
