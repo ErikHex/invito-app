@@ -143,55 +143,8 @@
 }
 
 @media (max-width: 899px) {
-  :global(body):has(.editor) :global(.dash-nav),
   :global(body):has(.editor) :global(.dashboard-account-bar) {
     display: none;
-  }
-
-  .dashboardMenu {
-    position: fixed;
-    z-index: 30;
-    top: max(14px, env(safe-area-inset-top));
-    right: 14px;
-    display: grid;
-    width: 42px;
-    height: 42px;
-    place-items: center;
-    padding: 0;
-    border: 1px solid rgb(255 255 255 / 0.48);
-    border-radius: 50%;
-    background: rgb(48 42 57 / 0.82);
-    color: #fff;
-    box-shadow: 0 6px 20px rgb(0 0 0 / 0.22);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-  }
-
-  .dashboardMenuList {
-    position: fixed;
-    z-index: 29;
-    top: calc(max(14px, env(safe-area-inset-top)) + 50px);
-    right: 14px;
-    display: grid;
-    min-width: 190px;
-    padding: 8px;
-    border: 1px solid rgb(255 255 255 / 0.38);
-    border-radius: 14px;
-    background: rgb(48 42 57 / 0.94);
-    box-shadow: 0 12px 28px rgb(0 0 0 / 0.28);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-  }
-
-  .dashboardMenuList a {
-    padding: 10px 12px;
-    border-radius: 9px;
-    color: #fff;
-    font-size: 13px;
-  }
-
-  .dashboardMenuList a:hover {
-    background: rgb(255 255 255 / 0.14);
   }
   .mobileSection:not(.mobileSectionActive) {
     display: none;

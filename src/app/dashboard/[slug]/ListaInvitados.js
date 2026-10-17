@@ -13,7 +13,7 @@ const estados = { pendiente:'Pendiente de enviar', por_verificar:'Envío por ver
 const acciones = { abrir:'WhatsApp abierto · por verificar', enviar:'Envío registrado por el anfitrión', recordatorio:'Recordatorio registrado', restablecer:'Restablecida a pendiente' };
 function fecha(value) { return value ? new Date(value).toLocaleString('es-MX') : ''; }
 
-function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, onChange, onDelete }) {
+function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, limiteInvitados=0, onChange, onDelete }) {
   const [editando,setEditando] = useState(false);
   const [nombre,setNombre] = useState(inv.nombre);
   const [telefonoDatos,setTelefonoDatos] = useState(()=>splitPhone(inv.telefono || ''));
@@ -45,6 +45,8 @@ function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, onC
       const mesa = mesas.find(m=>m.id===inv.mesa_id);
       const usados = invitados.filter(i=>i.mesa_id===inv.mesa_id && i.id!==inv.id).reduce((n,i)=>n+1+Number(i.acompanantes||0),0);
       if(mesa && usados+1+Number(acompanantes)>Number(mesa.capacidad)) throw new Error('La mesa no tiene lugares suficientes. Cambia la asignación primero.');
+      const lugaresEvento=invitados.filter(i=>i.id!==inv.id).reduce((n,i)=>n+1+Number(i.acompanantes||0),0);
+      if(Number(limiteInvitados) && lugaresEvento+1+Number(acompanantes)>Number(limiteInvitados)) throw new Error(`Este cambio supera el cupo configurado de ${limiteInvitados} invitados.`);
       const {data,error} = await supabase.from('invitados').update({nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,acompanantes:Number(acompanantes)}).eq('id',inv.id).eq('evento_id',eventoId).select().single();
       if(error) throw error;
       onChange(data);setEditando(false);
@@ -67,7 +69,7 @@ function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, onC
     {error && <p role="status" className="helper">{error}</p>}
   </article>;
 }
-export default function ListaInvitados({ eventoId, eventoNombre, invitadosIniciales, mesas, filtroInicial='todos' }) {
+export default function ListaInvitados({ eventoId, eventoNombre, invitadosIniciales, mesas, limiteInvitados=0, filtroInicial='todos' }) {
   const [invitados,setInvitados] = useState(invitadosIniciales);
   const [busqueda,setBusqueda] = useState('');
   const [filtro,setFiltro] = useState(filtroInicial);
@@ -92,11 +94,11 @@ export default function ListaInvitados({ eventoId, eventoNombre, invitadosInicia
   return <>
     <DescargarInvitados eventoId={eventoId} eventoNombre={eventoNombre} />
     <div className="dash-stats">{[['Invitaciones',invitados.length],['Marcadas como enviadas',enviados],['Pendientes de envío',invitados.length-enviados],['Lugares contemplados',invitados.reduce((n,i)=>n+1+Number(i.acompanantes||0),0)]].map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
-    <AgregarInvitado eventoId={eventoId} onAgregado={nuevo=>{revision.current++;setInvitados(prev=>[...prev,nuevo]);}} />
+    <AgregarInvitado eventoId={eventoId} limiteInvitados={limiteInvitados} lugaresActuales={invitados.reduce((n,i)=>n+1+Number(i.acompanantes||0),0)} onAgregado={nuevo=>{revision.current++;setInvitados(prev=>[...prev,nuevo]);}} />
     <div className="guest-filters"><label>Buscar invitado<input value={busqueda} onChange={e=>setBusqueda(e.target.value)} placeholder="Nombre o familia" /></label><label>Mostrar<select value={filtro} onChange={e=>setFiltro(e.target.value)}><option value="todos">Todas las invitaciones</option><option value="pendientes">Pendientes de envío</option><option value="verificar">Envíos por verificar</option><option value="sin_respuesta">Enviadas sin respuesta</option><option value="sin_telefono">Sin teléfono</option></select></label></div>
     <p className="helper">La lista se actualiza cada 15 segundos. Cada invitación puede incluir varios lugares.</p>
     {error && <p role="alert">{error}</p>}
-    <div className="guest-list">{visibles.map(inv=><Invitado key={inv.id} invitado={inv} eventoId={eventoId} eventoNombre={eventoNombre} mesas={mesas} invitados={invitados} onChange={cambiar} onDelete={id=>{revision.current++;setInvitados(prev=>prev.filter(i=>i.id!==id));}} />)}</div>
+    <div className="guest-list">{visibles.map(inv=><Invitado key={inv.id} invitado={inv} eventoId={eventoId} eventoNombre={eventoNombre} mesas={mesas} invitados={invitados} limiteInvitados={limiteInvitados} onChange={cambiar} onDelete={id=>{revision.current++;setInvitados(prev=>prev.filter(i=>i.id!==id));}} />)}</div>
     {!visibles.length && <p className="empty-state">{invitados.length?'No hay invitaciones con estos filtros.':'Agrega tu primera invitación para comenzar.'}</p>}
   </>;
 }

@@ -243,7 +243,6 @@ export default function ConfiguracionManager({
     useState(false);
   const inicioArrastrePanel = useRef(null);
   const ajustesPortadaRef = useRef(null);
-  const [menuNavegacionAbierto, setMenuNavegacionAbierto] = useState(false);
   const [guardado, setGuardado] = useState(
     JSON.stringify([
       eventoInicial.nombre_evento || "",
@@ -474,16 +473,6 @@ export default function ConfiguracionManager({
       return;
     setPanelAbierto(false);
   };
-  const abrirVistaPublica = async (event) => {
-    event.preventDefault();
-    if (pendiente && !(await guardar())) {
-      setPanelAbierto(true);
-      return;
-    }
-    const destino = new URL(event.currentTarget.href);
-    destino.searchParams.set("actualizado", String(Date.now()));
-    window.location.assign(destino.href);
-  };
   const seccionesEditor = [
     ["informacion", "Información"],
     ["diseno", "Diseño"],
@@ -491,21 +480,6 @@ export default function ConfiguracionManager({
     ["evento", "Evento"],
     ["detalles", "Detalles"],
   ];
-  const vistaPreviaHref = `/preview/${slug}?plantilla=${encodeURIComponent(eventoInicial.plantilla)}`;
-  const enlacesDashboard = esMuestra
-    ? [
-        ["Plantillas y muestras", "/admin/muestras"],
-        ["Ver invitación", vistaPreviaHref],
-      ]
-    : [
-        ["Resumen", `/dashboard/${slug}`],
-        ["Invitados", `/dashboard/${slug}/invitados`],
-        ["Mesas", `/dashboard/${slug}/mesas`],
-        ["Equipo y accesos", `/dashboard/${slug}/equipo`],
-        ["Registrar accesos", `/checkin/${slug}`],
-        ["Ver invitación", vistaPreviaHref],
-      ];
-
   return (
     <div className={styles.editor}>
       <section
@@ -514,36 +488,6 @@ export default function ConfiguracionManager({
         className={`${styles.preview} ${seccionActiva === "diseno" && panelAbierto ? styles.designPreview : ""}`}
         aria-label="Vista previa en vivo de la invitación"
       >
-        <button
-          type="button"
-          className={styles.dashboardMenu}
-          onClick={() => setMenuNavegacionAbierto((abierto) => !abierto)}
-          aria-expanded={menuNavegacionAbierto}
-          aria-controls="navegacion-dashboard"
-          aria-label="Abrir navegación del dashboard"
-        >
-          ☰
-        </button>
-        {menuNavegacionAbierto && (
-          <nav
-            id="navegacion-dashboard"
-            className={styles.dashboardMenuList}
-            aria-label="Navegación del dashboard"
-          >
-            {enlacesDashboard.map(([etiqueta, href]) => (
-              <Link
-                key={href}
-                href={href}
-                prefetch={etiqueta === "Ver invitación" ? false : undefined}
-                onClick={
-                  etiqueta === "Ver invitación" ? abrirVistaPublica : undefined
-                }
-              >
-                {etiqueta}
-              </Link>
-            ))}
-          </nav>
-        )}
         <div className={styles.previewViewport}>
           <Invitacion
             datos={datosPreview}

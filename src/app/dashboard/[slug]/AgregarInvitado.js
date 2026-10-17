@@ -6,7 +6,7 @@ import SeleccionarContacto from "./SeleccionarContacto";
 import { createClient } from "@/lib/supabase/client";
 import { generarToken } from "@/lib/generarToken";
 import { normalizePhone, validPhone } from "@/lib/invitation-utils";
-export default function AgregarInvitado({eventoId,onAgregado}) {
+export default function AgregarInvitado({eventoId,onAgregado, lugaresActuales=0, limiteInvitados=0}) {
   const [nombre,setNombre]=useState('');
   const [telefonoDatos,setTelefonoDatos]=useState({codigo:'52',numero:''});
   const telefono=joinPhone(telefonoDatos);
@@ -17,6 +17,7 @@ export default function AgregarInvitado({eventoId,onAgregado}) {
     event.preventDefault();setError('');
     if(!nombre.trim()) {setError('Escribe un nombre o familia.');return;}
     if(telefono && !validPhone(telefono)) {setError('Escribe el teléfono completo con código de país.');return;}
+    if(Number(limiteInvitados) && lugaresActuales + 1 + Number(acompanantes || 0) > Number(limiteInvitados)) {setError(`Este registro supera el cupo configurado de ${limiteInvitados} invitados.`);return;}
     setGuardando(true);
     try {
       const {data,error}=await createClient().from('invitados').insert({evento_id:eventoId,nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,acompanantes:Number(acompanantes),token:generarToken(),estado:'pendiente'}).select().single();
@@ -26,7 +27,7 @@ export default function AgregarInvitado({eventoId,onAgregado}) {
     finally {setGuardando(false);}
   }
   return <form onSubmit={guardar} className="rounded-xl bg-white p-5 shadow-sm mb-6">
-    <h2>Una invitación más, alguien especial.</h2><p className="helper">Registra una persona o familia. El teléfono es opcional; inclúyelo para abrir su chat de WhatsApp.</p>
+    <h2>Una invitación más, alguien especial.</h2><p className="helper">Registra una persona o familia. {Number(limiteInvitados) ? `${lugaresActuales} de ${limiteInvitados} lugares usados.` : 'El teléfono es opcional; inclúyelo para abrir su chat de WhatsApp.'}</p>
     <fieldset disabled={guardando} className="grid gap-4 md:grid-cols-3">
       <label>Nombre o familia<input required maxLength={160} value={nombre} onChange={e=>setNombre(e.target.value)} placeholder="Familia Pérez" /></label>
       <div><TelefonoInput value={telefonoDatos} onChange={setTelefonoDatos} disabled={guardando} />
