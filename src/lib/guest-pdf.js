@@ -14,7 +14,7 @@ export function prepararLista(invitados, mesas) {
     mesa: clean(nombres.get(inv.mesa_id)) || 'Sin asignar',
     sinMesa: !nombres.has(inv.mesa_id),
     estado: inv.estado === 'confirmado' ? 'Confirmado' : inv.estado === 'rechazado' ? 'No asistirá' : 'Sin respuesta',
-    lugares: 1 + Number(inv.acompanantes || 0),
+    lugares: Number(inv.lugares_asignados || 1),
     entradas: Number(inv.entradas || 0),
   })).sort((a, b) => compare.compare(a.nombre, b.nombre));
 }
@@ -87,7 +87,7 @@ export function crearPdfInvitados({ eventoNombre, invitados, mesas, generado = n
         doc.text(`${rows.length} invitaciones  /  ${confirmados} lugares confirmados  /  ${entradas} entradas previas`, margin, 57);
         doc.setTextColor(muted);
         doc.setFontSize(8);
-        doc.text('Lugares incluye al titular y sus acompañantes. Anota únicamente las nuevas llegadas.', margin, 63);
+        doc.text('Lugares asignados a cada invitación. Anota únicamente las nuevas llegadas.', margin, 63);
         doc.text('Sin respuesta y No asistirá requieren revisión con el anfitrión antes de dar acceso.', margin, 68);
       }
     },

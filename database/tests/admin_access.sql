@@ -36,7 +36,7 @@ begin
  perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','portero','plaza',1,'email','portero1-test@invito.invalid','vence',now()+interval '2 days'));
  perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','portero','plaza',2,'email','portero2-test@invito.invalid','vence',now()+interval '2 days'));
  begin perform public.panel_operacion('asignar',jsonb_build_object('evento_id',eid,'rol','portero','plaza',3,'email','third@invito.invalid','vence',now()+interval '2 days')); raise exception 'FAIL: third gatekeeper accepted'; exception when others then if sqlerrm like 'FAIL:%' then raise; end if; end;
- insert into public.invitados(id,evento_id,nombre,token,estado,acompanantes) values(gid,eid,'Familia Prueba',tok,'confirmado',3);
+ insert into public.invitados(id,evento_id,nombre,token,estado,lugares_asignados) values(gid,eid,'Familia Prueba',tok,'confirmado',3);
  perform set_config('request.jwt.claim.sub',titular2::text,true);
  perform public.panel_operacion('aceptar',jsonb_build_object('evento_id',eid));
  perform public.registrar_envio(gid,'enviar','whatsapp');

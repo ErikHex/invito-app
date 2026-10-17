@@ -1,104 +1,37 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import {useEffect,useRef,useState} from "react";
+import {createClient} from "@/lib/supabase/client";
+import {guestMatches,normalizePhone,validPhone} from "@/lib/invitation-utils";
+import {generarToken} from "@/lib/generarToken";
 import TelefonoInput from "./TelefonoInput";
-import { splitPhone, joinPhone } from "@/lib/phone-country";
+import {splitPhone,joinPhone} from "@/lib/phone-country";
 import SeleccionarContacto from "./SeleccionarContacto";
-import { createClient } from "@/lib/supabase/client";
-import { guestMatches, normalizePhone, validPhone } from "@/lib/invitation-utils";
-import AgregarInvitado from "./AgregarInvitado";
-import AsignarMesa from "./AsignarMesa";
 import DescargarInvitados from "./DescargarInvitados";
+import styles from "./guest-editor.module.css";
 
-const estados = { pendiente:'Pendiente de enviar', por_verificar:'Envío por verificar', enviada:'Marcada como enviada' };
-const acciones = { abrir:'WhatsApp abierto · por verificar', enviar:'Envío registrado por el anfitrión', recordatorio:'Recordatorio registrado', restablecer:'Restablecida a pendiente' };
-function fecha(value) { return value ? new Date(value).toLocaleString('es-MX') : ''; }
+const estados={pendiente:"Pendiente",por_verificar:"Por verificar",enviada:"Enviada"};
+const lugares=invitado=>Number(invitado.lugares_asignados||1);
 
-function Invitado({ invitado: inv, eventoId, eventoNombre, mesas, invitados, limiteInvitados=0, onChange, onDelete }) {
-  const [editando,setEditando] = useState(false);
-  const [nombre,setNombre] = useState(inv.nombre);
-  const [telefonoDatos,setTelefonoDatos] = useState(()=>splitPhone(inv.telefono || ''));
-  const telefono=joinPhone(telefonoDatos);
-  const [acompanantes,setAcompanantes] = useState(inv.acompanantes || 0);
-  const [mensaje,setMensaje] = useState(`Hola, ${inv.nombre}. Nos encantará contar contigo en ${eventoNombre}. Consulta los detalles y confirma tu asistencia aquí:`);
-  const [canal,setCanal] = useState('whatsapp');
-  const [error,setError] = useState('');
-  const [ocupado,setOcupado] = useState(false);
-  const supabase = createClient();
-  const link = () => `${window.location.origin}/rsvp/${encodeURIComponent(inv.token)}`;
-  async function registrar(accion, selectedCanal=canal) {
-    const {data,error} = await supabase.rpc('registrar_envio',{invitado_id_input:inv.id,accion_input:accion,canal_input:selectedCanal});
-    if(error) throw error;
-    onChange(Array.isArray(data)?data[0]:data);
-  }
-  async function ejecutar(fn) { setOcupado(true);setError('');try { await fn(); } catch(e) {setError(e.message || 'No se pudo guardar. Intenta de nuevo.');} finally {setOcupado(false);} }
-  async function abrir() {
-    if (!validPhone(inv.telefono || '')) {setError('Agrega un teléfono con código de país. Ejemplo: 525512345678.');return;}
-    // Open synchronously from the user's click; never send or mark delivery automatically.
-    window.open(`https://wa.me/${normalizePhone(inv.telefono)}?text=${encodeURIComponent(`${mensaje}\n${link()}`)}`,'_blank','noopener,noreferrer');
-    setCanal('whatsapp');
-    await ejecutar(()=>registrar('abrir','whatsapp'));
-  }
-  async function guardar(event) {
-    event.preventDefault();
-    await ejecutar(async()=>{
-      if (telefono && !validPhone(telefono)) throw new Error('Usa el teléfono completo con código de país.');
-      const mesa = mesas.find(m=>m.id===inv.mesa_id);
-      const usados = invitados.filter(i=>i.mesa_id===inv.mesa_id && i.id!==inv.id).reduce((n,i)=>n+1+Number(i.acompanantes||0),0);
-      if(mesa && usados+1+Number(acompanantes)>Number(mesa.capacidad)) throw new Error('La mesa no tiene lugares suficientes. Cambia la asignación primero.');
-      const lugaresEvento=invitados.filter(i=>i.id!==inv.id).reduce((n,i)=>n+1+Number(i.acompanantes||0),0);
-      if(Number(limiteInvitados) && lugaresEvento+1+Number(acompanantes)>Number(limiteInvitados)) throw new Error(`Este cambio supera el cupo configurado de ${limiteInvitados} invitados.`);
-      const {data,error} = await supabase.from('invitados').update({nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,acompanantes:Number(acompanantes)}).eq('id',inv.id).eq('evento_id',eventoId).select().single();
-      if(error) throw error;
-      onChange(data);setEditando(false);
-    });
-  }
-  return <article className="guest-card">
-    <div className="guest-heading"><div><h3>{inv.nombre}</h3><p className="helper">{1+Number(inv.acompanantes||0)} lugares · {inv.telefono || 'Sin teléfono'}</p></div><span className={`status-pill ${inv.envio_estado==='enviada'?'status-success':''}`}>{estados[inv.envio_estado || 'pendiente']}</span></div>
-    <p className="helper">Asistencia: {inv.estado==='confirmado'?'Confirmó':inv.estado==='rechazado'?'No asistirá':'Sin respuesta'}{inv.enviado_at && ` · Envío: ${fecha(inv.enviado_at)}`}</p>
-    <AsignarMesa invitado={inv} mesas={mesas} invitados={invitados} onChange={onChange} />
-    <div className="row-actions"><button type="button" onClick={()=>{setNombre(inv.nombre);setTelefonoDatos(splitPhone(inv.telefono||''));setAcompanantes(inv.acompanantes||0);setEditando(!editando);}}>Editar datos</button><button type="button" disabled={ocupado} onClick={()=>{if(window.confirm(`¿Eliminar a ${inv.nombre} y su historial? Su enlace dejará de funcionar.`)) ejecutar(async()=>{const {data,error}=await supabase.from('invitados').delete().eq('id',inv.id).eq('evento_id',eventoId).select('id').single();if(error||!data) throw error || new Error('No se pudo eliminar.');onDelete(inv.id);});}}>Eliminar</button></div>
-    {editando && <form onSubmit={guardar} className="guest-edit"><label>Nombre o familia<input required value={nombre} onChange={e=>setNombre(e.target.value)} /></label><TelefonoInput value={telefonoDatos} onChange={setTelefonoDatos} disabled={ocupado} /><SeleccionarContacto disabled={ocupado} onSelect={contacto=>{setTelefonoDatos(splitPhone(contacto.telefono,telefonoDatos.codigo));setNombre(actual=>actual.trim()?actual:contacto.nombre);}} /><label>Acompañantes<input type="number" min="0" max="100" required value={acompanantes} onChange={e=>setAcompanantes(e.target.value)} /></label><button disabled={ocupado} className="dash-primary">Guardar datos</button></form>}
-    <details className="delivery-details"><summary>Compartir y registrar envío</summary>
-      <label>Mensaje<textarea rows={3} value={mensaje} onChange={e=>setMensaje(e.target.value)} /></label>
-      <p className="helper">El enlace personal se agrega al mensaje. Abrir WhatsApp o copiar el enlace no confirma el envío.</p>
-      <div className="row-actions"><button type="button" className="dash-primary" disabled={ocupado} onClick={abrir}>Abrir WhatsApp ↗</button><button type="button" disabled={ocupado} onClick={()=>ejecutar(async()=>{await navigator.clipboard.writeText(link());setCanal('enlace');setError('Enlace copiado. Registra el envío cuando lo hayas compartido.');})}>Copiar enlace</button><a href={`/rsvp/${encodeURIComponent(inv.token)}`} target="_blank" rel="noopener noreferrer">Ver invitación ↗</a></div>
-      <label>Canal del envío<select value={canal} onChange={e=>setCanal(e.target.value)}><option value="whatsapp">WhatsApp</option><option value="enlace">Enlace compartido por otro medio</option></select></label>
-      <div className="row-actions"><button type="button" disabled={ocupado} onClick={()=>ejecutar(()=>registrar(inv.envio_estado==='enviada'?'recordatorio':'enviar'))}>{inv.envio_estado==='enviada'?'Ya envié un recordatorio':'Ya envié la invitación'}</button>{inv.envio_estado!=='pendiente' && <button type="button" disabled={ocupado} onClick={()=>ejecutar(()=>registrar('restablecer'))}>Volver a pendiente</button>}</div>
-      <details><summary>Historial ({inv.envio_historial?.length || 0})</summary><ul className="delivery-history">{[...(inv.envio_historial||[])].reverse().map((h,i)=><li key={`${h.fecha}-${i}`}>{acciones[h.accion]} · {h.canal==='enlace'?'Enlace': 'WhatsApp'}<br /><span className="helper">{fecha(h.fecha)}</span></li>)}</ul></details>
-    </details>
-    {error && <p role="status" className="helper">{error}</p>}
-  </article>;
+function Invitado({inv,eventoId,eventoNombre,mesas,invitados,limite,onChange,onDelete}){
+  const[edit,setEdit]=useState(false),[share,setShare]=useState(false),[nombre,setNombre]=useState(inv.nombre),[phone,setPhone]=useState(()=>splitPhone(inv.telefono||"")),[lugaresAsignados,setLugaresAsignados]=useState(lugares(inv)),[mesa,setMesa]=useState(inv.mesa_id||""),[mensaje,setMensaje]=useState(""),[busy,setBusy]=useState(false),[error,setError]=useState("");
+  const supabase=createClient(),telefono=joinPhone(phone),link=()=>`${window.location.origin}/rsvp/${encodeURIComponent(inv.token)}`;
+  async function run(fn){setBusy(true);setError("");try{await fn()}catch(e){setError(e.message||"No se pudo guardar.")}finally{setBusy(false)}}
+  async function save(e){e.preventDefault();await run(async()=>{const total=Number(lugaresAsignados);if(!Number.isInteger(total)||total<1)throw new Error("Asigna por lo menos un lugar.");if(telefono&&!validPhone(telefono))throw new Error("Usa un teléfono completo con código de país.");const table=mesas.find(m=>m.id===mesa),ocupados=invitados.filter(i=>i.id!==inv.id&&i.mesa_id===mesa).reduce((n,i)=>n+lugares(i),0),usados=invitados.filter(i=>i.id!==inv.id).reduce((n,i)=>n+lugares(i),0);if(table&&ocupados+total>Number(table.capacidad))throw new Error("La mesa no tiene lugares suficientes.");if(Number(limite)&&usados+total>Number(limite))throw new Error(`Este cambio supera el cupo de ${limite} invitados.`);const{data,error}=await supabase.from("invitados").update({nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,lugares_asignados:total,mesa_id:mesa||null}).eq("id",inv.id).eq("evento_id",eventoId).select().single();if(error)throw error;onChange(data);setEdit(false)})}
+  async function registro(accion,canal="whatsapp"){const{data,error}=await supabase.rpc("registrar_envio",{invitado_id_input:inv.id,accion_input:accion,canal_input:canal});if(error)throw error;onChange(Array.isArray(data)?data[0]:data)}
+  return <article className={styles.guest}><div className={styles.guestTop}><div><h3 className={styles.guestName}>{inv.nombre}</h3><p className={styles.meta}>{lugares(inv)} lugares asignados · {inv.telefono||"Sin teléfono"}{inv.mesa_id&&` · ${mesas.find(m=>m.id===inv.mesa_id)?.nombre||"Mesa asignada"}`}</p><p className={styles.meta}>{inv.estado==="confirmado"?"Confirmó asistencia":inv.estado==="rechazado"?"No asistirá":"Sin respuesta"}</p></div><span className={`${styles.pill} ${inv.envio_estado==="enviada"?styles.pillSuccess:""}`}>{estados[inv.envio_estado||"pendiente"]}</span></div><div className={styles.actions}><button type="button" className={styles.button} onClick={()=>{setNombre(inv.nombre);setPhone(splitPhone(inv.telefono||""));setLugaresAsignados(lugares(inv));setMesa(inv.mesa_id||"");setEdit(!edit)}}>Editar</button><button type="button" className={`${styles.button} ${styles.primary}`} onClick={()=>setShare(!share)}>Compartir</button><button type="button" className={`${styles.button} ${styles.danger}`} disabled={busy} onClick={()=>window.confirm(`¿Eliminar a ${inv.nombre}? Su enlace dejará de funcionar.`)&&run(async()=>{const{error}=await supabase.from("invitados").delete().eq("id",inv.id).eq("evento_id",eventoId);if(error)throw error;onDelete(inv.id)})}>Eliminar</button></div>{edit&&<form className={styles.edit} onSubmit={save}><label className={styles.field}>Nombre o familia<input required value={nombre} onChange={e=>setNombre(e.target.value)}/></label><TelefonoInput value={phone} onChange={setPhone} disabled={busy}/><SeleccionarContacto disabled={busy} onSelect={c=>{setPhone(splitPhone(c.telefono,phone.codigo));setNombre(x=>x.trim()?x:c.nombre)}}/><div className={styles.twoFields}><label className={styles.field}>Lugares asignados<input type="number" min="1" max="100" required value={lugaresAsignados} onChange={e=>setLugaresAsignados(e.target.value)}/></label><label className={styles.field}>Mesa<select value={mesa} onChange={e=>setMesa(e.target.value)}><option value="">Sin asignar</option>{mesas.map(m=><option key={m.id} value={m.id}>{m.nombre}</option>)}</select></label></div><p className={styles.meta}>Es el total incluido en esta invitación. Si escribes 5, se reservan exactamente 5 lugares.</p><button disabled={busy} className={`${styles.button} ${styles.primary}`}>Guardar cambios</button></form>}{share&&<div className={styles.sharing}><label className={styles.field}>Mensaje<textarea value={mensaje} placeholder={`Hola, ${inv.nombre}. Nos encantará contar contigo en ${eventoNombre}.`} onChange={e=>setMensaje(e.target.value)}/></label><p className={styles.meta}>El enlace personal se agrega al mensaje.</p><div className={styles.actions}><button type="button" disabled={busy||!validPhone(inv.telefono||"")} className={`${styles.button} ${styles.primary}`} onClick={()=>{window.open(`https://wa.me/${normalizePhone(inv.telefono)}?text=${encodeURIComponent(`${mensaje||`Hola, ${inv.nombre}. Nos encantará contar contigo en ${eventoNombre}.`}\n${link()}`)}`,"_blank","noopener,noreferrer");run(()=>registro("abrir"))}}>WhatsApp ↗</button><button type="button" className={styles.button} onClick={()=>run(async()=>{await navigator.clipboard.writeText(link());setError("Enlace copiado.")})}>Copiar enlace</button><button type="button" className={styles.button} disabled={busy} onClick={()=>run(()=>registro(inv.envio_estado==="enviada"?"recordatorio":"enviar"))}>{inv.envio_estado==="enviada"?"Registrar recordatorio":"Marcar como enviada"}</button></div></div>}{error&&<p className={styles.notice} role="status">{error}</p>}</article>;
 }
-export default function ListaInvitados({ eventoId, eventoNombre, invitadosIniciales, mesas, limiteInvitados=0, filtroInicial='todos' }) {
-  const [invitados,setInvitados] = useState(invitadosIniciales);
-  const [busqueda,setBusqueda] = useState('');
-  const [filtro,setFiltro] = useState(filtroInicial);
-  const [error,setError] = useState('');
-  const revision = useRef(0);
-  const supabase = createClient();
-  function cambiar(data) { revision.current++; setInvitados(prev=>prev.map(i=>i.id===data.id?data:i)); }
-  useEffect(()=>{
-    let disposed=false, loading=false;
-    async function actualizar() {
-      if(document.hidden || loading) return;
-      loading=true;const version=revision.current;
-      try {const {data,error}=await supabase.from('invitados').select('*').eq('evento_id',eventoId).order('nombre');if(error) throw error;if(!disposed && revision.current===version){setInvitados(data);setError('');}}
-      catch {if(!disposed)setError('No pudimos actualizar la lista. Reintentaremos automáticamente.');}
-      finally {loading=false;}
-    }
-    const id=setInterval(actualizar,15000);document.addEventListener('visibilitychange',actualizar);
-    return ()=>{disposed=true;clearInterval(id);document.removeEventListener('visibilitychange',actualizar);};
-  },[eventoId,supabase]);
-  const enviados=invitados.filter(i=>i.envio_estado==='enviada').length;
-  const visibles=invitados.filter(i=>i.nombre.toLowerCase().includes(busqueda.toLowerCase()) && guestMatches(i,filtro));
-  return <>
-    <DescargarInvitados eventoId={eventoId} eventoNombre={eventoNombre} />
-    <div className="dash-stats">{[['Invitaciones',invitados.length],['Marcadas como enviadas',enviados],['Pendientes de envío',invitados.length-enviados],['Lugares contemplados',invitados.reduce((n,i)=>n+1+Number(i.acompanantes||0),0)]].map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
-    <AgregarInvitado eventoId={eventoId} limiteInvitados={limiteInvitados} lugaresActuales={invitados.reduce((n,i)=>n+1+Number(i.acompanantes||0),0)} onAgregado={nuevo=>{revision.current++;setInvitados(prev=>[...prev,nuevo]);}} />
-    <div className="guest-filters"><label>Buscar invitado<input value={busqueda} onChange={e=>setBusqueda(e.target.value)} placeholder="Nombre o familia" /></label><label>Mostrar<select value={filtro} onChange={e=>setFiltro(e.target.value)}><option value="todos">Todas las invitaciones</option><option value="pendientes">Pendientes de envío</option><option value="verificar">Envíos por verificar</option><option value="sin_respuesta">Enviadas sin respuesta</option><option value="sin_telefono">Sin teléfono</option></select></label></div>
-    <p className="helper">La lista se actualiza cada 15 segundos. Cada invitación puede incluir varios lugares.</p>
-    {error && <p role="alert">{error}</p>}
-    <div className="guest-list">{visibles.map(inv=><Invitado key={inv.id} invitado={inv} eventoId={eventoId} eventoNombre={eventoNombre} mesas={mesas} invitados={invitados} limiteInvitados={limiteInvitados} onChange={cambiar} onDelete={id=>{revision.current++;setInvitados(prev=>prev.filter(i=>i.id!==id));}} />)}</div>
-    {!visibles.length && <p className="empty-state">{invitados.length?'No hay invitaciones con estos filtros.':'Agrega tu primera invitación para comenzar.'}</p>}
-  </>;
+
+export default function ListaInvitados({eventoId,eventoNombre,invitadosIniciales,mesas,configuracionInicial={},filtroInicial="todos"}){
+  const[invitados,setInvitados]=useState(invitadosIniciales),[search,setSearch]=useState(""),[filter,setFilter]=useState(filtroInicial),[tab,setTab]=useState("resumen"),[pagina,setPagina]=useState(0),[nombre,setNombre]=useState(""),[lugaresAsignados,setLugaresAsignados]=useState(1),[configuracion,setConfiguracion]=useState(configuracionInicial),[limiteInvitados,setLimiteInvitados]=useState(configuracionInicial.limiteInvitados||""),[saving,setSaving]=useState(false),[savingLimit,setSavingLimit]=useState(false),[message,setMessage]=useState(""),revision=useRef(0),supabase=createClient();
+  const usados=invitados.reduce((n,i)=>n+lugares(i),0),limite=Number(limiteInvitados)||0,disponibles=limite?Math.max(0,limite-usados):null,enviados=invitados.filter(i=>i.envio_estado==="enviada").length,confirmados=invitados.filter(i=>i.estado==="confirmado").reduce((n,i)=>n+lugares(i),0),sinAsignar=invitados.filter(i=>!i.mesa_id).reduce((n,i)=>n+lugares(i),0),termino=search.trim().toLocaleLowerCase(),telefonoBusqueda=normalizePhone(search),visibles=invitados.filter(i=>(!termino||i.nombre.toLocaleLowerCase().includes(termino)||(telefonoBusqueda&&normalizePhone(i.telefono||"").includes(telefonoBusqueda)))&&guestMatches(i,filter));
+  function change(x){revision.current++;setInvitados(p=>p.map(i=>i.id===x.id?x:i))}
+  useEffect(()=>{let dead=false;const refresh=async()=>{const v=revision.current,{data,error}=await supabase.from("invitados").select("*").eq("evento_id",eventoId).order("nombre");if(!dead&&!error&&v===revision.current)setInvitados(data)};const id=setInterval(refresh,15000);return()=>{dead=true;clearInterval(id)}},[eventoId,supabase]);
+  async function add(e){e.preventDefault();const total=Number(lugaresAsignados);if(!Number.isInteger(total)||total<1)return setMessage("Asigna por lo menos un lugar.");if(limite&&usados+total>limite)return setMessage(`Este registro supera el cupo de ${limite} invitados.`);setSaving(true);const{data,error}=await supabase.from("invitados").insert({evento_id:eventoId,nombre:nombre.trim(),lugares_asignados:total,token:generarToken(),estado:"pendiente"}).select().single();setSaving(false);if(error)return setMessage(error.message||"No pudimos agregar la invitación.");revision.current++;setInvitados(p=>[...p,data]);setNombre("");setLugaresAsignados(1);setMessage("Invitación agregada.")}
+  async function guardarLimite(e){e.preventDefault();const nuevo=Number(limiteInvitados);if(!Number.isInteger(nuevo)||nuevo<1)return setMessage("Define un máximo de al menos 1 lugar.");if(nuevo<usados)return setMessage(`No puedes bajar el máximo: ya hay ${usados} lugares asignados.`);if(nuevo!==limite&& !window.confirm(`Cambiarás el máximo del evento a ${nuevo} lugares. Las nuevas invitaciones no podrán superar este cupo. ¿Continuar?`))return;const siguiente={...configuracion,limiteInvitados:nuevo};setSavingLimit(true);setMessage("");const{error}=await supabase.from("eventos").update({configuracion:siguiente}).eq("id",eventoId);setSavingLimit(false);if(error)return setMessage(error.message||"No pudimos guardar el máximo.");setConfiguracion(siguiente);setLimiteInvitados(nuevo);setMessage("Máximo de invitados actualizado.")}
+  const paginas=Math.max(1,Math.ceil(visibles.length/8)),paginaActual=Math.min(pagina,paginas-1),invitadosPagina=visibles.slice(paginaActual*8,paginaActual*8+8);
+  const resumen=<><div className={styles.stats} aria-label="Resumen del evento"><div className={styles.stat}><span>Máximo</span><strong>{limite||"—"}</strong></div><div className={styles.stat}><span>Disponibles</span><strong>{disponibles===null?"—":disponibles}</strong></div><div className={styles.stat}><span>Lugares asignados</span><strong>{usados}</strong></div><div className={styles.stat}><span>Invitaciones enviadas</span><strong>{enviados}</strong></div><div className={styles.stat}><span>Confirmados</span><strong>{confirmados}</strong></div><div className={styles.stat}><span>Sin mesa</span><strong>{sinAsignar}</strong></div></div><section className={styles.panel}><h2 className={styles.panelTitle}>Máximo de invitados</h2><p className={styles.panelIntro}>Este límite protege los lugares del evento. Nunca puede ser menor que los lugares ya asignados.</p><form className={styles.form} onSubmit={guardarLimite}><label className={styles.field}>Lugares disponibles para el evento<input type="number" min={Math.max(1,usados)} required value={limiteInvitados} onChange={e=>setLimiteInvitados(e.target.value)}/></label><button disabled={savingLimit} className={`${styles.button} ${styles.primary}`}>{savingLimit?"Guardando…":"Actualizar máximo"}</button></form></section></>;
+  const lugaresNuevos=Math.max(0,Number(lugaresAsignados)||0),disponiblesDespues=disponibles===null?null:disponibles-lugaresNuevos;
+  const nuevo=<section className={styles.panel}><h2 className={styles.panelTitle}>Agregar invitado</h2><p className={styles.panelIntro}>Registra una persona o familia y el total exacto de lugares que tendrá disponibles.</p><form className={styles.form} onSubmit={add}><label className={styles.field}>Nombre o familia<input required value={nombre} placeholder="Familia Pérez" onChange={e=>setNombre(e.target.value)}/></label><label className={styles.field}>Lugares asignados<input type="number" min="1" max="100" required value={lugaresAsignados} onChange={e=>setLugaresAsignados(e.target.value)}/><span className={styles.meta}>Si escribes 5, esta invitación tendrá exactamente 5 lugares.</span></label>{limite>0&&<div className={`${styles.capacityPreview} ${disponiblesDespues<0?styles.capacityWarning:""}`} aria-live="polite"><span>Disponibles ahora <b>{disponibles}</b></span><span>Después de agregar <b>{Math.max(0,disponiblesDespues)}</b></span>{disponiblesDespues<0&&<small>Esta invitación excede el máximo por {Math.abs(disponiblesDespues)} lugar{Math.abs(disponiblesDespues)===1?"":"es"}.</small>}</div>}<button disabled={saving||disponiblesDespues<0} className={`${styles.button} ${styles.primary}`}>{saving?"Agregando…":"Agregar invitado"}</button></form></section>;
+  const lista=<section className={styles.stage}><div className={styles.stageTop}><div><h2 className={styles.sectionTitle}>Lista de invitados</h2><p className={styles.sectionIntro}>{visibles.length} de {invitados.length} invitaciones · {invitados.length-enviados} pendientes de enviar</p></div><DescargarInvitados eventoId={eventoId} eventoNombre={eventoNombre}/></div><div className={styles.filters}><label className={styles.field}>Buscar<input value={search} placeholder="Nombre o número de teléfono" onChange={e=>{setSearch(e.target.value);setPagina(0)}}/></label><label className={styles.field}>Mostrar<select value={filter} onChange={e=>{setFilter(e.target.value);setPagina(0)}}><option value="todos">Todas</option><option value="pendientes">Pendientes</option><option value="verificar">Por verificar</option><option value="sin_respuesta">Sin respuesta</option><option value="sin_telefono">Sin teléfono</option></select></label></div><div className={styles.guestList}>{invitadosPagina.map(inv=><Invitado key={inv.id} inv={inv} eventoId={eventoId} eventoNombre={eventoNombre} mesas={mesas} invitados={invitados} limite={limite} onChange={change} onDelete={id=>{revision.current++;setInvitados(p=>p.filter(i=>i.id!==id))}}/>)}</div>{visibles.length>8&&<nav className={styles.pagination} aria-label="Paginación de invitados"><button className={styles.button} type="button" disabled={!paginaActual} onClick={()=>setPagina(p=>p-1)}>← Anterior</button><span>Página {paginaActual+1} de {paginas}</span><button className={styles.button} type="button" disabled={paginaActual===paginas-1} onClick={()=>setPagina(p=>p+1)}>Siguiente →</button></nav>}{!visibles.length&&<p className={styles.empty}>{invitados.length?"No hay invitados con estos filtros.":"Agrega tu primera invitación para comenzar."}</p>}</section>;
+  return <div className={styles.editor}><header className={styles.hero}><div><p className={styles.eyebrow}>CONTROL DE ASISTENCIA</p><h1 className={styles.title}>Tus invitados, bien organizados.</h1><p className={styles.intro}>Consulta lo importante primero y entra a cada tarea cuando la necesites.</p></div></header><div className={styles.tabs} role="tablist" aria-label="Secciones de invitados"><button type="button" role="tab" aria-selected={tab==="resumen"} className={tab==="resumen"?styles.tabActive:styles.tab} onClick={()=>setTab("resumen")}>Resumen</button><button type="button" role="tab" aria-selected={tab==="lista"} className={tab==="lista"?styles.tabActive:styles.tab} onClick={()=>setTab("lista")}>Invitados <span>{invitados.length}</span></button><button type="button" role="tab" aria-selected={tab==="nuevo"} className={tab==="nuevo"?styles.tabActive:styles.tab} onClick={()=>setTab("nuevo")}>Agregar invitado</button></div><div className={styles.tabPanel}>{tab==="resumen"?resumen:tab==="lista"?lista:nuevo}{message&&<p className={styles.notice} role="status">{message}</p>}</div></div>;
 }

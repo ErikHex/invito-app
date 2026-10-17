@@ -31,7 +31,7 @@ export default async function PreviewPage({ params, searchParams }) {
           plantilla,
           modulos_activos: data.evento.modulos_activos,
           nombre: "Invitado de muestra",
-          acompanantes: 1,
+          lugares_asignados: 1,
           estado: "pendiente",
         }}
       />

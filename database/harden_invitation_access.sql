@@ -20,7 +20,7 @@ begin
     raise exception 'El invitado no ha confirmado su asistencia';
   end if;
   update public.invitados i set checked_in = true where i.id = guest.id;
-  return query select guest.nombre, m.nombre, guest.acompanantes, coalesce(guest.checked_in, false)
+  return query select guest.nombre, m.nombre, guest.lugares_asignados, coalesce(guest.checked_in, false)
   from (select 1) singleton left join public.mesas m on m.id = guest.mesa_id;
 end;
 $$;
@@ -63,4 +63,3 @@ to authenticated with check (
     where e.id::text = (storage.foldername(name))[1] and e.user_id = (select auth.uid())
   )
 );
-

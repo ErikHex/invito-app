@@ -50,7 +50,7 @@ create index evento_entradas_evento_idx on public.evento_entradas(evento_id,crea
 alter table public.eventos add column publicacion text not null default 'publicado' check(publicacion in ('borrador','publicado','archivado'));
 alter table public.eventos alter column publicacion set default 'borrador';
 alter table public.invitados add column entradas integer not null default 0 check(entradas>=0);
-update public.invitados set entradas=1+coalesce(acompanantes,0) where checked_in=true;
+update public.invitados set entradas=lugares_asignados where checked_in=true;
 
 create function invito_private.es_admin() returns boolean language sql stable security definer set search_path='' as $$
  select auth.uid() is not null and exists(select 1 from invito_private.administradores a join auth.users u on lower(u.email)=a.email where u.id=auth.uid() and u.email_confirmed_at is not null);
@@ -157,7 +157,7 @@ declare uid uuid:=auth.uid(); correo text; eid uuid; r text; acceso public.event
  elsif operacion='buscar' then
   if r is null then raise exception 'No tienes acceso a recepción' using errcode='42501'; end if;
   if length(trim(coalesce(datos->>'texto','')))<2 and nullif(datos->>'token','') is null then return '[]'::jsonb; end if;
-  select coalesce(jsonb_agg(x),'[]') into outjson from (select i.id,i.nombre,i.estado,1+coalesce(i.acompanantes,0) as lugares,i.entradas,m.nombre as mesa from public.invitados i left join public.mesas m on m.id=i.mesa_id and m.evento_id=eid where i.evento_id=eid and (case when nullif(datos->>'token','') is not null then i.token=datos->>'token' else i.nombre ilike '%'||trim(datos->>'texto')||'%' end) order by i.nombre limit 30) x;
+  select coalesce(jsonb_agg(x),'[]') into outjson from (select i.id,i.nombre,i.estado,i.lugares_asignados as lugares,i.entradas,m.nombre as mesa from public.invitados i left join public.mesas m on m.id=i.mesa_id and m.evento_id=eid where i.evento_id=eid and (case when nullif(datos->>'token','') is not null then i.token=datos->>'token' else i.nombre ilike '%'||trim(datos->>'texto')||'%' end) order by i.nombre limit 30) x;
   return outjson;
  elsif operacion='entrada' then
   if r is null then raise exception 'No tienes acceso a recepción' using errcode='42501'; end if;
@@ -167,7 +167,7 @@ declare uid uuid:=auth.uid(); correo text; eid uuid; r text; acceso public.event
   select * into guest from public.invitados where id=(datos->>'invitado_id')::uuid and evento_id=eid for update;
   if not found or guest.estado is distinct from 'confirmado' then raise exception 'Invitación no encontrada o sin confirmar'; end if;
   cantidad:=(datos->>'cantidad')::integer;
-  if cantidad is null or cantidad<1 or guest.entradas+cantidad>1+coalesce(guest.acompanantes,0) then raise exception 'La cantidad supera los lugares pendientes. Actualiza la consulta.'; end if;
+  if cantidad is null or cantidad<1 or guest.entradas+cantidad>guest.lugares_asignados then raise exception 'La cantidad supera los lugares pendientes. Actualiza la consulta.'; end if;
   update public.invitados set entradas=entradas+cantidad,checked_in=true where id=guest.id;
   insert into public.evento_entradas(evento_id,invitado_id,actor,cantidad,solicitud) values(eid,guest.id,uid,cantidad,req);
   return jsonb_build_object('registrado',true,'entradas',guest.entradas+cantidad);
@@ -204,7 +204,7 @@ alter table public.mesas alter column id set default gen_random_uuid();
 create or replace function public.get_invitado_by_token(token_input text)
 returns table(id uuid,nombre text,estado text,acompanantes smallint,token text,checked_in boolean,mesa_nombre text)
 language sql security definer set search_path='' as $$
- select i.id,i.nombre,i.estado,i.acompanantes,i.token,i.checked_in,m.nombre
+ select i.id,i.nombre,i.estado,i.lugares_asignados,i.token,i.checked_in,m.nombre
  from public.invitados i join public.eventos e on e.id=i.evento_id
  left join public.mesas m on m.id=i.mesa_id and m.evento_id=e.id
  where i.token=token_input and e.publicacion='publicado';

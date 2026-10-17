@@ -30,7 +30,7 @@ export default function DescargarInvitados({ eventoId, eventoNombre }) {
       const client = createClient();
       const [pdf, invitados, mesas] = await Promise.all([
         import('@/lib/guest-pdf'),
-        leerTodos(client, 'invitados', 'id,nombre,mesa_id,estado,acompanantes,entradas', eventoId),
+        leerTodos(client, 'invitados', 'id,nombre,mesa_id,estado,lugares_asignados,entradas', eventoId),
         leerTodos(client, 'mesas', 'id,nombre', eventoId),
       ]);
       const documento = pdf.crearPdfInvitados({ eventoNombre, invitados, mesas });

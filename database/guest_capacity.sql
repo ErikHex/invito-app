@@ -7,12 +7,12 @@ begin
   select nullif(e.configuracion->>'limiteInvitados','')::integer into limite
   from public.eventos e where e.id=new.evento_id;
   if limite is null or limite < 1 then return new; end if;
-  select coalesce(sum(1 + coalesce(i.acompanantes,0)),0) into usados
+  select coalesce(sum(i.lugares_asignados),0) into usados
   from public.invitados i where i.evento_id=new.evento_id and i.id is distinct from new.id;
-  if usados + 1 + coalesce(new.acompanantes,0) > limite then
+  if usados + new.lugares_asignados > limite then
     raise exception 'El registro supera el cupo configurado de % invitados.', limite using errcode='23514';
   end if;
   return new;
 end $$;
 drop trigger if exists validar_cupo_invitados on public.invitados;
-create trigger validar_cupo_invitados before insert or update of evento_id,acompanantes on public.invitados for each row execute function public.validar_cupo_invitados();
+create trigger validar_cupo_invitados before insert or update of evento_id,lugares_asignados on public.invitados for each row execute function public.validar_cupo_invitados();

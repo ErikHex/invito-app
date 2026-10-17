@@ -90,7 +90,7 @@ export default function Editorial({
           </p>
         )}
         <p className="text-center mb-6">
-          Boletos disponibles: {Number(datos.acompanantes) + 1}
+          Lugares asignados: {Number(datos.lugares_asignados || datos.acompanantes || 1)}
         </p>
         {visible("rsvp") && (<RsvpForm
           invitado={datos}

@@ -10,19 +10,19 @@ export default function AgregarInvitado({eventoId,onAgregado, lugaresActuales=0,
   const [nombre,setNombre]=useState('');
   const [telefonoDatos,setTelefonoDatos]=useState({codigo:'52',numero:''});
   const telefono=joinPhone(telefonoDatos);
-  const [acompanantes,setAcompanantes]=useState(0);
+  const [lugaresAsignados,setLugaresAsignados]=useState(1);
   const [guardando,setGuardando]=useState(false);
   const [error,setError]=useState('');
   async function guardar(event) {
     event.preventDefault();setError('');
     if(!nombre.trim()) {setError('Escribe un nombre o familia.');return;}
     if(telefono && !validPhone(telefono)) {setError('Escribe el teléfono completo con código de país.');return;}
-    if(Number(limiteInvitados) && lugaresActuales + 1 + Number(acompanantes || 0) > Number(limiteInvitados)) {setError(`Este registro supera el cupo configurado de ${limiteInvitados} invitados.`);return;}
+    if(Number(limiteInvitados) && lugaresActuales + Number(lugaresAsignados || 1) > Number(limiteInvitados)) {setError(`Este registro supera el cupo configurado de ${limiteInvitados} invitados.`);return;}
     setGuardando(true);
     try {
-      const {data,error}=await createClient().from('invitados').insert({evento_id:eventoId,nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,acompanantes:Number(acompanantes),token:generarToken(),estado:'pendiente'}).select().single();
+      const {data,error}=await createClient().from('invitados').insert({evento_id:eventoId,nombre:nombre.trim(),telefono:normalizePhone(telefono)||null,lugares_asignados:Number(lugaresAsignados),token:generarToken(),estado:'pendiente'}).select().single();
       if(error)throw error;
-      onAgregado(data);setNombre('');setTelefonoDatos({codigo:'52',numero:''});setAcompanantes(0);
+      onAgregado(data);setNombre('');setTelefonoDatos({codigo:'52',numero:''});setLugaresAsignados(1);
     } catch {setError('No pudimos agregar la invitación. Revisa tu conexión e intenta de nuevo.');}
     finally {setGuardando(false);}
   }
@@ -32,7 +32,7 @@ export default function AgregarInvitado({eventoId,onAgregado, lugaresActuales=0,
       <label>Nombre o familia<input required maxLength={160} value={nombre} onChange={e=>setNombre(e.target.value)} placeholder="Familia Pérez" /></label>
       <div><TelefonoInput value={telefonoDatos} onChange={setTelefonoDatos} disabled={guardando} />
       <SeleccionarContacto disabled={guardando} onSelect={contacto=>{setTelefonoDatos(splitPhone(contacto.telefono,telefonoDatos.codigo));setNombre(actual=>actual.trim()?actual:contacto.nombre);}} /></div>
-      <label>Acompañantes<input type="number" required min="0" max="100" value={acompanantes} onChange={e=>setAcompanantes(e.target.value)} /></label>
+      <label>Lugares asignados<input type="number" required min="1" max="100" value={lugaresAsignados} onChange={e=>setLugaresAsignados(e.target.value)} /><span className="helper">Total incluido en esta invitación.</span></label>
       <button className="dash-primary" type="submit">{guardando?'Agregando…':'Agregar invitación'}</button>
     </fieldset>
     {error && <p role="alert" className="text-red-700 mt-3">{error}</p>}

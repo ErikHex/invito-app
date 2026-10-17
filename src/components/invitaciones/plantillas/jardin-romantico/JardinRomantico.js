@@ -179,7 +179,7 @@ export default function JardinRomantico({ datos, estado, onEstadoChange, preview
       <Encabezado etiqueta="Falta lo más importante: tú" titulo={<>¿Nos acompañas<br /><em>a celebrar?</em></>} />
       <div className={styles.ticket}>
         <p className={styles.eyebrow}>Reservado con cariño</p><h3>{datos.nombre || 'Una invitación para ti'}</h3>
-        <div className={styles.ticketDetails}><span><strong>{1 + Number(datos.acompanantes || 0)}</strong> lugares</span>{datos.mesa_nombre && <span>Mesa <strong>{datos.mesa_nombre}</strong></span>}</div>
+        <div className={styles.ticketDetails}><span><strong>{Number(datos.lugares_asignados || datos.acompanantes || 1)}</strong> lugares</span>{datos.mesa_nombre && <span>Mesa <strong>{datos.mesa_nombre}</strong></span>}</div>
         {visible('rsvp') && <RsvpForm invitado={datos} estado={estado} onEstadoChange={onEstadoChange} preview={preview} />}
         {visible('qr') && estado === 'confirmado' && (preview ? <p className={styles.previewNote}>Vista de muestra. Tu pase QR estará disponible en la invitación real.</p> : datos.token ? <QrCode token={datos.token} /> : null)}
       </div>

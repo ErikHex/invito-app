@@ -186,7 +186,7 @@ export default function AuraXV({ datos, estado, onEstadoChange, preview, editorP
     {(visible('rsvp') || visible('qr')) && <Seccion id="aura-asistencia" etiqueta="Tu lugar en esta historia" titulo={<>¿Celebramos <em>juntos?</em></>} className={styles.rsvp}>
       <div className={styles.ticket}>
         <Destello /><p>{datos.nombre || 'Una invitación para ti'}</p>
-        <div className={styles.ticketDetails}><span><strong>{1 + Number(datos.acompanantes || 0)}</strong> lugares para celebrar</span>{datos.mesa_nombre && <span>Mesa <strong>{datos.mesa_nombre}</strong></span>}</div>
+        <div className={styles.ticketDetails}><span><strong>{Number(datos.lugares_asignados || datos.acompanantes || 1)}</strong> lugares para celebrar</span>{datos.mesa_nombre && <span>Mesa <strong>{datos.mesa_nombre}</strong></span>}</div>
         {visible('rsvp') && <RsvpForm invitado={datos} estado={estado} onEstadoChange={onEstadoChange} preview={preview} />}
         {visible('qr') && estado === 'confirmado' && (preview ? <p className={styles.previewNote}>Vista de muestra. Tu pase QR estará disponible en la invitación real.</p> : <QrCode token={datos.token} />)}
       </div>

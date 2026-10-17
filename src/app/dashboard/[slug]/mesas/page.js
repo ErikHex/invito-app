@@ -8,7 +8,7 @@ export default async function MesasPage({ params }) {
 
   return (
     <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-      <MesasManager eventoId={data.evento.id} mesasIniciales={data.mesas} invitadosIniciales={data.invitados} configuracionInicial={data.evento.configuracion} />
+      <MesasManager eventoId={data.evento.id} mesasIniciales={data.mesas} invitadosIniciales={data.invitados} />
     </main>
   );
 }

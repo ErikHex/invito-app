@@ -10,7 +10,7 @@ export function sampleInvitation(muestra, { portada = false } = {}) {
     },
     nombre: 'Invitado de muestra',
     estado: 'pendiente',
-    acompanantes: 1,
+    lugares_asignados: 1,
     mesa_nombre: 'Olivo',
   };
 }

@@ -288,7 +288,7 @@ export default function Nocturno({
             {fechaTexto && <p className={styles.texto}>{fechaTexto}{horaTexto ? ` · ${horaTexto}` : ''}</p>}
           </div>
           {datos.mesa_nombre && <p className={styles.texto}>Tu mesa: <strong>{datos.mesa_nombre}</strong></p>}
-          <p className={styles.texto}>Boletos disponibles: {Number(datos.acompanantes || 0) + 1}</p>
+          <p className={styles.texto}>Lugares asignados: {Number(datos.lugares_asignados || datos.acompanantes || 1)}</p>
           {visible('rsvp') && (
             <RsvpForm invitado={datos} estado={estado} onEstadoChange={onEstadoChange} preview={preview} />
           )}

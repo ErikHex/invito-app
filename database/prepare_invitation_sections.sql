@@ -40,7 +40,7 @@ CREATE FUNCTION public.get_invitacion(token_input text)
 RETURNS TABLE(id uuid,nombre text,estado text,acompanantes smallint,token text,checked_in boolean,mesa_nombre text,evento_nombre text,configuracion jsonb,plantilla text,plantilla_version integer,modulos_activos jsonb)
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path=''
 AS $fn$
- SELECT i.id,i.nombre,i.estado,i.acompanantes,i.token,i.checked_in,m.nombre,e.nombre_evento,
+ SELECT i.id,i.nombre,i.estado,i.lugares_asignados,i.token,i.checked_in,m.nombre,e.nombre_evento,
  -- Transitional projection for the current components, not a second stored source of content.
  e.configuracion || jsonb_build_object('editorial',
  coalesce(e.configuracion->'editorial','{}'::jsonb) || jsonb_strip_nulls(jsonb_build_object(

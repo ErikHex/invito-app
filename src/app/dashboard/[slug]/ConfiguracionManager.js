@@ -422,7 +422,7 @@ export default function ConfiguracionManager({
     plantilla: eventoInicial.plantilla,
     modulos_activos: eventoInicial.modulos_activos,
     nombre: "Invitado de muestra",
-    acompanantes: 1,
+    lugares_asignados: 1,
     estado: "pendiente",
   };
 

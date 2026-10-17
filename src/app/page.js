@@ -23,7 +23,7 @@ const features = [
   [
     "◇",
     "Cada quien en su lugar",
-    "Administra acompañantes y asigna mesas desde tu cuenta para organizar a tus invitados.",
+    "Administra lugares asignados y mesas desde tu cuenta para organizar a tus invitados.",
   ],
   [
     "✧",
@@ -356,7 +356,7 @@ export default async function HomePage() {
             <li>Personalización del diseño que elijas</li>
             <li>Dos rondas de ajustes antes de la entrega</li>
             <li>Acceso para actualizar la información del evento</li>
-            <li>Confirmaciones, acompañantes y mesas</li>
+            <li>Confirmaciones, lugares asignados y mesas</li>
             <li>Pases QR y herramienta de registro de acceso</li>
             <li>Guía breve para utilizar tu cuenta</li>
           </ul>

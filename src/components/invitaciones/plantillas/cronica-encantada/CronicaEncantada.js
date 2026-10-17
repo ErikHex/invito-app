@@ -153,7 +153,7 @@ export default function CronicaEncantada({ datos, estado, onEstadoChange, previe
     {(visible('rsvp') || visible('qr')) && <section className={styles.rsvp}>
       <p className={styles.kicker}>La invitación te ha encontrado</p><h2>¿Serás parte de esta historia?</h2>
       <p>Esta invitación está reservada para <b>{datos.nombre || 'ti'}</b>.</p>
-      <p><b>{1 + Number(datos.acompanantes || 0)}</b> lugar{1 + Number(datos.acompanantes || 0) === 1 ? '' : 'es'} disponibles{datos.mesa_nombre ? <> · Mesa <b>{datos.mesa_nombre}</b></> : null}</p>
+      <p><b>{Number(datos.lugares_asignados || datos.acompanantes || 1)}</b> lugar{Number(datos.lugares_asignados || datos.acompanantes || 1) === 1 ? '' : 'es'} disponible{Number(datos.lugares_asignados || datos.acompanantes || 1) === 1 ? '' : 's'}{datos.mesa_nombre ? <> · Mesa <b>{datos.mesa_nombre}</b></> : null}</p>
       {visible('rsvp') && <RsvpForm invitado={datos} estado={estado} onEstadoChange={onEstadoChange} preview={preview} />}
       {visible('qr') && estado === 'confirmado' && (preview ? <p>Vista de muestra: el pase mágico aparecerá en la invitación publicada.</p> : datos.token ? <QrCode token={datos.token} /> : null)}
     </section>}

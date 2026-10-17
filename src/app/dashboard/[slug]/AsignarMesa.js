@@ -18,8 +18,8 @@ export default function AsignarMesa({ invitado, mesas, invitados, onChange }) {
         const mesa = mesas.find((item) => item.id === nuevaMesaId);
         const ocupados = invitados
           .filter((item) => item.mesa_id === nuevaMesaId && item.id !== invitado.id)
-          .reduce((total, item) => total + 1 + (Number(item.acompanantes) || 0), 0);
-        const lugaresNecesarios = 1 + (Number(invitado.acompanantes) || 0);
+          .reduce((total, item) => total + Number(item.lugares_asignados || 1), 0);
+        const lugaresNecesarios = Number(invitado.lugares_asignados || 1);
         if (mesa && ocupados + lugaresNecesarios > Number(mesa.capacidad)) {
           throw new Error("La mesa no tiene lugares suficientes para este invitado.");
         }
