@@ -13,6 +13,7 @@ import { familiasTipografia } from "@/lib/invitation-fonts";
 import { catalogoPlantillas } from "@/components/invitaciones/plantillas/catalogo";
 import GaleriaManager from "./GaleriaManager";
 import { pinterestUrl, validClabe } from "@/lib/invitation-utils";
+import { actualizarFechaCuentaRegresiva, fechaDeCuentaRegresiva } from "@/lib/aura-xv";
 import Invitacion from "@/components/invitaciones/Invitacion";
 import styles from "./editor.module.css";
 
@@ -223,7 +224,11 @@ export default function ConfiguracionManager({
   const [nombreEvento, setNombreEvento] = useState(
     eventoInicial.nombre_evento || "",
   );
-  const [fecha, setFecha] = useState(eventoInicial.fecha || "");
+  const [fecha, setFecha] = useState(
+    fechaDeCuentaRegresiva(eventoInicial.configuracion?.fechaHora) ||
+      eventoInicial.fecha ||
+      "",
+  );
   const [configuracion, setConfiguracion] = useState(
     eventoInicial.configuracion || {},
   );
@@ -378,17 +383,13 @@ export default function ConfiguracionManager({
     setGuardando(true);
     setMensaje("");
 
-    const fechaHoraActual = configuracion.fechaHora || "T17:00:00-06:00";
-    const hora =
-      fechaHoraActual.match(/T\d{2}:\d{2}:\d{2}(?:[+-]\d{2}:\d{2}|Z)$/)?.[0] ||
-      "T17:00:00-06:00";
     const nuevaConfiguracion = {
       ...configuracion,
       nombres: nombres
         .split(",")
         .map((nombre) => nombre.trim())
         .filter(Boolean),
-      fechaHora: fecha ? `${fecha}${hora}` : null,
+      fechaHora: actualizarFechaCuentaRegresiva(configuracion.fechaHora, fecha),
     };
 
     try {

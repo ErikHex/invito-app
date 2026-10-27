@@ -7,6 +7,17 @@ export function fechaInvitacion(value) {
   return new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date);
 }
 
+export function fechaDeCuentaRegresiva(value) {
+  const match = typeof value === 'string' && value.match(/^(\d{4}-\d{2}-\d{2})T/);
+  return match && fechaInvitacion(value) ? match[1] : null;
+}
+
+export function actualizarFechaCuentaRegresiva(fechaHora, fecha) {
+  if (!fecha) return null;
+  const hora = typeof fechaHora === 'string' && fechaHora.match(/T\d{2}:\d{2}:\d{2}(?:[+-]\d{2}:\d{2}|Z)$/)?.[0];
+  return `${fecha}${hora || 'T17:00:00-06:00'}`;
+}
+
 export function tiempoRestante(fechaHora, ahora = Date.now()) {
   const target = new Date(fechaHora).getTime();
   if (!fechaHora || !Number.isFinite(target)) return null;

@@ -1,0 +1,8 @@
+"use client";
+import { useState } from 'react';
+export default function AlbumWhatsAppShare({ codigo }) {
+  const [mensaje, setMensaje] = useState('¡Gracias por ser parte de este día tan especial! ✳ Si capturaste algún momento bonito, divertido o inesperado, súbelo al álbum para que podamos revivirlo juntos:');
+  const [estado, setEstado] = useState('');
+  async function compartir() { const texto = mensaje + '\n' + window.location.origin + '/album/' + codigo; try { if (navigator.share) { await navigator.share({ title: 'Comparte tus fotos', text: texto }); setEstado('Listo para compartir.'); return; } window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank', 'noopener,noreferrer'); } catch (error) { if (error?.name !== 'AbortError') setEstado('No pudimos abrir el menú para compartir.'); } }
+  return <section className="rounded-3xl border border-[#eadfe1] bg-[#fffaf8] p-5 shadow-sm sm:p-7"><p className="text-xs font-bold tracking-[.18em] text-[#987181]">COMPARTE EL ÁLBUM</p><h2 className="mt-1 font-serif text-3xl text-[#402f38]">Pide los recuerdos de todos</h2><p className="mt-2 text-sm text-stone-600">Edita el mensaje y comparte por WhatsApp. Tu teléfono te dejará elegir el chat o grupo.</p><label className="mt-5 block text-sm font-semibold text-[#402f38]">Mensaje<textarea className="mt-2 min-h-28 w-full rounded-xl border border-[#dccdd2] bg-white p-3 text-sm font-normal text-stone-700" value={mensaje} onChange={event => setMensaje(event.target.value)} /></label><p className="mt-2 text-xs text-stone-500">El enlace del álbum se agrega automáticamente.</p><button type="button" onClick={compartir} className="dash-primary mt-5">Compartir por WhatsApp</button>{estado && <p className="helper mt-3" role="status">{estado}</p>}</section>;
+}

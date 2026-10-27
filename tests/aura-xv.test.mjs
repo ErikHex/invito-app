@@ -1,12 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { fechaInvitacion, tiempoRestante, enlaceSeguro, enlaceRegalo } from '../src/lib/aura-xv.js';
+import { fechaInvitacion, fechaDeCuentaRegresiva, actualizarFechaCuentaRegresiva, tiempoRestante, enlaceSeguro, enlaceRegalo } from '../src/lib/aura-xv.js';
 import { catalogoPlantillas } from '../src/components/invitaciones/plantillas/catalogo.js';
 
 test('la fecha escrita no se desplaza por la zona horaria y rechaza fechas inválidas', () => {
   assert.equal(fechaInvitacion('2027-08-21T00:30:00+14:00'), '21 de agosto de 2027');
   assert.equal(fechaInvitacion('2027-02-30'), null);
   assert.equal(fechaInvitacion(undefined), null);
+});
+
+test('la fecha del resumen se deriva y se sincroniza con la cuenta regresiva', () => {
+  assert.equal(fechaDeCuentaRegresiva('2027-08-21T18:30:00-06:00'), '2027-08-21');
+  assert.equal(fechaDeCuentaRegresiva('2027-02-30T18:30:00-06:00'), null);
+  assert.equal(actualizarFechaCuentaRegresiva('2027-08-21T18:30:00-06:00', '2027-09-10'), '2027-09-10T18:30:00-06:00');
+  assert.equal(actualizarFechaCuentaRegresiva(null, '2027-09-10'), '2027-09-10T17:00:00-06:00');
+  assert.equal(actualizarFechaCuentaRegresiva('2027-08-21T18:30:00-06:00', ''), null);
 });
 
 test('la cuenta regresiva calcula intervalos, termina en cero y maneja datos incompletos', () => {

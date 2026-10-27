@@ -17,14 +17,14 @@ R2_PUBLIC_URL=https://cdn.invito.fun
 ```
 
 En Cloudflare, conectar `cdn.invito.fun` al bucket y guardar una política CORS
-que permita PUT y Content-Type desde los orígenes exactos de la aplicación.
+que permita PUT, GET y Content-Type desde los orígenes exactos de la aplicación.
 Ejemplo si producción usa `https://invito.fun` y `https://www.invito.fun`:
 
 ```json
 [
   {
     "AllowedOrigins": ["http://localhost:3000", "https://invito.fun", "https://www.invito.fun"],
-    "AllowedMethods": ["PUT"],
+    "AllowedMethods": ["PUT", "GET"],
     "AllowedHeaders": ["Content-Type"],
     "MaxAgeSeconds": 3600
   }
