@@ -156,25 +156,34 @@ export default async function HomePage() {
             Bodas · XV años · Cumpleaños · Pago único desde $699 MXN
           </p>
         </div>
-        <div className={styles.heroArt} aria-label="Demostración de una invitación interactiva de Invito y un panel ilustrativo de gestión">
-          <div className={styles.showcaseGlow} aria-hidden="true" />
-          <div className={styles.showcaseFlower} aria-hidden="true">✿</div>
-          <div className={styles.showcaseFlowerTwo} aria-hidden="true">✾</div>
-          <div className={styles.showcasePanel} aria-label="Panel de gestión ilustrativo">
-            <div className={styles.showcasePanelNav}><strong>invito</strong><span>Panel de gestión · Ejemplo</span></div>
-            <p className={styles.showcasePanelTitle}>Tus invitados, en orden.</p>
-            <div className={styles.showcaseStats}><div><strong>✓</strong><span>Confirmaciones</span></div><div><strong>◇</strong><span>Mesas</span></div><div><strong>▦</strong><span>Pases QR</span></div></div>
-            <div className={styles.showcasePanelLine}><span>Invitados confirmados</span><b>✓</b></div>
-            <div className={styles.showcasePanelLine}><span>Asignación de lugares</span><b>◇</b></div>
-            <div className={styles.showcasePanelLine}><span>Álbum compartido</span><b>♡</b></div>
+        <div className={styles.heroArt} aria-label="Invitación interactiva real y tarjetas ilustrativas de funciones Invito">
+          <div className={styles.abstractOrbOne} aria-hidden="true" />
+          <div className={styles.abstractOrbTwo} aria-hidden="true" />
+          <div className={styles.abstractRibbon} aria-hidden="true" />
+          <div className={styles.floatingCard + " " + styles.cardRsvp}>
+            <span className={styles.cardIcon} aria-hidden="true">♧</span>
+            <span className={styles.cardLabel}>Confirmaciones<br/>en tiempo real</span>
+            <strong className={styles.cardEmphasis}>✓</strong>
           </div>
-          <div className={styles.showcasePhone}>
-            <div className={styles.showcaseNotch} aria-hidden="true" />
-            <iframe src="/muestra/editorial?portada=1" title="Vista previa de la invitación Editorial de Invito" loading="lazy" tabIndex={-1} />
-            <Link href="/muestra/editorial" className={styles.showcaseVisit}>VER INVITACIÓN REAL ↗</Link>
+          <div className={styles.floatingCard + " " + styles.cardQr}>
+            <span className={styles.cardIcon} aria-hidden="true">▦</span>
+            <span className={styles.cardLabel}>Pases QR<br/>digitales</span>
+            <span className={styles.cardTiny}>Acceso organizado</span>
           </div>
-          <div className={styles.showcaseRibbon}>Invitaciones que enamoran <span>♡</span></div>
-          <p className={styles.artCaption}>INVITACIÓN DE MUESTRA REAL · PANEL ILUSTRATIVO</p>
+          <div className={styles.floatingCard + " " + styles.cardTables}>
+            <span className={styles.cardIcon} aria-hidden="true">◇</span>
+            <span className={styles.cardLabel}>Asignación<br/>de mesas</span>
+          </div>
+          <div className={styles.floatingCard + " " + styles.cardAlbum}>
+            <span className={styles.cardIcon} aria-hidden="true">♡</span>
+            <span className={styles.cardLabel}>Álbum de fotos<br/>compartido</span>
+          </div>
+          <div className={styles.abstractPhone}>
+            <div className={styles.abstractNotch} aria-hidden="true" />
+            <iframe src="/muestra/editorial?portada=1" title="Vista previa real de la invitación Editorial" loading="lazy" tabIndex={-1} />
+            <Link href="/muestra/editorial" className={styles.abstractVisit}>EXPLORAR INVITACIÓN ↗</Link>
+          </div>
+          <p className={styles.abstractCaption}>INVITACIÓN REAL DE MUESTRA · FUNCIONES ILUSTRADAS</p>
         </div>
       </section>
 
