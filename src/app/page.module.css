@@ -162,3 +162,39 @@
 .showcaseRibbon span { color:#a46e91; }
 .heroArt .artCaption { position:absolute; z-index:5; bottom:15px; left:0; right:0; font-size:9px; letter-spacing:.12em; text-align:center; color:#684d71; }
 @media(max-width:440px) { .heroArt { height:460px!important; } .showcasePhone { left:14px; top:30px; width:190px; height:384px; } .showcasePhone iframe { transform:scale(.44); } .showcasePanel { right:6px; top:85px; width:66%; padding:12px; min-height:265px; } .showcasePanelTitle { font-size:17px; } .showcasePanelNav strong { font-size:18px; } .showcaseStats span { font-size:7px; } .showcaseRibbon { bottom:44px; right:9px; font-size:13px; } }
+
+/* Mobile-first refinement: prioritise legibility and one-thumb conversion */
+@media(max-width:760px) {
+ .hero { display:flex; flex-direction:column; gap:24px; }
+ .heroCopy { width:100%; }
+ .heroCopy h1 { font-size:clamp(34px,9vw,51px); line-height:1.08; }
+ .heroCopy .description { font-size:15px; line-height:1.65; }
+ .heroCopy .actions { display:flex; flex-direction:column; align-items:stretch; gap:10px; }
+ .heroCopy .actions .primary,.heroCopy .actions .textLink { display:flex; justify-content:center; align-items:center; min-height:48px; width:100%; text-align:center; }
+ .heroArt { width:100%; min-width:0; height:490px!important; }
+ .showcasePhone { left:9%; top:28px; width:205px; height:414px; }
+ .showcasePhone iframe { transform:scale(.48); }
+ .showcasePanel { right:5%; top:112px; width:61%; padding:13px; }
+ .showcasePanelTitle { font-size:18px; }
+ .showcaseRibbon { right:5%; bottom:50px; font-size:15px; }
+}
+@media(max-width:390px) {
+ .heroArt { height:420px!important; }
+ .showcasePhone { left:5%; top:24px; width:173px; height:356px; border-width:6px; border-radius:29px; }
+ .showcasePhone iframe { transform:scale(.405); }
+ .showcasePanel { right:3%; top:96px; width:63%; min-height:245px; padding:10px; }
+ .showcasePanelTitle { font-size:15px; margin:12px 0; }
+ .showcasePanelNav span { font-size:7px; }
+ .showcaseStats { gap:3px; }
+ .showcaseStats div { min-height:50px; }
+ .showcaseStats span { font-size:6px; }
+ .showcasePanelLine { font-size:8px; padding:8px 2px; }
+ .showcaseRibbon { font-size:12px; bottom:41px; right:4%; }
+ .showcaseVisit { min-height:40px; display:flex; align-items:center; justify-content:center; }
+}
+@media(max-width:340px) {
+ .showcasePanel { right:2%; width:61%; }
+ .showcasePhone { left:3%; width:160px; height:333px; }
+ .showcasePhone iframe { transform:scale(.375); }
+ .showcaseRibbon { display:none; }
+}
