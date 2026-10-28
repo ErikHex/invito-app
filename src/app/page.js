@@ -85,7 +85,7 @@ export default async function HomePage() {
           className={styles.brand}
           aria-label="Invito, inicio"
         >
-          invito<span aria-hidden="true">✳</span>
+          invito<svg className={styles.brandMark} viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 4C12 12 6 21 8 32c2 9 10 15 16 20 6-5 14-11 16-20 2-11-4-20-16-28Z" stroke="currentColor" strokeWidth="2.8"/><path d="M24 12v29M13 27l11 10 11-10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/></svg>
         </Link>
         <nav
           className={styles.nav}
@@ -373,7 +373,7 @@ export default async function HomePage() {
           className={styles.brand}
           aria-label="Invito, inicio"
         >
-          invito<span aria-hidden="true">✳</span>
+          invito<svg className={styles.brandMark} viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 4C12 12 6 21 8 32c2 9 10 15 16 20 6-5 14-11 16-20 2-11-4-20-16-28Z" stroke="currentColor" strokeWidth="2.8"/><path d="M24 12v29M13 27l11 10 11-10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/></svg>
         </Link>
         <p>Hecho para celebrar lo que importa.</p>
         <span>© {new Date().getFullYear()} Invito</span>
