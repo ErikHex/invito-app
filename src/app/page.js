@@ -156,23 +156,25 @@ export default async function HomePage() {
             Bodas · XV años · Cumpleaños · Pago único desde $699 MXN
           </p>
         </div>
-        <div className={styles.heroArt} aria-label="Vista de una invitación de muestra y ejemplo ilustrativo del panel de organización">
-          <div className={styles.liveDemoScene}>
-            <div className={styles.liveDemoPanel} aria-label="Ejemplo ilustrativo de gestión de invitados">
-              <div className={styles.liveDemoTop}><strong>invito✳</strong><span>Vista ilustrativa</span></div>
-              <p className={styles.liveDemoHeading}>Tu evento, en orden.</p>
-              <div className={styles.liveDemoMetric}><span>Confirmaciones</span><strong>✓</strong></div>
-              <div className={styles.liveDemoMetric}><span>Asignación de mesas</span><strong>◇</strong></div>
-              <div className={styles.liveDemoMetric}><span>Pases QR</span><strong>↗</strong></div>
-              <p className={styles.liveDemoFoot}>Gestiona a tus invitados desde tu cuenta.</p>
-            </div>
-            <div className={styles.liveDemoPhone}>
-              <div className={styles.liveDemoPhoneBar}>INVITACIÓN INTERACTIVA</div>
-              <iframe src="/muestra/editorial?portada=1" title="Vista previa de una invitación pública de Invito" loading="lazy" tabIndex={-1} />
-              <Link href="/muestra/editorial" className={styles.liveDemoOpen} aria-label="Abrir invitación de muestra Editorial">Explorar invitación ↗</Link>
-            </div>
+        <div className={styles.heroArt} aria-label="Demostración de una invitación interactiva de Invito y un panel ilustrativo de gestión">
+          <div className={styles.showcaseGlow} aria-hidden="true" />
+          <div className={styles.showcaseFlower} aria-hidden="true">✿</div>
+          <div className={styles.showcaseFlowerTwo} aria-hidden="true">✾</div>
+          <div className={styles.showcasePanel} aria-label="Panel de gestión ilustrativo">
+            <div className={styles.showcasePanelNav}><strong>invito</strong><span>Panel de gestión · Ejemplo</span></div>
+            <p className={styles.showcasePanelTitle}>Tus invitados, en orden.</p>
+            <div className={styles.showcaseStats}><div><strong>✓</strong><span>Confirmaciones</span></div><div><strong>◇</strong><span>Mesas</span></div><div><strong>▦</strong><span>Pases QR</span></div></div>
+            <div className={styles.showcasePanelLine}><span>Invitados confirmados</span><b>✓</b></div>
+            <div className={styles.showcasePanelLine}><span>Asignación de lugares</span><b>◇</b></div>
+            <div className={styles.showcasePanelLine}><span>Álbum compartido</span><b>♡</b></div>
           </div>
-          <p className={styles.artCaption}>INVITACIÓN REAL DE MUESTRA · PANEL ILUSTRATIVO</p>
+          <div className={styles.showcasePhone}>
+            <div className={styles.showcaseNotch} aria-hidden="true" />
+            <iframe src="/muestra/editorial?portada=1" title="Vista previa de la invitación Editorial de Invito" loading="lazy" tabIndex={-1} />
+            <Link href="/muestra/editorial" className={styles.showcaseVisit}>VER INVITACIÓN REAL ↗</Link>
+          </div>
+          <div className={styles.showcaseRibbon}>Invitaciones que enamoran <span>♡</span></div>
+          <p className={styles.artCaption}>INVITACIÓN DE MUESTRA REAL · PANEL ILUSTRATIVO</p>
         </div>
       </section>
 
