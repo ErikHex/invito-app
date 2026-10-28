@@ -156,76 +156,23 @@ export default async function HomePage() {
             Bodas · XV años · Cumpleaños · Pago único desde $699 MXN
           </p>
         </div>
-        <div
-          className={styles.heroArt}
-          role="img"
-          aria-label="Ilustración de una invitación digital en un celular junto a un panel de confirmaciones y organización de mesas."
-        >
-          <div
-            className={styles.productScene}
-            aria-hidden="true"
-          >
-            <div className={styles.orbit} />
-            <span className={styles.spark}>✳</span>
-            <div className={styles.panelPreview}>
-              <div className={styles.previewBar}>
-                <span>invito✳</span>
-                <span>Tu evento</span>
-              </div>
-              <p className={styles.previewTitle}>Todo en su lugar.</p>
-              <div className={styles.previewStats}>
-                <div>
-                  <span>✓</span>Confirmaciones
-                </div>
-                <div>
-                  <span>◇</span>Mesas
-                </div>
-              </div>
-              <div className={styles.guestRow}>
-                <i />
-                <span />
-                <b>Confirmado</b>
-              </div>
-              <div className={styles.guestRow}>
-                <i />
-                <span />
-                <b>Confirmado</b>
-              </div>
-              <div className={styles.tablePreview}>
-                <span>01</span>
-                <span>02</span>
-                <span>03</span>
-              </div>
+        <div className={styles.heroArt} aria-label="Vista de una invitación de muestra y ejemplo ilustrativo del panel de organización">
+          <div className={styles.liveDemoScene}>
+            <div className={styles.liveDemoPanel} aria-label="Ejemplo ilustrativo de gestión de invitados">
+              <div className={styles.liveDemoTop}><strong>invito✳</strong><span>Vista ilustrativa</span></div>
+              <p className={styles.liveDemoHeading}>Tu evento, en orden.</p>
+              <div className={styles.liveDemoMetric}><span>Confirmaciones</span><strong>✓</strong></div>
+              <div className={styles.liveDemoMetric}><span>Asignación de mesas</span><strong>◇</strong></div>
+              <div className={styles.liveDemoMetric}><span>Pases QR</span><strong>↗</strong></div>
+              <p className={styles.liveDemoFoot}>Gestiona a tus invitados desde tu cuenta.</p>
             </div>
-            <div className={styles.phonePreview}>
-              <div className={styles.phoneSpeaker} />
-              <span className={styles.phoneEyebrow}>UNA OCASIÓN ESPECIAL</span>
-              <div className={styles.phoneFlower}>✳</div>
-              <p>
-                Tenemos algo
-                <br />
-                <em>que celebrar.</em>
-              </p>
-              <div className={styles.phoneRule} />
-              <span className={styles.phoneNote}>
-                Y queremos compartirlo contigo.
-              </span>
-              <div className={styles.phoneDetails}>
-                <span>Fecha</span>
-                <span>Lugar</span>
-                <span>Detalles</span>
-              </div>
-              <span className={styles.phoneConfirm}>
-                Confirmar asistencia ↗
-              </span>
-            </div>
-            <div className={styles.readyBadge}>
-              <span>✓</span> Lista para compartir
+            <div className={styles.liveDemoPhone}>
+              <div className={styles.liveDemoPhoneBar}>INVITACIÓN INTERACTIVA</div>
+              <iframe src="/muestra/editorial?portada=1" title="Vista previa de una invitación pública de Invito" loading="lazy" tabIndex={-1} />
+              <Link href="/muestra/editorial" className={styles.liveDemoOpen} aria-label="Abrir invitación de muestra Editorial">Explorar invitación ↗</Link>
             </div>
           </div>
-          <p className={styles.artCaption}>
-            TU INVITACIÓN Y TUS INVITADOS, CONECTADOS.
-          </p>
+          <p className={styles.artCaption}>INVITACIÓN REAL DE MUESTRA · PANEL ILUSTRATIVO</p>
         </div>
       </section>
 
