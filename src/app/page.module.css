@@ -326,3 +326,62 @@
  .templateCard { transition:none; }
  .templateCard:hover { transform:none; }
 }
+
+/* V3 — visibly distinct full-page editorial sections, not subtle recoloring */
+.page { background:#fbf6fb; }
+.templates { max-width:none; padding:100px max(24px,calc((100vw - 1120px)/2)) 110px; background:radial-gradient(ellipse at 0% 100%,#d6b3e1 0%,transparent 48%),radial-gradient(ellipse at 100% 0%,#f7d9e9 0%,transparent 45%),#f6eaf5; border-radius:48px 48px 0 0; }
+.templates .sectionHeading { max-width:780px; }
+.templates .sectionHeading h2 { font-size:clamp(44px,5.5vw,76px); }
+.templates .sectionHeading h2 em { display:block; }
+.templateGrid { gap:26px; }
+.templateCard { border:1px solid #ffffff!important; border-radius:30px!important; box-shadow:0 26px 65px #70468128!important; background:#ffffffd9!important; }
+.templateWindow { border-radius:25px 25px 0 0; }
+.templateInfo { padding:26px!important; }
+.details { max-width:none; padding:110px max(24px,calc((100vw - 1120px)/2))!important; background:radial-gradient(ellipse at 90% 20%,#e4caef 0%,transparent 42%),radial-gradient(ellipse at 10% 100%,#f8e1e9 0%,transparent 45%),#fffbfa; }
+.details .sectionHeading h2 { font-size:clamp(40px,5vw,70px); }
+.features { gap:18px; }
+.feature { position:relative; min-height:250px; padding:30px!important; border-radius:28px!important; background:linear-gradient(140deg,#fffdfbe8,#f1e2f4e6)!important; box-shadow:0 20px 45px #68457b18!important; }
+.feature:nth-child(3n+2) { background:linear-gradient(140deg,#ead7f3,#ffffffd9)!important; }
+.feature:nth-child(3n+3) { background:linear-gradient(140deg,#f9e1eb,#ffffffd9)!important; }
+.feature .iconBadge { width:64px; height:64px; font-size:32px; box-shadow:0 8px 24px #6e4a7d1c; }
+.feature h3 { font-size:clamp(20px,2vw,27px); }
+.process { max-width:none; padding:100px max(24px,calc((100vw - 1120px)/2)) 120px!important; background:linear-gradient(155deg,#e9d5f1 0%,#f9edf4 55%,#f4e0e9 100%); }
+.process .sectionHeading h2 { font-size:clamp(40px,5vw,70px); }
+.steps { gap:18px; }
+.steps li { min-height:240px; border-radius:28px!important; padding:28px!important; background:#ffffffb9!important; box-shadow:0 18px 42px #63457520!important; }
+.stepNumber { font-size:54px; line-height:1; color:#9568a5; border:0; margin-bottom:28px; }
+.steps h3 { font-size:24px; }
+.package { padding-top:110px; padding-bottom:110px; background:radial-gradient(ellipse at 0% 20%,#d2afe1 0%,transparent 55%),radial-gradient(ellipse at 100% 90%,#f7dce6 0%,transparent 50%),#f3e5f4; }
+.packageIntro h2 { font-size:clamp(43px,4.5vw,68px); }
+.packageCard { border-radius:34px!important; padding:44px!important; box-shadow:0 32px 80px #67407633!important; }
+.packageCard .price { font-size:clamp(58px,6vw,84px); }
+.contact { padding:115px 24px 125px; background:radial-gradient(ellipse at 25% 85%,#d8b5e8 0%,transparent 46%),radial-gradient(ellipse at 80% 10%,#f7d9e6 0%,transparent 50%),#fff8fa; }
+.contact h2 { font-size:clamp(43px,5vw,72px); }
+.contact .actions { margin-top:34px; }
+@media(max-width:760px) {
+ .templates { padding:70px 18px 80px!important; border-radius:32px 32px 0 0; }
+ .templates .sectionHeading h2,.details .sectionHeading h2,.process .sectionHeading h2 { font-size:clamp(39px,10vw,55px); }
+ .templateGrid { gap:22px; }
+ .templateCard { border-radius:25px!important; }
+ .details { padding:78px 18px!important; }
+ .features { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+ .feature { min-height:235px; padding:21px!important; }
+ .feature .iconBadge { width:52px; height:52px; font-size:27px; }
+ .process { padding:75px 18px 85px!important; }
+ .steps { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+ .steps li { min-height:220px; padding:22px!important; }
+ .stepNumber { font-size:42px; margin-bottom:22px; }
+ .steps h3 { font-size:20px; }
+ .package { padding:80px 18px; }
+ .packageCard { padding:32px 24px!important; }
+ .contact { padding:90px 18px; }
+}
+@media(max-width:440px) {
+ .features { grid-template-columns:1fr; }
+ .feature { min-height:0; padding:25px!important; }
+ .steps { grid-template-columns:1fr; }
+ .steps li { min-height:0; padding:26px!important; }
+ .stepNumber { font-size:48px; margin-bottom:16px; }
+ .packageCard { padding:28px 22px!important; }
+ .templates .sectionHeading h2,.details .sectionHeading h2,.process .sectionHeading h2 { font-size:clamp(38px,10.5vw,48px); }
+}
