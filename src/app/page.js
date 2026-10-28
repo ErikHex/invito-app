@@ -35,6 +35,11 @@ const features = [
     "Todos los detalles, sin papel",
     "Comparte ubicaciones, itinerario, galería y más en una invitación pensada para disfrutarse desde el celular.",
   ],
+  [
+    "♡",
+    "Álbum compartido",
+    "Tus invitados pueden compartir las fotografías que capturen durante la celebración en un álbum digital del evento.",
+  ],
 ];
 
 const steps = [
@@ -80,7 +85,7 @@ export default async function HomePage() {
           className={styles.brand}
           aria-label="Invito, inicio"
         >
-          invito<span aria-hidden="true">✳</span>
+          invito<svg className={styles.brandMark} viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 4C12 12 6 21 8 32c2 9 10 15 16 20 6-5 14-11 16-20 2-11-4-20-16-28Z" stroke="currentColor" strokeWidth="2.8"/><path d="M24 12v29M13 27l11 10 11-10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/></svg>
         </Link>
         <nav
           className={styles.nav}
@@ -122,105 +127,63 @@ export default async function HomePage() {
         aria-labelledby="hero-title"
       >
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>EL COMIENZO DE ALGO ESPECIAL</p>
+          <p className={styles.eyebrow}>INVITACIONES DIGITALES INTERACTIVAS</p>
           <h1 id="hero-title">
-            Grandes momentos.
+            Una invitación hermosa.
             <br />
-            <em>Bonitos comienzos.</em>
+            <em>Todo tu evento organizado.</em>
           </h1>
           <p className={styles.description}>
-            Creamos tu invitación digital y te la entregamos lista para
-            compartir. Después, puedes actualizar los datos de tu evento,
-            consultar confirmaciones y organizar tus mesas desde tu cuenta.
+            Sorprende a tus invitados con una invitación interactiva y organiza tu celebración desde un solo lugar: confirmaciones, pases QR, mesas y un álbum de fotos compartido.
           </p>
           <div className={styles.actions}>
             <a
-              href="#contacto"
+              href="https://wa.me/525669281968?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20mi%20invitaci%C3%B3n%20digital%20Invito"
+              target="_blank"
+              rel="noopener noreferrer"
               className={styles.primary}
             >
-              Quiero mi invitación <span aria-hidden="true">↗</span>
+              Cotizar por WhatsApp <span aria-hidden="true">↗</span>
             </a>
             <Link
               href="#plantillas"
               className={styles.textLink}
             >
-              Explorar plantillas <span aria-hidden="true">↗</span>
+              Ver invitaciones reales <span aria-hidden="true">↗</span>
             </Link>
           </div>
           <p className={styles.heroNote}>
-            Bodas · XV años · Cumpleaños · Y todo lo que merece celebrarse
+            Bodas · XV años · Cumpleaños · Pago único desde $699 MXN
           </p>
         </div>
-        <div
-          className={styles.heroArt}
-          role="img"
-          aria-label="Ilustración de una invitación digital en un celular junto a un panel de confirmaciones y organización de mesas."
-        >
-          <div
-            className={styles.productScene}
-            aria-hidden="true"
-          >
-            <div className={styles.orbit} />
-            <span className={styles.spark}>✳</span>
-            <div className={styles.panelPreview}>
-              <div className={styles.previewBar}>
-                <span>invito✳</span>
-                <span>Tu evento</span>
-              </div>
-              <p className={styles.previewTitle}>Todo en su lugar.</p>
-              <div className={styles.previewStats}>
-                <div>
-                  <span>✓</span>Confirmaciones
-                </div>
-                <div>
-                  <span>◇</span>Mesas
-                </div>
-              </div>
-              <div className={styles.guestRow}>
-                <i />
-                <span />
-                <b>Confirmado</b>
-              </div>
-              <div className={styles.guestRow}>
-                <i />
-                <span />
-                <b>Confirmado</b>
-              </div>
-              <div className={styles.tablePreview}>
-                <span>01</span>
-                <span>02</span>
-                <span>03</span>
-              </div>
-            </div>
-            <div className={styles.phonePreview}>
-              <div className={styles.phoneSpeaker} />
-              <span className={styles.phoneEyebrow}>UNA OCASIÓN ESPECIAL</span>
-              <div className={styles.phoneFlower}>✳</div>
-              <p>
-                Tenemos algo
-                <br />
-                <em>que celebrar.</em>
-              </p>
-              <div className={styles.phoneRule} />
-              <span className={styles.phoneNote}>
-                Y queremos compartirlo contigo.
-              </span>
-              <div className={styles.phoneDetails}>
-                <span>Fecha</span>
-                <span>Lugar</span>
-                <span>Detalles</span>
-              </div>
-              <span className={styles.phoneConfirm}>
-                Confirmar asistencia ↗
-              </span>
-            </div>
-            <div className={styles.readyBadge}>
-              <span>✓</span> Lista para compartir
-            </div>
+        <div className={styles.heroArt} aria-label="Invitación interactiva real y tarjetas ilustrativas de funciones Invito">
+          <div className={styles.abstractOrbOne} aria-hidden="true" />
+          <div className={styles.abstractOrbTwo} aria-hidden="true" />
+          <div className={styles.abstractRibbon} aria-hidden="true" />
+          <div className={styles.floatingCard + " " + styles.cardRsvp}>
+            <span className={styles.cardIcon} aria-hidden="true">♧</span>
+            <span className={styles.cardLabel}>Confirmaciones<br/>en tiempo real</span>
+            <strong className={styles.cardEmphasis}>✓</strong>
           </div>
-          <p className={styles.artCaption}>
-            TU INVITACIÓN Y TUS INVITADOS, CONECTADOS.
-          </p>
+          <div className={styles.floatingCard + " " + styles.cardQr}>
+            <span className={styles.cardIcon} aria-hidden="true">▦</span>
+            <span className={styles.cardLabel}>Pases QR<br/>digitales</span>
+            <span className={styles.cardTiny}>Acceso organizado</span>
+          </div>
+          <div className={styles.floatingCard + " " + styles.cardTables}>
+            <span className={styles.cardIcon} aria-hidden="true">◇</span>
+            <span className={styles.cardLabel}>Asignación<br/>de mesas</span>
+          </div>
+          <div className={styles.floatingCard + " " + styles.cardAlbum}>
+            <span className={styles.cardIcon} aria-hidden="true">♡</span>
+            <span className={styles.cardLabel}>Álbum de fotos<br/>compartido</span>
+          </div>
+          <div className={styles.abstractPhone}>
+            <div className={styles.abstractNotch} aria-hidden="true" />
+            <iframe src="/muestra/editorial?portada=1" title="Vista previa real de la invitación Editorial" loading="lazy" tabIndex={-1} />
+            <Link href="/muestra/editorial" className={styles.abstractVisit}>EXPLORAR INVITACIÓN ↗</Link>
+          </div>
+          <p className={styles.abstractCaption}>INVITACIÓN REAL DE MUESTRA · FUNCIONES ILUSTRADAS</p>
         </div>
       </section>
 
@@ -358,10 +321,13 @@ export default async function HomePage() {
             <li>Acceso para actualizar la información del evento</li>
             <li>Confirmaciones, lugares asignados y mesas</li>
             <li>Pases QR y herramienta de registro de acceso</li>
+            <li>Álbum digital compartido para fotos de tus invitados</li>
             <li>Guía breve para utilizar tu cuenta</li>
           </ul>
           <a
-            href="#contacto"
+            href="https://wa.me/525669281968?text=Hola%2C%20quiero%20contratar%20la%20invitaci%C3%B3n%20Invito%20de%20%24699"
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.primary}
           >
             Quiero mi invitación <span aria-hidden="true">↗</span>
@@ -418,7 +384,7 @@ export default async function HomePage() {
           className={styles.brand}
           aria-label="Invito, inicio"
         >
-          invito<span aria-hidden="true">✳</span>
+          invito<svg className={styles.brandMark} viewBox="0 0 48 56" fill="none" aria-hidden="true"><path d="M24 4C12 12 6 21 8 32c2 9 10 15 16 20 6-5 14-11 16-20 2-11-4-20-16-28Z" stroke="currentColor" strokeWidth="2.8"/><path d="M24 12v29M13 27l11 10 11-10" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/></svg>
         </Link>
         <p>Hecho para celebrar lo que importa.</p>
         <span>© {new Date().getFullYear()} Invito</span>
