@@ -35,6 +35,11 @@ const features = [
     "Todos los detalles, sin papel",
     "Comparte ubicaciones, itinerario, galería y más en una invitación pensada para disfrutarse desde el celular.",
   ],
+  [
+    "♡",
+    "Álbum compartido",
+    "Tus invitados pueden compartir las fotografías que capturen durante la celebración en un álbum digital del evento.",
+  ],
 ];
 
 const steps = [
@@ -122,33 +127,33 @@ export default async function HomePage() {
         aria-labelledby="hero-title"
       >
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>EL COMIENZO DE ALGO ESPECIAL</p>
+          <p className={styles.eyebrow}>INVITACIONES DIGITALES INTERACTIVAS</p>
           <h1 id="hero-title">
-            Grandes momentos.
+            Una invitación hermosa.
             <br />
-            <em>Bonitos comienzos.</em>
+            <em>Todo tu evento organizado.</em>
           </h1>
           <p className={styles.description}>
-            Creamos tu invitación digital y te la entregamos lista para
-            compartir. Después, puedes actualizar los datos de tu evento,
-            consultar confirmaciones y organizar tus mesas desde tu cuenta.
+            Sorprende a tus invitados con una invitación interactiva y organiza tu celebración desde un solo lugar: confirmaciones, pases QR, mesas y un álbum de fotos compartido.
           </p>
           <div className={styles.actions}>
             <a
-              href="#contacto"
+              href="https://wa.me/525669281968?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20mi%20invitaci%C3%B3n%20digital%20Invito"
+              target="_blank"
+              rel="noopener noreferrer"
               className={styles.primary}
             >
-              Quiero mi invitación <span aria-hidden="true">↗</span>
+              Cotizar por WhatsApp <span aria-hidden="true">↗</span>
             </a>
             <Link
               href="#plantillas"
               className={styles.textLink}
             >
-              Explorar plantillas <span aria-hidden="true">↗</span>
+              Ver invitaciones reales <span aria-hidden="true">↗</span>
             </Link>
           </div>
           <p className={styles.heroNote}>
-            Bodas · XV años · Cumpleaños · Y todo lo que merece celebrarse
+            Bodas · XV años · Cumpleaños · Pago único desde $699 MXN
           </p>
         </div>
         <div
@@ -358,10 +363,13 @@ export default async function HomePage() {
             <li>Acceso para actualizar la información del evento</li>
             <li>Confirmaciones, lugares asignados y mesas</li>
             <li>Pases QR y herramienta de registro de acceso</li>
+            <li>Álbum digital compartido para fotos de tus invitados</li>
             <li>Guía breve para utilizar tu cuenta</li>
           </ul>
           <a
-            href="#contacto"
+            href="https://wa.me/525669281968?text=Hola%2C%20quiero%20contratar%20la%20invitaci%C3%B3n%20Invito%20de%20%24699"
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.primary}
           >
             Quiero mi invitación <span aria-hidden="true">↗</span>
