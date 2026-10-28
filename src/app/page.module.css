@@ -198,3 +198,61 @@
  .showcasePhone iframe { transform:scale(.375); }
  .showcaseRibbon { display:none; }
 }
+
+/* Abstract glass editorial hero — mobile-first, responsive and CSS-rendered */
+.heroArt { position:relative; isolation:isolate; width:100%; height:560px!important; overflow:hidden; border-radius:28px!important; background:radial-gradient(ellipse at 12% 12%,#fffaf8 0%,transparent 48%),radial-gradient(ellipse at 100% 75%,#c7a3d7 0%,transparent 58%),linear-gradient(145deg,#f6e8ef,#e8d8ed 56%,#f8e9e7)!important; }
+.abstractOrbOne,.abstractOrbTwo,.abstractRibbon { position:absolute; pointer-events:none; }
+.abstractOrbOne { width:430px; height:430px; top:-170px; right:-160px; border-radius:48%; background:linear-gradient(140deg,#ffffffcc,#c4a0d65c); box-shadow:inset 18px 18px 48px #ffffffb0,18px 25px 70px #80518b22; transform:rotate(-25deg); }
+.abstractOrbTwo { width:310px; height:310px; left:-180px; bottom:-120px; border-radius:44%; background:linear-gradient(160deg,#f8dfe5,#a97db88c); filter:blur(3px); transform:rotate(25deg); }
+.abstractRibbon { width:420px; height:190px; right:-150px; top:170px; border:28px solid #ffffff65; border-left-color:#b68bc75e; border-radius:50%; transform:rotate(-48deg); filter:blur(3px); }
+.floatingCard { position:absolute; z-index:3; display:grid; grid-template-columns:auto 1fr; align-content:center; column-gap:8px; padding:13px; min-height:82px; border:1px solid #ffffffb8; border-radius:16px; background:#fffaf5a8; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 15px 40px #63457525; color:#57415e; }
+.cardIcon { grid-row:span 2; display:grid; place-items:center; align-self:start; width:29px; height:29px; border-radius:50%; background:#e8d6ed; color:#744a84; font-size:19px; }
+.cardLabel { font-size:11px; line-height:1.35; font-weight:600; }
+.cardEmphasis { font-size:22px; color:#79528d; font-weight:400; }
+.cardTiny { font-size:9px; color:#7a697c; margin-top:6px; }
+.cardRsvp { top:100px; left:14px; width:160px; transform:rotate(-6deg); }
+.cardQr { top:95px; right:12px; width:151px; transform:rotate(5deg); }
+.cardTables { bottom:110px; left:8px; width:148px; transform:rotate(-7deg); }
+.cardAlbum { bottom:110px; right:8px; width:155px; transform:rotate(5deg); }
+.abstractPhone { position:absolute; z-index:2; top:60px; left:50%; width:214px; height:433px; transform:translateX(-50%) rotate(-5deg); border:7px solid #32283b; border-radius:33px; background:#fff; overflow:hidden; box-shadow:16px 25px 50px #42314c55; }
+.abstractNotch { position:absolute; z-index:5; top:6px; left:50%; transform:translateX(-50%); width:64px; height:16px; border-radius:12px; background:#32283b; }
+.abstractPhone iframe { display:block; width:390px; height:790px; border:0; transform:scale(.51); transform-origin:top left; pointer-events:none; }
+.abstractVisit { position:absolute; z-index:6; left:11px; right:11px; bottom:11px; min-height:40px; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#79528d; color:white; font-size:10px; font-weight:700; text-align:center; }
+.abstractCaption { position:absolute; z-index:5; bottom:17px; left:10px; right:10px; text-align:center; font-size:9px; letter-spacing:.09em; color:#654b71; }
+@media(max-width:760px) {
+ .heroArt { height:510px!important; }
+ .abstractPhone { width:202px; height:410px; top:43px; }
+ .abstractPhone iframe { transform:scale(.48); }
+ .cardRsvp { top:83px; left:7px; }
+ .cardQr { top:75px; right:7px; }
+ .cardTables { bottom:86px; left:6px; }
+ .cardAlbum { bottom:85px; right:6px; }
+}
+@media(max-width:440px) {
+ .heroArt { height:480px!important; }
+ .abstractPhone { width:187px; height:382px; top:43px; }
+ .abstractPhone iframe { transform:scale(.44); }
+ .floatingCard { padding:9px; min-height:67px; border-radius:12px; }
+ .cardIcon { width:22px; height:22px; font-size:15px; }
+ .cardLabel { font-size:9px; }
+ .cardRsvp { top:88px; left:4px; width:124px; }
+ .cardQr { top:88px; right:4px; width:119px; }
+ .cardTables { bottom:82px; left:4px; width:116px; }
+ .cardAlbum { bottom:82px; right:4px; width:122px; }
+ .cardTiny { font-size:8px; }
+ .abstractCaption { font-size:8px; }
+}
+@media(max-width:350px) {
+ .heroArt { height:440px!important; }
+ .abstractPhone { width:169px; height:348px; top:40px; }
+ .abstractPhone iframe { transform:scale(.397); }
+ .cardRsvp,.cardQr { top:72px; }
+ .cardTables,.cardAlbum { bottom:65px; }
+ .floatingCard { padding:6px; width:105px; }
+ .cardLabel { font-size:8px; }
+}
+@media(prefers-reduced-motion:no-preference) {
+ .abstractOrbOne { animation:invitoOrb 12s ease-in-out infinite alternate; }
+ .abstractOrbTwo { animation:invitoOrb 15s ease-in-out infinite alternate-reverse; }
+}
+@keyframes invitoOrb { to { transform:translateY(18px) rotate(-12deg); } }
